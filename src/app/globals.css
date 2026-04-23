@@ -1,0 +1,106 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-heading: "Outfit", "Inter", sans-serif;
+  
+  /* Clinic Branding Colors - Extracted from Logo */
+  --color-primary-green: #009639;
+  --color-primary-green-light: #e6f5eb; /* Tint */
+  --color-primary-green-muted: #d1ecd9;
+  --color-primary-green-dark: #007a2e;
+  
+  --color-primary-blue: #004b93;
+  --color-primary-blue-light: #eBF2FA; /* Tint */
+  --color-primary-blue-muted: #D1E1F3;
+  --color-primary-blue-dark: #00366b;
+
+  --color-slate-950: #0f172a;
+  --color-slate-900: #1e293b;
+  --color-slate-600: #475569;
+  --color-slate-400: #94a3b8;
+  --color-slate-200: #e2e8f0;
+  --color-slate-100: #f1f5f9;
+  --color-slate-50: #f8fafc;
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: #0f172a; /* Slate 950 for better readability */
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  letter-spacing: -0.02em;
+}
+
+/* --- Professional Utilities --- */
+
+.section-padding {
+  @apply py-24 lg:py-32;
+}
+
+.container-custom {
+  @apply max-w-[1240px] mx-auto px-6 lg:px-10;
+}
+
+.card-base {
+  @apply bg-white rounded-[32px] border border-slate-50 shadow-sm transition-all duration-500 overflow-hidden;
+}
+
+.card-hover {
+  @apply hover:shadow-xl hover:shadow-slate-200/40 hover:border-slate-100 hover:-translate-y-1.5;
+}
+
+.btn-primary {
+  @apply bg-primary-green text-white px-8 py-4 rounded-[18px] font-bold text-sm shadow-lg shadow-primary-green/10 hover:bg-primary-green-dark hover:-translate-y-0.5 active:translate-y-0 transition-all;
+}
+
+.btn-secondary {
+  @apply bg-primary-blue text-white px-8 py-4 rounded-[18px] font-bold text-sm shadow-lg shadow-primary-blue/10 hover:bg-primary-blue-dark hover:-translate-y-0.5 active:translate-y-0 transition-all;
+}
+
+/* Section Header pattern */
+.section-tag {
+  @apply text-[10px] font-black text-primary-green underline decoration-2 underline-offset-8 uppercase tracking-[0.2em] mb-6 block;
+}
+
+.section-title {
+  @apply text-3xl lg:text-4xl font-black text-slate-950 leading-[1.2] mb-6 tracking-tight;
+}
+
+.section-desc {
+  @apply text-base text-slate-500 font-medium max-w-2xl leading-relaxed mb-12;
+}
+
+/* Animations */
+.animate-fade-in {
+  animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Smooth Scroll */
+html {
+  scroll-behavior: smooth;
+}
