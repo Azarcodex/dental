@@ -142,7 +142,8 @@ export function PublicBookingForm() {
         phone: `+91${data.phone}`,
         gender: data.gender,
         email: data.email,
-        age: age
+        age: age,
+        bloodGroup: (data as any).bloodGroup
       },
       doctorId: data.doctorId,
       date: data.date,
@@ -209,15 +210,29 @@ export function PublicBookingForm() {
   }
 
   return (
-    <section id="booking" className="section-padding bg-slate-50/20 scroll-mt-24">
-      <div className="container-custom grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-start">
+    <section id="booking" className="relative py-20 lg:py-28 bg-slate-50/20 scroll-mt-24">
+      {/* Ambient Blobs Layer - Moved overflow here to allow sticky on parents */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 left-[-10%] w-[50%] h-[50%] bg-blue-300/10 rounded-full blur-[120px]" />
+        <div className="absolute bottom-[-10%] right-[-5%] w-[40%] h-[60%] bg-emerald-300/10 rounded-full blur-[120px]" />
+      </div>
+
+      <div className="container-custom relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-start">
         
         {/* Left Column */}
-        <div className="lg:col-span-5 space-y-8 animate-slide-up lg:sticky lg:top-32">
+        <div className="lg:col-span-4 space-y-8 animate-slide-up lg:sticky lg:top-28 lg:self-start">
            <div>
-              <span className="section-tag">Direct Booking</span>
-              <h2 className="section-title">Schedule Your<br /><span className="text-primary-blue">Consultation</span></h2>
-              <p className="section-desc">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/60 backdrop-blur-md border border-white shadow-sm mb-6">
+                <CalendarDays size={16} className="text-primary-blue" />
+                <span className="text-xs font-bold uppercase tracking-widest text-slate-700">Direct Booking</span>
+              </div>
+              <h2 className="text-4xl lg:text-5xl font-black text-slate-900 mb-6 tracking-tight leading-[1.1]">
+                Schedule Your <br />
+                <span className="text-primary-blue">
+                  Consultation
+                </span>
+              </h2>
+              <p className="text-base text-slate-600 font-medium leading-relaxed max-w-xl">
                 Fast and easy appointment scheduling with our expert medical team. Pick your preferred date and time.
               </p>
            </div>
@@ -239,7 +254,7 @@ export function PublicBookingForm() {
         </div>
 
         {/* Right Column: Form */}
-        <div className="lg:col-span-7 bg-white rounded-[40px] shadow-2xl shadow-primary-blue/5 overflow-hidden animate-fade-in border border-slate-50">
+        <div className="lg:col-span-8 bg-white rounded-[40px] shadow-2xl shadow-primary-blue/5 overflow-hidden animate-fade-in border border-slate-50">
           <div className="bg-slate-950 p-10 lg:p-12 text-white">
              <h3 className="text-2xl font-black mb-2">Patient Details</h3>
              <p className="text-sm text-slate-400 font-medium">Accuracy ensures better care and faster processing.</p>
@@ -372,18 +387,40 @@ export function PublicBookingForm() {
                         <select 
                           {...register("gender")}
                           className={cn(
-                            "w-full px-5 py-4.5 bg-slate-50 border-2 rounded-[22px] outline-none font-bold transition-all text-sm h-14 appearance-none",
-                            errors.gender ? "border-red-500/20 focus:border-red-500 text-red-900" : "border-slate-100 focus:border-primary-blue focus:bg-white text-slate-800"
+                            "w-full px-5 py-4.5 bg-slate-50 border-2 rounded-[22px] outline-none font-bold transition-all text-sm h-14 appearance-none hover:border-slate-200 focus:border-primary-blue focus:bg-white cursor-pointer",
+                            errors.gender ? "border-red-500/20 focus:border-red-500 text-red-900" : "border-slate-100 text-slate-800"
                           )}
                         >
-                           <option value="">Select Gender...</option>
                            <option value="Male">Male</option>
                            <option value="Female">Female</option>
-                           <option value="Other">Other</option>
+                           <option value="Other">Other Participant</option>
+                           <option value="Prefer not to say">Prefer not to say</option>
                         </select>
-                        <ChevronDown className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none" size={18} />
+                        <ChevronDown className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none group-hover:text-primary-blue transition-colors" size={18} />
                      </div>
                      <ErrorMsg>{errors.gender?.message}</ErrorMsg>
+                  </div>
+
+                  {/* Blood Group */}
+                  <div className="space-y-1">
+                     <Label optional>Blood Group</Label>
+                     <div className="relative h-14 group">
+                        <select 
+                          {...register("bloodGroup" as any)}
+                          className="w-full px-5 py-4.5 bg-slate-50 border-2 border-slate-100 rounded-[22px] outline-none font-bold transition-all text-sm h-14 appearance-none hover:border-slate-200 focus:border-primary-blue focus:bg-white cursor-pointer text-slate-800"
+                        >
+                           <option value="">Unknown / Not Set</option>
+                           <option value="A+">A Positive (A+)</option>
+                           <option value="A-">A Negative (A-)</option>
+                           <option value="B+">B Positive (B+)</option>
+                           <option value="B-">B Negative (B-)</option>
+                           <option value="AB+">AB Positive (AB+)</option>
+                           <option value="AB-">AB Negative (AB-)</option>
+                           <option value="O+">O Positive (O+)</option>
+                           <option value="O-">O Negative (O-)</option>
+                        </select>
+                        <ChevronDown className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none group-hover:text-primary-blue transition-colors" size={18} />
+                     </div>
                   </div>
                </div>
             </div>
@@ -404,14 +441,14 @@ export function PublicBookingForm() {
                         <select 
                           {...register("specialization")}
                           className={cn(
-                            "w-full pl-14 pr-12 py-4.5 bg-slate-50 border-2 rounded-[22px] outline-none font-bold transition-all text-sm h-14 appearance-none",
-                            errors.specialization ? "border-red-500/20 focus:border-red-500 text-red-900" : "border-slate-100 focus:border-primary-green focus:bg-white text-slate-800"
+                            "w-full pl-14 pr-12 py-4.5 bg-slate-50 border-2 rounded-[22px] outline-none font-bold transition-all text-sm h-14 appearance-none hover:border-slate-200 focus:border-primary-green focus:bg-white cursor-pointer",
+                            errors.specialization ? "border-red-500/20 focus:border-red-500 text-red-900" : "border-slate-100 text-slate-800"
                           )}
                         >
                            <option value="">Choose Specialty...</option>
                            {specializations.map(s => <option key={s} value={s}>{s}</option>)}
                         </select>
-                        <ChevronDown className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none" size={18} />
+                        <ChevronDown className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none group-hover:text-primary-green transition-colors" size={18} />
                      </div>
                      <ErrorMsg>{errors.specialization?.message}</ErrorMsg>
                   </div>
@@ -425,14 +462,14 @@ export function PublicBookingForm() {
                           {...register("doctorId")}
                           disabled={!watchSpec}
                           className={cn(
-                            "w-full pl-14 pr-12 py-4.5 bg-slate-50 border-2 rounded-[22px] outline-none font-bold transition-all text-sm h-14 appearance-none disabled:opacity-40",
-                            errors.doctorId ? "border-red-500/20 focus:border-red-500 text-red-900" : "border-slate-100 focus:border-primary-green focus:bg-white text-slate-800"
+                            "w-full pl-14 pr-12 py-4.5 bg-slate-50 border-2 rounded-[22px] outline-none font-bold transition-all text-sm h-14 appearance-none disabled:opacity-40 hover:border-slate-200 focus:border-primary-green focus:bg-white cursor-pointer",
+                            errors.doctorId ? "border-red-500/20 focus:border-red-500 text-red-900" : "border-slate-100 text-slate-800"
                           )}
                         >
                            <option value="">{watchSpec ? "Pick Your Doctor..." : "Select specialty first"}</option>
                            {filteredDoctors?.map((d: any) => <option key={d.id} value={d.id}>Dr. {d.firstName} {d.lastName}</option>)}
                         </select>
-                        <ChevronDown className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none" size={18} />
+                        <ChevronDown className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none group-hover:text-primary-green transition-colors" size={18} />
                      </div>
                      <ErrorMsg>{errors.doctorId?.message}</ErrorMsg>
                   </div>

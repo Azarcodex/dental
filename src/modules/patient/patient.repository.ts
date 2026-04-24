@@ -78,4 +78,19 @@ export class PatientRepository {
       take: 20,
     });
   }
+
+  async getStats() {
+    const [totalPatients, newPatients] = await Promise.all([
+      prisma.patient.count(),
+      prisma.patient.count({
+        where: {
+          createdAt: {
+            gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+          },
+        },
+      }),
+    ]);
+
+    return { totalPatients, newPatients };
+  }
 }

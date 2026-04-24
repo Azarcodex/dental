@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
-  --font-heading: "Outfit", "Inter", sans-serif;
+  --font-sans: var(--font-poppins), system-ui, -apple-system, sans-serif;
+  --font-heading: var(--font-poppins), "Outfit", "Inter", sans-serif;
   
   /* Clinic Branding Colors - Extracted from Logo */
   --color-primary-green: #009639;

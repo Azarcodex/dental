@@ -43,16 +43,25 @@ const reasons = [
 
 export function WhyChooseUs() {
   return (
-    <section id="about" className="py-16 lg:py-20 bg-slate-50/30 overflow-hidden">
-      <div className="container-custom">
+    <section id="about" className="relative py-20 lg:py-28 overflow-hidden bg-slate-50/10">
+       {/* Ambient Blobs */}
+       <div className="absolute top-0 right-[-10%] w-[50%] h-[50%] bg-blue-300/10 rounded-full blur-[120px] pointer-events-none" />
+       <div className="absolute bottom-[-10%] left-[-5%] w-[40%] h-[60%] bg-purple-300/10 rounded-full blur-[120px] pointer-events-none" />
+
+      <div className="container-custom relative z-10">
         {/* Centered Header Area */}
-        <div className="text-center max-w-3xl mx-auto mb-12 animate-slide-up">
-           <span className="section-tag mx-auto">High Quality Care</span>
-           <h2 className="text-4xl lg:text-5xl font-black text-slate-950 mb-6 tracking-tight leading-[1.1]">
+        <div className="text-center max-w-3xl mx-auto mb-16 animate-slide-up">
+           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/60 backdrop-blur-md border border-white shadow-sm mb-6">
+              <ShieldCheck size={16} className="text-primary-blue" />
+              <span className="text-xs font-bold uppercase tracking-widest text-slate-700">Medical Excellence</span>
+           </div>
+           <h2 className="text-4xl lg:text-5xl font-black text-slate-900 mb-6 tracking-tight leading-[1.1]">
               Setting the Standard in <br />
-              <span className="text-primary-blue">Modern Healthcare</span>
+              <span className="text-primary-blue">
+                Modern Healthcare
+              </span>
            </h2>
-           <p className="text-base text-slate-500 font-medium leading-relaxed">
+           <p className="text-base text-slate-600 font-medium leading-relaxed">
              ADAMS Poly Clinic combines compassionate medical attention with cutting-edge 
              technology to ensure the best possible health outcomes for our community.
            </p>
@@ -63,7 +72,7 @@ export function WhyChooseUs() {
            {reasons.map((item, idx) => (
              <div 
                key={item.title} 
-               className="group p-8 lg:p-10 rounded-[40px] border border-white bg-white hover:border-primary-green/20 hover:shadow-2xl hover:shadow-primary-green/5 transition-all duration-700 animate-slide-up"
+               className="group p-8 lg:p-10 rounded-[40px] bg-white/40 hover:bg-white/70 backdrop-blur-xl border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all duration-500 animate-slide-up"
                style={{ animationDelay: `${idx * 100}ms` }}
              >
                 <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-8 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 shadow-sm border border-white/50 ${item.color}`}>
@@ -71,13 +80,13 @@ export function WhyChooseUs() {
                 </div>
                 
                 <div className="space-y-4">
-                   <h3 className="text-xl font-black text-slate-950 flex items-center gap-3">
+                   <h3 className="text-xl font-bold text-slate-900 flex items-center gap-3">
                       {item.title}
                    </h3>
                    <p className="text-sm text-slate-500 font-medium leading-relaxed line-clamp-4">
                       {item.desc}
                    </p>
-                   <div className="pt-4 flex items-center gap-2 text-primary-green opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0">
+                   <div className="pt-4 flex items-center gap-2 text-emerald-600 opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0">
                       <CheckCircle2 size={16} />
                       <span className="text-[10px] font-black uppercase tracking-widest">Verified Standard</span>
                    </div>

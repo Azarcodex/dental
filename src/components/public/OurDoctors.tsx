@@ -2,95 +2,222 @@
 
 import { useQuery } from "@tanstack/react-query";
 import axiosInstance from "@/lib/axios";
-import { User, Stethoscope, Star, ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
+import {
+  User,
+  Stethoscope,
+  Star,
+  ChevronLeft,
+  ChevronRight,
+  ArrowRight,
+  Filter,
+  Award,
+  Calendar,
+  ChevronDown,
+} from "lucide-react";
+import { useState, useRef } from "react";
 
 export function OurDoctors() {
+  const [selectedDept, setSelectedDept] = useState("All");
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
   const { data: doctors, isLoading } = useQuery({
     queryKey: ["public-doctors"],
     queryFn: async () => {
       const { data } = await axiosInstance.get("/doctors");
       return data.data;
-    }
+    },
   });
 
+  const activeDoctors =
+    doctors?.filter((d: any) => d.status === "ACTIVE") || [];
+  const departments = [
+    "All",
+    ...Array.from(new Set(activeDoctors.map((d: any) => d.department))),
+  ];
+
+  const filteredDoctors =
+    selectedDept === "All"
+      ? activeDoctors
+      : activeDoctors.filter((d: any) => d.department === selectedDept);
+
+  const scroll = (direction: "left" | "right") => {
+    if (scrollContainerRef.current) {
+      // Adjusted scroll amount to account for card width + gap
+      const scrollAmount =
+        window.innerWidth < 640 ? window.innerWidth * 0.85 : 344;
+      const { scrollLeft } = scrollContainerRef.current;
+      const scrollTo =
+        direction === "left"
+          ? scrollLeft - scrollAmount
+          : scrollLeft + scrollAmount;
+      scrollContainerRef.current.scrollTo({
+        left: scrollTo,
+        behavior: "smooth",
+      });
+    }
+  };
+
   return (
-    <section id="doctors" className="section-padding bg-slate-50/20">
-      <div className="container-custom">
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-10 mb-16 text-center lg:text-left">
-          <div className="max-w-2xl animate-slide-up mx-auto lg:mx-0">
-             <span className="section-tag">Medical Experts</span>
-             <h2 className="section-title">Professional Specialized Doctors</h2>
-             <p className="section-desc">
-                Access to highly qualified medical practitioners dedicated to providing 
-                comprehensive healthcare and advanced clinical solutions.
-             </p>
+    <section id="doctors" className="relative py-20 lg:py-28 bg-slate-50">
+      {/* Ambient backgrounds wrapped to allow sticky on parent */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 left-[-10%] w-[50%] h-[50%] bg-white rounded-full blur-[120px]" />
+        <div className="absolute bottom-[-10%] right-[-5%] w-[40%] h-[60%] bg-white rounded-full blur-[120px]" />
+        <div className="absolute top-[20%] left-[40%] w-[30%] h-[30%] bg-white rounded-full blur-[100px]" />
+      </div>
+
+      <div className="container-custom relative z-10">
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-10 mb-14">
+          <div className="max-w-2xl animate-slide-up text-center lg:text-left">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/60 backdrop-blur-md border border-white shadow-sm mb-6">
+              <Stethoscope size={16} className="text-primary-blue" />
+              <span className="text-xs font-bold uppercase tracking-widest text-slate-700">
+                Medical Experts
+              </span>
+            </div>
+            <h2 className="text-4xl lg:text-5xl font-black text-slate-900 mb-6 tracking-tight leading-[1.1]">
+              World-Class <br />
+              <span className="text-primary-blue">Specialized Doctors</span>
+            </h2>
+            <p className="text-base text-slate-600 font-medium leading-relaxed max-w-xl">
+              Access highly qualified medical practitioners dedicated to
+              providing comprehensive healthcare through advanced clinical
+              solutions.
+            </p>
           </div>
-          <div className="flex gap-3 justify-center pb-2">
-             <button className="w-12 h-12 bg-white rounded-xl text-slate-300 hover:text-primary-green transition-all shadow-sm flex items-center justify-center group"><ChevronLeft size={20} className="group-hover:-translate-x-0.5 transition-transform" /></button>
-             <button className="w-12 h-12 bg-white rounded-xl text-slate-300 hover:text-primary-green transition-all shadow-sm flex items-center justify-center group"><ChevronRight size={20} className="group-hover:translate-x-0.5 transition-transform" /></button>
+
+          <div className="flex flex-col items-center lg:items-end gap-6">
+            {/* Glassmorphic Dept Filter Select - Replaced Tabs */}
+            <div className="relative group min-w-[200px]">
+              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-primary-blue pointer-events-none group-focus-within:scale-110 transition-transform">
+                <Filter size={14} />
+              </div>
+              <select
+                value={selectedDept}
+                onChange={(e) => setSelectedDept(e.target.value)}
+                className="w-full pl-10 pr-10 py-3 bg-white/50 backdrop-blur-xl rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/60 text-[11px] font-black uppercase tracking-widest text-slate-700 outline-none hover:border-blue-300 focus:border-blue-500 transition-all cursor-pointer appearance-none"
+              >
+                {departments.map((dept: any) => (
+                  <option key={dept} value={dept}>
+                    {dept === "All" ? "All Departments" : `${dept} Specialists`}
+                  </option>
+                ))}
+              </select>
+              <div className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+                <ChevronDown size={14} strokeWidth={3} />
+              </div>
+            </div>
+
+            {/* Navigation Buttons */}
+            <div className="flex gap-3">
+              <button
+                onClick={() => scroll("left")}
+                className="w-12 h-12 bg-white/60 backdrop-blur-md border border-white rounded-2xl text-slate-400 hover:text-blue-600 hover:bg-white transition-all shadow-sm flex items-center justify-center group"
+              >
+                <ChevronLeft
+                  size={22}
+                  className="group-hover:-translate-x-1 transition-transform duration-300"
+                />
+              </button>
+              <button
+                onClick={() => scroll("right")}
+                className="w-12 h-12 bg-white/60 backdrop-blur-md border border-white rounded-2xl text-slate-400 hover:text-blue-600 hover:bg-white transition-all shadow-sm flex items-center justify-center group"
+              >
+                <ChevronRight
+                  size={22}
+                  className="group-hover:translate-x-1 transition-transform duration-300"
+                />
+              </button>
+            </div>
           </div>
         </div>
 
         {isLoading ? (
-           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {[1,2,3,4].map(i => (
-                <div key={i} className="h-96 bg-white rounded-3xl animate-pulse" />
-              ))}
-           </div>
+          <div className="flex gap-6 overflow-hidden">
+            {[1, 2, 3, 4].map((i) => (
+              <div
+                key={i}
+                className="min-w-[85vw] sm:min-w-[320px] h-[480px] bg-white/40 backdrop-blur-md rounded-[2.5rem] border border-white/50 animate-pulse"
+              />
+            ))}
+          </div>
         ) : (
-           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12">
-              {doctors?.filter((d: any) => d.status === "ACTIVE").map((doctor: any, idx: number) => (
-                <div 
-                  key={doctor.id} 
-                  className="group animate-slide-up"
-                  style={{ animationDelay: `${idx * 100}ms` }}
-                >
-                   {/* Clean Image Container - Less Boxy */}
-                   <div className="relative aspect-[4/5] rounded-[28px] overflow-hidden bg-slate-100 mb-6 shadow-sm group-hover:shadow-xl group-hover:-translate-y-1 transition-all duration-500">
-                      {doctor.profilePhoto ? (
-                        <img 
-                          src={doctor.profilePhoto} 
-                          alt={`${doctor.firstName} ${doctor.lastName}`}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-slate-200">
-                           <User size={64} />
-                        </div>
-                      )}
-                      
-                      {/* Subtile Spec Tag */}
-                      <div className="absolute bottom-4 left-4 right-4 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
-                         <div className="bg-white/95 backdrop-blur-sm p-3 rounded-2xl shadow-xl flex items-center justify-between">
-                            <span className="text-[9px] font-black uppercase text-slate-900 tracking-wider">Expertise</span>
-                            <Stethoscope size={14} className="text-primary-green" />
-                         </div>
-                      </div>
-                   </div>
-                   
-                   {/* Minimal Info */}
-                   <div className="px-2 space-y-3">
-                      <div>
-                         <h3 className="text-lg font-black text-slate-950 group-hover:text-primary-blue transition-colors">Dr. {doctor.firstName} {doctor.lastName}</h3>
-                         <p className="text-[10px] font-bold text-primary-green uppercase tracking-widest">{doctor.specialization}</p>
-                      </div>
-                      
-                      <div className="flex items-center justify-between pt-2">
-                         <div className="flex items-center gap-1 text-amber-400">
-                            <Star size={12} fill="currentColor" />
-                            <span className="text-[10px] font-black text-slate-500">Top Rated</span>
-                         </div>
-                         <button 
-                           onClick={() => document.getElementById("booking")?.scrollIntoView({ behavior: "smooth" })}
-                           className="text-[10px] font-black text-slate-400 hover:text-primary-blue transition-colors uppercase flex items-center gap-1 group/btn"
-                         >
-                           Book <ArrowRight size={12} className="group-hover/btn:translate-x-1 transition-transform" />
-                         </button>
-                      </div>
-                   </div>
+          <div
+            ref={scrollContainerRef}
+            className="flex gap-6 overflow-x-auto pb-12 pt-4 px-4 -mx-4 snap-x snap-mandatory scroll-smooth cursor-grab active:cursor-grabbing select-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+          >
+            {filteredDoctors.map((doctor: any, idx: number) => (
+              <div
+                key={doctor.id}
+                className="min-w-[80vw] sm:min-w-[240px] max-w-[240px] snap-start group relative p-4 bg-white hover:bg-slate-50 backdrop-blur-xl border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-500 rounded-[2rem] flex flex-col h-full"
+                style={{ animationDelay: `${idx * 100}ms` }}
+              >
+                {/* Top Image Container */}
+                <div className="relative h-44 w-full rounded-[1.5rem] overflow-hidden mb-4 bg-slate-100/50">
+                  {doctor.profilePhoto ? (
+                    <img
+                      src={doctor.profilePhoto}
+                      alt={`${doctor.firstName} ${doctor.lastName}`}
+                      className="absolute inset-0 w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 bg-gradient-to-br from-slate-100 to-slate-200 flex flex-col items-center justify-center text-slate-300">
+                      <User size={32} />
+                    </div>
+                  )}
+
+                  {/* Department Floating Badge */}
+                  <div className="absolute top-2 left-2 bg-white/90 backdrop-blur-md px-2 py-1 rounded-full shadow-sm border border-slate-100">
+                    <span className="text-[8px] font-black text-slate-800 uppercase tracking-widest">
+                      {doctor.department}
+                    </span>
+                  </div>
                 </div>
-              ))}
-           </div>
+
+                {/* Doctor Details */}
+                <div className="flex-1 flex flex-col justify-between">
+                  <div className="mb-4">
+                    <h3 className="text-base font-bold text-slate-900 group-hover:text-blue-600 transition-colors truncate">
+                      Dr. {doctor.firstName} {doctor.lastName}
+                    </h3>
+                    <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest mt-0.5 truncate">
+                      {doctor.specialization}
+                    </p>
+                  </div>
+
+                  {/* Action Button */}
+                  <button
+                    onClick={() =>
+                      document
+                        .getElementById("booking")
+                        ?.scrollIntoView({ behavior: "smooth" })
+                    }
+                    className="w-full py-3.5 rounded-xl bg-slate-900 hover:bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-2 group/btn"
+                  >
+                    <Calendar size={12} />
+                    Book Consult
+                    <ArrowRight
+                      size={12}
+                      className="group-hover/btn:translate-x-1 transition-transform"
+                    />
+                  </button>
+                </div>
+              </div>
+            ))}
+
+            {filteredDoctors.length === 0 && (
+              <div className="w-full py-24 flex flex-col items-center justify-center text-slate-400 bg-white/40 backdrop-blur-xl rounded-[2.5rem] border border-white/50">
+                <Filter
+                  size={48}
+                  strokeWidth={1}
+                  className="mb-4 text-slate-300"
+                />
+                <p className="font-semibold text-slate-500">
+                  No doctors currently available in this department.
+                </p>
+              </div>
+            )}
+          </div>
         )}
       </div>
     </section>

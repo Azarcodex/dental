@@ -44,8 +44,15 @@ export class PatientService {
     }
   }
 
-  async getAllPatients() {
+  async getAllPatients(query?: string) {
+    if (query) {
+      return this.repository.findBySearch(query);
+    }
     return this.repository.findAll();
+  }
+
+  async getPatientStats() {
+    return this.repository.getStats();
   }
 
   async searchPatientByPhone(phone: string) {
