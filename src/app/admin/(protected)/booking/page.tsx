@@ -99,7 +99,20 @@ export default function BookingWizard() {
       queryClient.invalidateQueries({ queryKey: ["admin-stats"] });
     },
     onError: (err: any) => {
-      toast.error(err.response?.data?.message || "Booking failed.");
+      console.error("Booking mutation error:", err);
+      const msg = err.response?.data?.message || "";
+      const isSlotConflict =
+        msg.includes("no longer available") ||
+        msg.includes("already been booked");
+
+      if (isSlotConflict) {
+        toast.error("This slot was just taken by another booking. Please pick a different time.");
+        setSlot("");
+        setStep(3);
+        queryClient.invalidateQueries({ queryKey: ["slots", doctorId, date] });
+      } else {
+        toast.error(msg || `Booking failed: ${err.message || "Network Error"}`);
+      }
     }
   });
 

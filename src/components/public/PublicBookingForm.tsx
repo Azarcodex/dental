@@ -17,7 +17,8 @@ import {
   Check,
   ChevronDown,
   CalendarDays,
-  Clock3
+  Clock3,
+  RotateCcw
 } from "lucide-react";
 import { cn, formatTimeTo12h } from "@/lib/utils";
 import { toast } from "react-hot-toast";
@@ -86,13 +87,15 @@ export function PublicBookingForm() {
     return doctorsData.filter((d: any) => d.specialization === watchSpec && d.status === "ACTIVE");
   }, [doctorsData, watchSpec]);
 
-  const { data: slots, isLoading: slotsLoading } = useQuery({
+  const { data: slots, isLoading: slotsLoading, refetch, isRefetching } = useQuery({
     queryKey: ["public-slots", watchDoctorId, watchDate],
     queryFn: async () => {
       const { data } = await axiosInstance.get(`/doctors/${watchDoctorId}/slots`, { params: { date: watchDate } });
       return data.slots;
     },
     enabled: !!watchDoctorId && !!watchDate,
+    refetchInterval: 5000,
+    refetchOnWindowFocus: true,
   });
 
   // Reset flows
@@ -121,7 +124,18 @@ export function PublicBookingForm() {
       document.getElementById("booking")?.scrollIntoView({ behavior: "smooth" });
     },
     onError: (err: any) => {
-      toast.error(err.response?.data?.message || "Booking failed.");
+      const msg = err.response?.data?.message || "";
+      const isSlotConflict =
+        msg.includes("no longer available") ||
+        msg.includes("already been booked");
+
+      if (isSlotConflict) {
+        toast.error("This slot was just taken. Please pick another available time.");
+        setValue("slot", "");
+        refetch();
+      } else {
+        toast.error(msg || "Booking failed.");
+      }
     }
   });
 
@@ -495,7 +509,20 @@ export function PublicBookingForm() {
 
                {/* Slots */}
                <div className="space-y-4 pt-6">
-                  <Label required>Choose Time Slot</Label>
+                  <div className="flex items-center justify-between pr-2">
+                    <Label required>Choose Time Slot</Label>
+                    {watchDoctorId && watchDate && (
+                      <button 
+                        type="button"
+                        onClick={() => refetch()}
+                        disabled={isRefetching}
+                        className="flex items-center gap-1.5 text-[9px] font-black text-slate-400 hover:text-primary-green transition-colors uppercase tracking-widest bg-slate-50 px-3 py-1.5 rounded-full border border-slate-100 active:scale-95 disabled:opacity-50"
+                      >
+                        <RotateCcw size={10} className={cn(isRefetching && "animate-spin")} />
+                        Refresh
+                      </button>
+                    )}
+                  </div>
                   
                   <div className={cn(
                     "p-8 lg:p-10 rounded-[40px] border-2 transition-all relative min-h-[140px] flex items-center justify-center overflow-hidden",

@@ -12,7 +12,15 @@ export class PatientService {
     // 1. Try to find existing patient by phone
     const existingPatient = await this.repository.findByPhone(data.phone);
     if (existingPatient) {
-      return existingPatient;
+      // Update the patient's details with the latest submitted data
+      const updated = await this.repository.update(existingPatient.id, {
+        fullName: data.fullName,
+        gender: data.gender,
+        age: data.age,
+        ...(data.email && { email: data.email }),
+        ...(data.bloodGroup && { bloodGroup: data.bloodGroup }),
+      });
+      return updated;
     }
 
     return this.createPatient(data);

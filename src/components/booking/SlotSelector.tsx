@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import axiosInstance from "@/lib/axios";
-import { Clock, AlertCircle, CheckCircle2 } from "lucide-react";
+import { Clock, AlertCircle, CheckCircle2, RotateCcw, Loader2 } from "lucide-react";
 import { cn, formatTimeTo12h } from "@/lib/utils";
 
 interface SlotSelectorProps {
@@ -21,10 +21,12 @@ const fetchSlots = async (doctorId: string, date: string) => {
 };
 
 export default function SlotSelector({ doctorId, date, selectedSlot, onSelect }: SlotSelectorProps) {
-  const { data: slots, isLoading, error } = useQuery({
+  const { data: slots, isLoading, error, refetch, isRefetching } = useQuery({
     queryKey: ["slots", doctorId, date],
     queryFn: () => fetchSlots(doctorId, date),
     enabled: !!doctorId && !!date,
+    refetchInterval: 5000,
+    refetchOnWindowFocus: true,
   });
 
   if (isLoading) {
@@ -57,31 +59,49 @@ export default function SlotSelector({ doctorId, date, selectedSlot, onSelect }:
   }
 
   return (
-    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
-      {slots.map((slotObj: { time: string, available: boolean }) => {
-        const isSelected = selectedSlot === slotObj.time;
-        const isDisabled = !slotObj.available;
-        
-        return (
-          <button
-            key={slotObj.time}
-            type="button"
-            disabled={isDisabled}
-            onClick={() => onSelect(slotObj.time)}
-            className={cn(
-              "py-3 px-2 rounded-xl text-sm font-bold transition-all border flex flex-col items-center gap-1",
-              isSelected
-                ? "bg-primary-green border-primary-green text-white shadow-lg shadow-primary-green/20 scale-105"
-                : isDisabled 
-                  ? "bg-gray-50 border-gray-100 text-gray-300 cursor-not-allowed"
-                  : "bg-white border-gray-100 text-gray-900 hover:border-primary-green hover:text-primary-green hover:shadow-sm"
-            )}
-          >
-            {formatTimeTo12h(slotObj.time)}
-            {isSelected && <CheckCircle2 size={10} />}
-          </button>
-        );
-      })}
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Available Windows</p>
+        <button 
+          onClick={() => refetch()}
+          disabled={isRefetching}
+          className="flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-100 rounded-lg text-[10px] font-bold text-slate-500 hover:text-primary-green hover:border-primary-green/20 transition-all shadow-sm active:scale-95 disabled:opacity-50"
+        >
+          {isRefetching ? (
+            <Loader2 size={12} className="animate-spin text-primary-green" />
+          ) : (
+            <RotateCcw size={12} />
+          )}
+          REFRESH SLOTS
+        </button>
+      </div>
+
+      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
+        {slots.map((slotObj: { time: string, available: boolean }) => {
+          const isSelected = selectedSlot === slotObj.time;
+          const isDisabled = !slotObj.available;
+          
+          return (
+            <button
+              key={slotObj.time}
+              type="button"
+              disabled={isDisabled}
+              onClick={() => onSelect(slotObj.time)}
+              className={cn(
+                "py-3 px-2 rounded-xl text-sm font-bold transition-all border flex flex-col items-center gap-1",
+                isSelected
+                  ? "bg-primary-green border-primary-green text-white shadow-lg shadow-primary-green/20 scale-105"
+                  : isDisabled 
+                    ? "bg-gray-50 border-gray-100 text-gray-300 cursor-not-allowed"
+                    : "bg-white border-gray-100 text-gray-900 hover:border-primary-green hover:text-primary-green hover:shadow-sm"
+              )}
+            >
+              {formatTimeTo12h(slotObj.time)}
+              {isSelected && <CheckCircle2 size={10} />}
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }

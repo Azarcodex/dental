@@ -22,6 +22,7 @@ export default function PatientsRegistryPage() {
   const { data: patients, isLoading } = useQuery({
     queryKey: ["patients-registry", debouncedSearch],
     queryFn: () => fetchPatients(debouncedSearch),
+    refetchInterval: 5000,
   });
 
   return (

@@ -74,18 +74,29 @@ export class DoctorRepository {
   }
 
   async setCompleteSchedule(doctorId: string, schedules: any[], blocks: any[]) {
-    return prisma.$transaction([
-      // 1. Clear existing weekly config
-      prisma.doctorSchedule.deleteMany({ where: { doctorId } }),
-      prisma.doctorAvailabilityBlock.deleteMany({ where: { doctorId } }),
+    return prisma.$transaction(
+      async (tx) => {
+        // 1. Clear existing weekly config
+        await tx.doctorSchedule.deleteMany({ where: { doctorId } });
+        await tx.doctorAvailabilityBlock.deleteMany({ where: { doctorId } });
 
-      // 2. Create new weekly config
-      prisma.doctorSchedule.createMany({
-        data: schedules.map((s) => ({ ...s, doctorId })),
-      }),
-      prisma.doctorAvailabilityBlock.createMany({
-        data: blocks.map((b) => ({ ...b, doctorId })),
-      }),
-    ]);
+        // 2. Create new weekly config
+        if (schedules.length > 0) {
+          await tx.doctorSchedule.createMany({
+            data: schedules.map((s) => ({ ...s, doctorId })),
+          });
+        }
+
+        if (blocks.length > 0) {
+          await tx.doctorAvailabilityBlock.createMany({
+            data: blocks.map((b) => ({ ...b, doctorId })),
+          });
+        }
+      },
+      {
+        timeout: 15000, // 15 seconds to handle Neon latency
+        maxWait: 5000,
+      }
+    );
   }
 }

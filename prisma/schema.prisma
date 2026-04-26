@@ -135,4 +135,5 @@ model Appointment {
   patient Patient @relation(fields: [patientId], references: [id])
 
   @@unique([doctorId, date, startTime]) // PREVENT DOUBLE BOOKING
+  @@unique([doctorId, date, token])     // PREVENT DUPLICATE TOKENS
 }
