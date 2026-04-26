@@ -21,11 +21,63 @@ export class AppointmentService {
 
   async createAppointment(data: CreateAppointmentInput) {
     try {
-      return await prisma.$transaction(async (tx) => {
-        // 1. Get or Create Patient (within transaction)
-        const patient = await this.patientService.getOrCreatePatient(data.patientData);
+      // 1. Verify slot availability BEFORE starting the transaction
+      // This is a read-only check and doesn't need to hold a transaction lock
+      const availableSlots = await this.doctorService.getAvailableSlots(
+        data.doctorId,
+        data.date
+      );
 
-        // 2. Validate Doctor exists and is active
+      const targetSlot = availableSlots.find((s) => s.time === data.startTime);
+      if (!targetSlot || !targetSlot.available) {
+        throw new AppError("Requested slot is no longer available", 400);
+      }
+
+      return await prisma.$transaction(async (tx) => {
+        // 2. Get or Create Patient INSIDE the transaction
+        let patient = await tx.patient.findUnique({
+          where: { phone: data.patientData.phone },
+        });
+
+        if (patient) {
+          // Update existing patient with latest details
+          patient = await tx.patient.update({
+            where: { id: patient.id },
+            data: {
+              fullName: data.patientData.fullName,
+              gender: data.patientData.gender,
+              age: data.patientData.age,
+              ...(data.patientData.email && { email: data.patientData.email }),
+              ...(data.patientData.bloodGroup && { bloodGroup: data.patientData.bloodGroup }),
+            },
+          });
+        } else {
+          // Generate display ID
+          const lastPatient = await tx.patient.findFirst({
+            where: { displayId: { startsWith: "P-" } },
+            orderBy: { displayId: "desc" },
+            select: { displayId: true },
+          });
+          let nextId = "P-001";
+          if (lastPatient?.displayId) {
+            const currentNum = parseInt(lastPatient.displayId.replace("P-", ""));
+            nextId = `P-${(currentNum + 1).toString().padStart(3, "0")}`;
+          }
+
+          patient = await tx.patient.create({
+            data: {
+              fullName: data.patientData.fullName,
+              phone: data.patientData.phone,
+              gender: data.patientData.gender,
+              age: data.patientData.age,
+              email: data.patientData.email || undefined,
+              bloodGroup: data.patientData.bloodGroup || undefined,
+              displayId: nextId,
+            },
+          });
+        }
+
+        // 3. Validate Doctor exists and is active
         const doctor = await tx.doctor.findUnique({
           where: { id: data.doctorId },
         });
@@ -34,23 +86,26 @@ export class AppointmentService {
           throw new AppError("Doctor not found or inactive", 404);
         }
 
-        // 3. Verify slot availability
-        // Note: Using getAvailableSlots from DoctorService (which uses doctorRepo)
-        // This might perform separate reads, but for simplicity we keep it.
-        // In a strictly atomic scenario, we'd replicate the logic here using 'tx'.
-        const availableSlots = await this.doctorService.getAvailableSlots(
-          data.doctorId,
-          data.date
-        );
+        // 4. Re-check slot availability within transaction (double-booking guard)
+        const startOfDay = new Date(`${data.date}T00:00:00.000Z`);
+        const endOfDay = new Date(`${data.date}T23:59:59.999Z`);
 
-        const targetSlot = availableSlots.find((s) => s.time === data.startTime);
-        if (!targetSlot || !targetSlot.available) {
-          throw new AppError("Requested slot is no longer available", 400);
+        const existingBooking = await tx.appointment.findFirst({
+          where: {
+            doctorId: data.doctorId,
+            date: { gte: startOfDay, lte: endOfDay },
+            startTime: data.startTime,
+            status: { not: "CANCELLED" },
+          },
+        });
+
+        if (existingBooking) {
+          throw new AppError("This time slot has already been booked. Please pick another time.", 409);
         }
 
-        // 4. Fetch schedule for endTime calculation
+        // 5. Fetch schedule for endTime calculation
         const dateObj = new Date(data.date);
-        const dayOfWeek = dateObj.getUTCDay(); // Using UTC to be consistent with YYYY-MM-DD input
+        const dayOfWeek = dateObj.getUTCDay();
         const schedule = await tx.doctorSchedule.findFirst({
           where: { doctorId: data.doctorId, dayOfWeek },
         });
@@ -61,11 +116,7 @@ export class AppointmentService {
 
         const endTime = this.calculateEndTime(data.startTime, schedule.slotDuration);
 
-        // 5. Generate Token (scoped by doctor and date)
-        // Use consistent date boundaries
-        const startOfDay = new Date(`${data.date}T00:00:00.000Z`);
-        const endOfDay = new Date(`${data.date}T23:59:59.999Z`);
-
+        // 6. Generate Token (scoped by doctor and date)
         const currentCount = await tx.appointment.count({
           where: {
             doctorId: data.doctorId,
@@ -74,7 +125,7 @@ export class AppointmentService {
         });
         const token = `T-${(currentCount + 1).toString().padStart(3, "0")}`;
 
-        // 6. DB Unique constraint handles double booking prevention
+        // 7. Create appointment
         return await tx.appointment.create({
           data: {
             doctorId: data.doctorId,
@@ -105,7 +156,7 @@ export class AppointmentService {
           },
         });
       }, {
-        timeout: 15000,
+        timeout: 20000,
       });
     } catch (error: any) {
       console.error("CREATE_APPOINTMENT_ERROR_DETAIL", {

@@ -103,15 +103,20 @@ export default function BookingWizard() {
       const msg = err.response?.data?.message || "";
       const isSlotConflict =
         msg.includes("no longer available") ||
-        msg.includes("already been booked");
+        msg.includes("already been booked") ||
+        msg.includes("already booked");
 
       if (isSlotConflict) {
         toast.error("This slot was just taken by another booking. Please pick a different time.");
         setSlot("");
         setStep(3);
         queryClient.invalidateQueries({ queryKey: ["slots", doctorId, date] });
+      } else if (err.code === "ECONNABORTED" || err.message?.includes("timeout")) {
+        toast.error("The request timed out. Your booking may still have been saved — please check before retrying.");
+      } else if (!err.response) {
+        toast.error("Network error. Please check your connection and try again.");
       } else {
-        toast.error(msg || `Booking failed: ${err.message || "Network Error"}`);
+        toast.error(msg || `Booking failed: ${err.message || "Unknown error"}`);
       }
     }
   });

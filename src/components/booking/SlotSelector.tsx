@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import axiosInstance from "@/lib/axios";
 import { Clock, AlertCircle, CheckCircle2, RotateCcw, Loader2 } from "lucide-react";
 import { cn, formatTimeTo12h } from "@/lib/utils";
+import { getLocalDateString } from "@/lib/dateUtils";
 
 interface SlotSelectorProps {
   doctorId: string;
@@ -29,6 +30,20 @@ export default function SlotSelector({ doctorId, date, selectedSlot, onSelect }:
     refetchOnWindowFocus: true,
   });
 
+  // Filter out past slots if the selected date is today
+  const filteredSlots = slots?.filter((slotObj: { time: string; available: boolean }) => {
+    const isToday = date === getLocalDateString();
+    if (!isToday) return true;
+
+    const [hours, minutes] = slotObj.time.split(":").map(Number);
+    const slotTimeInMinutes = hours * 60 + minutes;
+    
+    const now = new Date();
+    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+    return slotTimeInMinutes > currentMinutes;
+  });
+
   if (isLoading) {
     return (
       <div className="grid grid-cols-4 sm:grid-cols-6 gap-3 animate-pulse">
@@ -48,7 +63,7 @@ export default function SlotSelector({ doctorId, date, selectedSlot, onSelect }:
     );
   }
 
-  if (!slots || slots.length === 0) {
+  if (!filteredSlots || filteredSlots.length === 0) {
     return (
       <div className="p-8 bg-gray-50 rounded-3xl text-center border-2 border-dashed border-gray-100">
         <Clock size={32} className="text-gray-300 mx-auto mb-3" />
@@ -77,7 +92,7 @@ export default function SlotSelector({ doctorId, date, selectedSlot, onSelect }:
       </div>
 
       <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
-        {slots.map((slotObj: { time: string, available: boolean }) => {
+        {filteredSlots.map((slotObj: { time: string, available: boolean }) => {
           const isSelected = selectedSlot === slotObj.time;
           const isDisabled = !slotObj.available;
           

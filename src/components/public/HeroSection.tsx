@@ -11,8 +11,8 @@ import {
 } from "lucide-react";
 
 export function HeroSection() {
-  const scrollToBooking = () => {
-    const elem = document.getElementById("booking");
+  const scrollToSection = (id: string) => {
+    const elem = document.getElementById(id);
     if (elem) {
       const offset = 80;
       const bodyRect = document.body.getBoundingClientRect().top;
@@ -21,10 +21,6 @@ export function HeroSection() {
       const offsetPosition = elementPosition - offset;
       window.scrollTo({ top: offsetPosition, behavior: "smooth" });
     }
-  };
-
-  const scrollToAbout = () => {
-    document.getElementById("about")?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
@@ -93,7 +89,7 @@ export function HeroSection() {
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4">
               <button
-                onClick={scrollToBooking}
+                onClick={() => scrollToSection("booking")}
                 className="flex-1 sm:flex-none inline-flex items-center justify-center gap-3 bg-primary-green text-white px-8 py-4 rounded-full font-black text-base shadow-xl shadow-primary-green/25 hover:bg-primary-green-dark hover:-translate-y-1 active:scale-95 transition-all duration-300 group"
               >
                 Book Appointment
@@ -104,7 +100,7 @@ export function HeroSection() {
               </button>
 
               <button
-                onClick={scrollToAbout}
+                onClick={() => scrollToSection("about")}
                 className="flex-1 sm:flex-none inline-flex items-center justify-center gap-3 bg-white text-slate-700 px-8 py-4 rounded-full font-black text-base border border-slate-200 hover:border-primary-green/40 hover:text-primary-green hover:-translate-y-1 active:scale-95 transition-all duration-300"
               >
                 Learn More
@@ -228,7 +224,7 @@ export function HeroSection() {
                 </p>
               </div>
               <button
-                onClick={scrollToBooking}
+                onClick={() => scrollToSection("doctors")}
                 className="flex-shrink-0 bg-primary-blue text-white text-xs font-black px-5 py-3 rounded-full hover:opacity-90 transition-opacity whitespace-nowrap"
               >
                 Meet Doctors
@@ -240,7 +236,7 @@ export function HeroSection() {
 
       {/* Scroll Indicator */}
       <button
-        onClick={scrollToAbout}
+        onClick={() => scrollToSection("about")}
         className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 animate-bounce opacity-40 hover:opacity-100 transition-opacity cursor-pointer bg-transparent border-none p-0"
         aria-label="Scroll to About Section"
       >

@@ -23,6 +23,7 @@ import {
 import { cn, formatTimeTo12h } from "@/lib/utils";
 import { toast } from "react-hot-toast";
 import { publicBookingSchema, type PublicBookingInput } from "@/lib/validations/publicBooking";
+import { getLocalDateString } from "@/lib/dateUtils";
 
 // --- Sub-Components ---
 
@@ -98,6 +99,21 @@ export function PublicBookingForm() {
     refetchOnWindowFocus: true,
   });
 
+  const filteredSlots = useMemo(() => {
+    if (!slots) return [];
+    const isToday = watchDate === getLocalDateString();
+    if (!isToday) return slots;
+
+    const now = new Date();
+    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+    return slots.filter((slotObj: { time: string; available: boolean }) => {
+      const [hours, minutes] = slotObj.time.split(":").map(Number);
+      const slotTimeInMinutes = hours * 60 + minutes;
+      return slotTimeInMinutes > currentMinutes;
+    });
+  }, [slots, watchDate]);
+
   // Reset flows
   useEffect(() => {
     if (touchedFields.specialization) {
@@ -127,14 +143,19 @@ export function PublicBookingForm() {
       const msg = err.response?.data?.message || "";
       const isSlotConflict =
         msg.includes("no longer available") ||
-        msg.includes("already been booked");
+        msg.includes("already been booked") ||
+        msg.includes("already booked");
 
       if (isSlotConflict) {
         toast.error("This slot was just taken. Please pick another available time.");
         setValue("slot", "");
         refetch();
+      } else if (err.code === "ECONNABORTED" || err.message?.includes("timeout")) {
+        toast.error("The request timed out. Your booking may still have been saved — please check before retrying.");
+      } else if (!err.response) {
+        toast.error("Network error. Please check your connection and try again.");
       } else {
-        toast.error(msg || "Booking failed.");
+        toast.error(msg || "Booking failed. Please try again.");
       }
     }
   });
@@ -543,9 +564,14 @@ export function PublicBookingForm() {
                            <AlertCircle size={40} className="mx-auto text-red-300" />
                            <p className="text-[10px] font-black uppercase tracking-widest text-red-400">No appointments available on this date</p>
                         </div>
+                     ) : filteredSlots?.length === 0 ? (
+                        <div className="text-center space-y-4 animate-fade-in">
+                           <AlertCircle size={40} className="mx-auto text-red-300" />
+                           <p className="text-[10px] font-black uppercase tracking-widest text-red-400">All slots for today have passed</p>
+                        </div>
                      ) : (
                         <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 w-full animate-fade-in">
-                           {slots?.map((slotObj: { time: string, available: boolean }) => {
+                           {filteredSlots?.map((slotObj: { time: string, available: boolean }) => {
                               const isSelected = watchSlot === slotObj.time;
                               const isDisabled = !slotObj.available;
                               return (
