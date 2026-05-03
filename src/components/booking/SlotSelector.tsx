@@ -41,7 +41,7 @@ export default function SlotSelector({ doctorId, date, selectedSlot, onSelect }:
     const now = new Date();
     const currentMinutes = now.getHours() * 60 + now.getMinutes();
 
-    return slotTimeInMinutes > currentMinutes;
+    return slotTimeInMinutes + 30 > currentMinutes;
   });
 
   if (isLoading) {

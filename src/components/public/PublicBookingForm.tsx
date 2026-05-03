@@ -110,7 +110,7 @@ export function PublicBookingForm() {
     return slots.filter((slotObj: { time: string; available: boolean }) => {
       const [hours, minutes] = slotObj.time.split(":").map(Number);
       const slotTimeInMinutes = hours * 60 + minutes;
-      return slotTimeInMinutes > currentMinutes;
+      return slotTimeInMinutes + 30 > currentMinutes;
     });
   }, [slots, watchDate]);
 
