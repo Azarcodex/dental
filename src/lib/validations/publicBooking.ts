@@ -12,7 +12,8 @@ export const publicBookingSchema = z.object({
     
   email: z.string()
     .email("Please enter a valid email address")
-    .nonempty("Email is required"),
+    .optional()
+    .or(z.literal("")),
     
   dob: z.string()
     .nonempty("Date of birth is required")

@@ -38,19 +38,26 @@ export const getPatientsHandler = apiHandler(async (req: Request) => {
   const url = new URL(req.url);
   const phone = url.searchParams.get("phone");
   const query = url.searchParams.get("query") || undefined;
-
-  if (query) {
-    const patients = await patientService.searchPatients(query);
-    return NextResponse.json({ success: true, data: patients });
-  }
+  const page = parseInt(url.searchParams.get("page") || "1");
+  const limit = parseInt(url.searchParams.get("limit") || "10");
 
   if (phone) {
     const patient = await patientService.searchPatientByPhone(phone);
     return NextResponse.json({ success: true, data: patient });
   }
 
-  const patients = await patientService.getAllPatients(query);
-  return NextResponse.json({ success: true, data: patients });
+  const { items, total } = await patientService.getPaginatedPatients(page, limit, query);
+  
+  return NextResponse.json({ 
+    success: true, 
+    data: items,
+    meta: {
+      totalCount: total,
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
+      limit
+    }
+  });
 });
 
 export const getPatientRegistryHandler = apiHandler(async (req: Request) => {

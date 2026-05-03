@@ -127,7 +127,10 @@ exports.Prisma.AdminScalarFieldEnum = {
   password: 'password',
   role: 'role',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  address: 'address',
+  phone: 'phone',
+  username: 'username'
 };
 
 exports.Prisma.DoctorScalarFieldEnum = {
@@ -149,7 +152,6 @@ exports.Prisma.DoctorScalarFieldEnum = {
 
 exports.Prisma.PatientScalarFieldEnum = {
   id: 'id',
-  displayId: 'displayId',
   fullName: 'fullName',
   gender: 'gender',
   age: 'age',
@@ -157,7 +159,8 @@ exports.Prisma.PatientScalarFieldEnum = {
   email: 'email',
   bloodGroup: 'bloodGroup',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  displayId: 'displayId'
 };
 
 exports.Prisma.DoctorScheduleScalarFieldEnum = {
@@ -191,15 +194,15 @@ exports.Prisma.AppointmentScalarFieldEnum = {
   id: 'id',
   doctorId: 'doctorId',
   patientId: 'patientId',
-  specialization: 'specialization',
-  department: 'department',
   date: 'date',
   startTime: 'startTime',
   endTime: 'endTime',
-  bookingType: 'bookingType',
   status: 'status',
+  createdAt: 'createdAt',
+  department: 'department',
+  specialization: 'specialization',
   token: 'token',
-  createdAt: 'createdAt'
+  bookingType: 'bookingType'
 };
 
 exports.Prisma.SortOrder = {

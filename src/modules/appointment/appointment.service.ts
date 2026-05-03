@@ -126,7 +126,7 @@ export class AppointmentService {
         const token = `T-${(currentCount + 1).toString().padStart(3, "0")}`;
 
         // 7. Create appointment
-        return await tx.appointment.create({
+        const appointment = await tx.appointment.create({
           data: {
             doctorId: data.doctorId,
             patientId: patient.id,
@@ -155,6 +155,22 @@ export class AppointmentService {
             },
           },
         });
+
+        // 8. Trigger real-time notification to admin
+        try {
+          const { pusherServer } = await import("../../lib/pusher");
+          await pusherServer.trigger("admin-notifications", "new-appointment", {
+            patientName: patient.fullName,
+            doctorName: `Dr. ${doctor.lastName}`,
+            time: data.startTime,
+            token: token
+          });
+        } catch (pusherError) {
+          // Don't fail the whole booking if notification fails
+          console.error("PUSHER_TRIGGER_ERROR", pusherError);
+        }
+
+        return appointment;
       }, {
         timeout: 20000,
       });

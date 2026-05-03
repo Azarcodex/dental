@@ -10,10 +10,13 @@ import {
   UserCircle,
   Menu,
   ChevronLeft,
-  Clock
+  Clock,
+  ShieldCheck,
+  LogOut
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/context/AuthContext";
 
 const menuItems = [
   { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
@@ -24,8 +27,17 @@ const menuItems = [
 ];
 
 export default function Sidebar() {
+  const { user, logout } = useAuth();
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
+
+  const filteredMenuItems = useMemo(() => {
+    const items = [...menuItems];
+    if (user?.role === "SUPER_ADMIN") {
+      items.push({ name: "Admins", href: "/admin/management", icon: ShieldCheck });
+    }
+    return items;
+  }, [user]);
 
   return (
     <div 
@@ -53,16 +65,16 @@ export default function Sidebar() {
           </div>
           {!collapsed && (
             <div className="overflow-hidden">
-              <p className="text-sm font-semibold text-gray-900 truncate">Admin Portal</p>
-              <p className="text-xs text-gray-500 truncate">ADAMS Clinic</p>
+              <p className="text-sm font-semibold text-gray-900 truncate">{user?.name || "Admin Portal"}</p>
+              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-tight">{user?.role}</p>
             </div>
           )}
         </div>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-3 space-y-1">
-        {menuItems.map((item) => {
+      <nav className="flex-1 px-3 space-y-1 overflow-y-auto">
+        {filteredMenuItems.map((item) => {
           const active = pathname === item.href;
           const Icon = item.icon;
 
@@ -105,12 +117,32 @@ export default function Sidebar() {
         })}
       </nav>
 
-      {/* Version Info */}
-      {!collapsed && (
-        <div className="p-6">
-          <p className="text-[10px] text-gray-400 font-medium tracking-widest uppercase">v1.2.0-prod</p>
-        </div>
-      )}
+      {/* Logout & Version Info */}
+      <div className="p-3 border-t border-gray-50 space-y-1">
+        <button
+          onClick={logout}
+          className={cn(
+            "w-full flex items-center gap-3 px-3 py-3 rounded-xl transition-all duration-200 group relative text-red-500 hover:bg-red-50",
+            collapsed ? "justify-center" : ""
+          )}
+        >
+          <LogOut size={22} className="shrink-0" />
+          {!collapsed && (
+            <span className="font-bold text-sm">Sign Out</span>
+          )}
+          {collapsed && (
+            <div className="absolute left-16 bg-red-600 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-[60] whitespace-nowrap">
+              Sign Out
+            </div>
+          )}
+        </button>
+
+        {!collapsed && (
+          <div className="px-3 pt-4">
+            <p className="text-[10px] text-gray-400 font-medium tracking-widest uppercase">v1.2.0-prod</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

@@ -96,7 +96,7 @@ export default function PatientForm({ onSuccess, initialPhone }: PatientFormProp
 
         <div className="space-y-2">
           <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-            <Mail size={16} className="text-gray-400" /> Email Address (Optional)
+            <Mail size={16} className="text-gray-400" /> Email (optional)
           </label>
           <input
             {...register("email")}

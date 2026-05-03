@@ -59,6 +59,11 @@ export class PatientService {
     return this.repository.findAll();
   }
 
+  async getPaginatedPatients(page: number, limit: number, query?: string) {
+    const skip = (page - 1) * limit;
+    return this.repository.findPaginated(skip, limit, query);
+  }
+
   async getPatientStats() {
     return this.repository.getStats();
   }

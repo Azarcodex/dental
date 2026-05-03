@@ -1,17 +1,22 @@
 "use client";
 
 import { useAuth } from "@/context/AuthContext";
-import { User, Mail, ShieldCheck, LogOut, Settings, Bell, Lock } from "lucide-react";
+import { User, Mail, ShieldCheck, LogOut, Settings, Bell, Lock, MapPin, Phone } from "lucide-react";
 
 export default function ProfilePage() {
   const { user, logout } = useAuth();
+  const isSuperAdmin = user?.role === "SUPER_ADMIN";
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-gray-900 tracking-tight mb-1">Admin Account</h1>
-        <p className="text-gray-500">Manage your administrative credentials and security settings.</p>
+        <p className="text-gray-500">
+          {isSuperAdmin 
+            ? "Manage your administrative credentials and security settings."
+            : "View your administrative profile. Contact Super Admin to update credentials."}
+        </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -29,7 +34,7 @@ export default function ProfilePage() {
                     {user?.role}
                   </span>
                   <span className="text-gray-300"> • </span>
-                  <span className="text-xs font-medium text-gray-500">Member since April 2024</span>
+                  <span className="text-xs font-medium text-gray-500">@{user?.username}</span>
                 </div>
               </div>
             </div>
@@ -39,15 +44,33 @@ export default function ProfilePage() {
                 <p className="text-xs font-bold text-gray-400 uppercase flex items-center gap-2">
                   <Mail size={12} /> Email Address
                 </p>
-                <p className="text-sm font-semibold text-gray-900">{user?.email}</p>
+                <p className="text-sm font-semibold text-gray-900">{user?.email || "Not Set"}</p>
               </div>
+
+              {isSuperAdmin && (
+                <>
+                  <div className="space-y-1">
+                    <p className="text-xs font-bold text-gray-400 uppercase flex items-center gap-2">
+                      <Phone size={12} /> Phone Number
+                    </p>
+                    <p className="text-sm font-semibold text-gray-900">{user?.phone || "Not Set"}</p>
+                  </div>
+                  <div className="space-y-1 md:col-span-2">
+                    <p className="text-xs font-bold text-gray-400 uppercase flex items-center gap-2">
+                      <MapPin size={12} /> Address
+                    </p>
+                    <p className="text-sm font-semibold text-gray-900">{user?.address || "Not Set"}</p>
+                  </div>
+                </>
+              )}
+
               <div className="space-y-1">
                 <p className="text-xs font-bold text-gray-400 uppercase flex items-center gap-2">
-                  <ShieldCheck size={12} /> Security Status
+                  <ShieldCheck size={12} /> Account Status
                 </p>
                 <div className="text-sm font-semibold text-green-600 flex items-center gap-1.5">
                   <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
-                  Primary Admin Verified
+                  Verified {user?.role === "SUPER_ADMIN" ? "Super Admin" : "Active Staff"}
                 </div>
               </div>
             </div>
@@ -55,15 +78,28 @@ export default function ProfilePage() {
 
           {/* Quick Actions */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <button className="flex items-center gap-4 p-5 bg-white border border-gray-100 rounded-2xl hover:bg-gray-50 transition-all text-left">
-              <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center text-gray-400">
-                <Lock size={20} />
+            {isSuperAdmin ? (
+              <button className="flex items-center gap-4 p-5 bg-white border border-gray-100 rounded-2xl hover:bg-gray-50 transition-all text-left">
+                <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center text-gray-400">
+                  <Lock size={20} />
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-gray-900">Change Password</p>
+                  <p className="text-xs text-gray-500">Update your security key</p>
+                </div>
+              </button>
+            ) : (
+              <div className="flex items-center gap-4 p-5 bg-slate-50 border border-gray-100 rounded-2xl opacity-60 grayscale cursor-not-allowed">
+                <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center text-gray-300">
+                  <Lock size={20} />
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-gray-400">Change Password</p>
+                  <p className="text-[10px] text-gray-400 font-bold uppercase tracking-tighter">Restricted for Admin</p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm font-bold text-gray-900">Change Password</p>
-                <p className="text-xs text-gray-500">Update your security key</p>
-              </div>
-            </button>
+            )}
+            
             <button className="flex items-center gap-4 p-5 bg-white border border-gray-100 rounded-2xl hover:bg-gray-50 transition-all text-left">
               <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center text-gray-400">
                 <Bell size={20} />
@@ -79,13 +115,15 @@ export default function ProfilePage() {
         {/* Sidebar Actions */}
         <div className="space-y-4">
           <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 space-y-4">
-            <button className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-gray-50 transition-all text-gray-600 group">
-              <div className="flex items-center gap-3">
-                <Settings size={18} className="text-gray-400" />
-                <span className="text-sm font-semibold">Preferences</span>
-              </div>
-              <div className="w-1.5 h-1.5 rounded-full bg-gray-200 group-hover:bg-primary-green transition-colors" />
-            </button>
+            {isSuperAdmin && (
+              <button className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-gray-50 transition-all text-gray-600 group">
+                <div className="flex items-center gap-3">
+                  <Settings size={18} className="text-gray-400" />
+                  <span className="text-sm font-semibold">Edit Profile</span>
+                </div>
+                <div className="w-1.5 h-1.5 rounded-full bg-gray-200 group-hover:bg-primary-green transition-colors" />
+              </button>
+            )}
             <button 
               onClick={logout}
               className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-red-50 transition-all text-red-600 group"

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axiosInstance from "@/lib/axios";
 import { 
@@ -22,6 +22,7 @@ import {
 import { cn, formatTimeTo12h } from "@/lib/utils";
 import { StatusBadge, AppointmentStatus } from "@/components/dashboard/StatusBadge";
 import { PatientDrawer } from "@/components/dashboard/PatientDrawer";
+import { toast } from "react-hot-toast";
 import { getLocalDateString } from "@/lib/dateUtils";
 
 // --- API Helpers ---
@@ -57,6 +58,46 @@ export default function Dashboard() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [activePatient, setActivePatient] = useState<any>(null);
   const [activeAppointment, setActiveAppointment] = useState<any>(null);
+
+  // --- Real-time Notifications ---
+  useEffect(() => {
+    const initPusher = async () => {
+      try {
+        const { getPusherClient } = await import("@/lib/pusher");
+        const pusher = getPusherClient();
+        const channel = pusher.subscribe("admin-notifications");
+
+        channel.bind("new-appointment", (data: any) => {
+          // 1. Show Popup
+          toast.success(`New Appointment: ${data.patientName}`, {
+            icon: "🔔",
+            duration: 6000,
+            style: {
+              borderRadius: '16px',
+              background: '#333',
+              color: '#fff',
+            },
+          });
+
+          // 2. Refresh Dashboard Data
+          queryClient.invalidateQueries({ queryKey: ["dashboard-stats"] });
+          queryClient.invalidateQueries({ queryKey: ["dashboard-appointments"] });
+          
+          // Optional: Play sound
+          const audio = new Audio("https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3");
+          audio.play().catch(() => {});
+        });
+
+        return () => {
+          pusher.unsubscribe("admin-notifications");
+        };
+      } catch (err) {
+        console.error("Pusher connection error:", err);
+      }
+    };
+
+    initPusher();
+  }, [queryClient]);
 
   // Queries
   const { data: stats, isLoading: statsLoading, isRefetching: statsRefetching } = useQuery({
@@ -99,9 +140,8 @@ export default function Dashboard() {
 
   const statCards = [
     { label: "Total Appointments", value: stats?.total || 0, icon: Calendar, color: "text-blue-600", bg: "bg-blue-50" },
-    { label: "Pending", value: stats?.pending || 0, icon: Clock, color: "text-amber-600", bg: "bg-amber-50" },
-    { label: "Approved", value: stats?.waiting || 0, icon: CheckCircle, color: "text-emerald-600", bg: "bg-emerald-50" },
-    { label: "In Consultation", value: stats?.inConsultation || 0, icon: User, color: "text-indigo-600", bg: "bg-indigo-50" },
+    { label: "Waiting", value: stats?.waiting || 0, icon: Clock, color: "text-emerald-600", bg: "bg-emerald-50" },
+    { label: "Completed Today", value: stats?.done || 0, icon: CheckCircle, color: "text-indigo-600", bg: "bg-indigo-50" },
   ];
 
   return (
@@ -127,7 +167,7 @@ export default function Dashboard() {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {statCards.map((stat) => (
           <div key={stat.label} className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
             <div className={cn("p-3 rounded-xl shrink-0", stat.bg, stat.color)}>
@@ -177,8 +217,8 @@ export default function Dashboard() {
               className="border-none bg-transparent text-sm focus:ring-0 w-full font-bold text-black"
             >
               <option value="ALL">All Status</option>
-              <option value="PENDING">Pending Approval</option>
-              <option value="APPROVED">Approved / Confirmed</option>
+              <option value="WAITING">Waiting</option>
+              <option value="DONE">Completed</option>
             </select>
           </div>
         </div>
@@ -268,21 +308,17 @@ export default function Dashboard() {
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
-                        {app.status === "PENDING" && (
-                          <button 
-                            onClick={() => handleStatusChange(app.id, "APPROVED")}
-                            className="px-3 py-1.5 bg-amber-500 text-white text-xs font-bold rounded-lg hover:bg-amber-600 transition-colors flex items-center gap-1.5"
-                          >
-                            Approve
-                          </button>
-                        )}
-                        {(app.status === "APPROVED" || app.status === "WAITING" || app.status === "BOOKED") && (
+                        {(app.status === "PENDING" || app.status === "WAITING" || app.status === "BOOKED" || app.status === "APPROVED" || app.status === "IN_CONSULTATION") && (
                           <>
                             <button 
-                              onClick={() => handleStatusChange(app.id, "IN_CONSULTATION")}
-                              className="px-3 py-1.5 bg-primary-green text-white text-xs font-bold rounded-lg hover:bg-primary-green-dark transition-colors flex items-center gap-1.5"
+                              disabled={updateStatusMutation.isPending && updateStatusMutation.variables?.id === app.id}
+                              onClick={() => handleStatusChange(app.id, "DONE")}
+                              className="px-3 py-1.5 bg-primary-green text-white text-xs font-bold rounded-lg hover:bg-primary-green-dark transition-colors flex items-center gap-1.5 disabled:opacity-70"
                             >
-                              Arrived
+                              {updateStatusMutation.isPending && updateStatusMutation.variables?.id === app.id ? (
+                                <Loader2 className="animate-spin" size={14} />
+                              ) : null}
+                              Mark Completed
                             </button>
                             <button 
                               onClick={() => handleStatusChange(app.id, "CANCELLED")}
@@ -292,14 +328,6 @@ export default function Dashboard() {
                               <UserX size={16} />
                             </button>
                           </>
-                        )}
-                        {app.status === "IN_CONSULTATION" && (
-                          <button 
-                            onClick={() => handleStatusChange(app.id, "DONE")}
-                            className="px-3 py-1.5 bg-indigo-600 text-white text-xs font-bold rounded-lg hover:bg-indigo-700 transition-colors flex items-center gap-1.5"
-                          >
-                            Mark Done
-                          </button>
                         )}
                         {(app.status === "DONE" || app.status === "CANCELLED") && (
                           <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest pr-2">

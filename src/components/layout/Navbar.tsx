@@ -26,13 +26,6 @@ export default function Navbar() {
 
       {/* Right Side Actions */}
       <div className="flex items-center gap-4">
-        <button className="p-2.5 text-gray-400 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition-all relative">
-          <Bell size={20} />
-          <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
-        </button>
-        
-        <div className="h-6 w-px bg-gray-100 mx-2" />
-
         {/* Profile Dropdown */}
         <div className="relative">
           <button 

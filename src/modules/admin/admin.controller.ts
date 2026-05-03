@@ -79,6 +79,33 @@ export const getMeHandler = apiHandler(async (req: NextRequest) => {
   });
 });
 
+export const updateProfileHandler = apiHandler(async (req: NextRequest) => {
+  const caller = await authenticateAdmin(req);
+  const body = await req.json();
+  
+  // Only Super Admin can update
+  const admin = await adminService.updateProfile(caller.role, caller.id, caller.id, body);
+  
+  return NextResponse.json({ success: true, data: admin });
+});
+
+export const updateCredentialsHandler = apiHandler(async (req: NextRequest) => {
+  const caller = await authenticateAdmin(req);
+  const body = await req.json();
+  
+  // Only Super Admin can update credentials
+  const admin = await adminService.updateCredentials(caller.role, body.targetId || caller.id, body);
+  
+  return NextResponse.json({ success: true, data: admin });
+});
+
+export const getAllAdminsHandler = apiHandler(async (req: NextRequest) => {
+  const caller = await authenticateAdmin(req);
+  const admins = await adminService.getAllAdmins(caller.role);
+  
+  return NextResponse.json({ success: true, data: admins });
+});
+
 export const getStatsHandler = apiHandler(async () => {
   const stats = await statsService.getDashboardStats();
   return NextResponse.json({ success: true, data: stats });

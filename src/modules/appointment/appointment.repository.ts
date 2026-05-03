@@ -20,9 +20,7 @@ export class AppointmentRepository {
           lte: endOfDay,
         },
         ...(filters.doctorId && { doctorId: filters.doctorId }),
-        ...(filters.status && filters.status === "APPROVED" ? { 
-          status: { in: ["APPROVED", "WAITING", "BOOKED", "IN_CONSULTATION"] } 
-        } : filters.status && filters.status !== "ALL" && { status: filters.status }),
+        ...(filters.status && filters.status !== "ALL" && { status: filters.status }),
       },
       include: {
         doctor: {
@@ -106,15 +104,14 @@ export class AppointmentRepository {
       ...(doctorId && { doctorId }),
     };
 
-    const [total, pending, waiting, inConsultation, done] = await Promise.all([
+    const [total, pending, waiting, done] = await Promise.all([
       prisma.appointment.count({ where }),
       prisma.appointment.count({ where: { ...where, status: "PENDING" } }),
       prisma.appointment.count({ where: { ...where, status: "WAITING" } }),
-      prisma.appointment.count({ where: { ...where, status: "IN_CONSULTATION" } }),
       prisma.appointment.count({ where: { ...where, status: "DONE" } }),
     ]);
 
-    return { total, pending, waiting, inConsultation, done };
+    return { total, pending, waiting, done };
   }
 
   async getAppointmentsByDate(doctorId: string, date: Date) {

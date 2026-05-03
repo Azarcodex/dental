@@ -6,7 +6,7 @@ import { useMutation } from "@tanstack/react-query";
 import axiosInstance from "@/lib/axios";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "react-hot-toast";
-import { Mail, Lock, Loader2, Eye, EyeOff } from "lucide-react";
+import { User as UserIcon, Lock, Loader2, Eye, EyeOff } from "lucide-react";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { useRouter } from "next/navigation";
@@ -17,7 +17,7 @@ function cn(...inputs: ClassValue[]) {
 
 export default function LoginPage() {
   const { user, login } = useAuth();
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
@@ -45,10 +45,10 @@ export default function LoginPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password) {
+    if (!username || !password) {
       return toast.error("Please fill in all fields");
     }
-    mutation.mutate({ email, password });
+    mutation.mutate({ username, password });
   };
 
   return (
@@ -80,19 +80,19 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700 block marker:">
-                Email Address
+              <label className="text-sm font-medium text-gray-700 block">
+                Username
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-                  <Mail size={18} />
+                  <UserIcon size={18} />
                 </div>
                 <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                   className="block w-full pl-10 pr-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-primary-blue/20 focus:border-primary-blue transition-all"
-                  placeholder="name@clinic.com"
+                  placeholder="admin"
                   required
                 />
               </div>

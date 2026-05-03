@@ -3,27 +3,36 @@
 import { useQuery } from "@tanstack/react-query";
 import axiosInstance from "@/lib/axios";
 import { Search, Plus, UserCircle2, Phone, ChevronRight, Filter, Loader2, Calendar } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useDebounce } from "@/hooks/useDebounce";
 import { cn } from "@/lib/utils";
 
-const fetchPatients = async (query: string) => {
+const fetchPatients = async (query: string, page: number = 1, limit: number = 10) => {
   const { data } = await axiosInstance.get("/admin/patients", {
-    params: { query }
+    params: { query, page, limit }
   });
-  return data.data;
+  return data;
 };
 
 export default function PatientsRegistryPage() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(1);
   const debouncedSearch = useDebounce(searchTerm, 300);
 
-  const { data: patients, isLoading } = useQuery({
-    queryKey: ["patients-registry", debouncedSearch],
-    queryFn: () => fetchPatients(debouncedSearch),
+  const { data: response, isLoading } = useQuery({
+    queryKey: ["patients-registry", debouncedSearch, page],
+    queryFn: () => fetchPatients(debouncedSearch, page),
     refetchInterval: 5000,
   });
+
+  const patients = response?.data || [];
+  const meta = response?.meta || { totalCount: 0, currentPage: 1, totalPages: 1 };
+
+  // Reset to page 1 on new search
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch]);
 
   return (
     <div className="space-y-6">
@@ -160,6 +169,54 @@ export default function PatientsRegistryPage() {
           </table>
         </div>
       </div>
+
+      {/* Pagination Controls */}
+      {!isLoading && patients.length > 0 && (
+        <div className="flex items-center justify-between px-2">
+          <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">
+            Showing <span className="text-gray-900">{patients.length}</span> of <span className="text-gray-900">{meta.totalCount}</span> Patients
+          </p>
+          
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setPage(p => Math.max(1, p - 1))}
+              disabled={page === 1}
+              className="p-2 bg-white border border-gray-200 rounded-xl disabled:opacity-50 hover:bg-gray-50 transition-colors"
+            >
+              <ChevronLeft size={18} />
+            </button>
+            
+            <div className="flex items-center gap-1">
+              {[...Array(meta.totalPages)].map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setPage(i + 1)}
+                  className={cn(
+                    "w-9 h-9 rounded-xl text-xs font-bold transition-all",
+                    page === i + 1 
+                      ? "bg-primary-green text-white shadow-md shadow-primary-green/20" 
+                      : "bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"
+                  )}
+                >
+                  {i + 1}
+                </button>
+              ))}
+            </div>
+
+            <button
+              onClick={() => setPage(p => Math.min(meta.totalPages, p + 1))}
+              disabled={page === meta.totalPages}
+              className="p-2 bg-white border border-gray-200 rounded-xl disabled:opacity-50 hover:bg-gray-50 transition-colors"
+            >
+              <ChevronRight size={18} />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+
+const ChevronLeft = ({ size }: { size: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+);

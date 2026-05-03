@@ -13,8 +13,11 @@ import axiosInstance from "@/lib/axios";
 interface User {
   id: string;
   name: string;
-  email: string;
+  username: string;
+  email: string | null;
   role: "ADMIN" | "SUPER_ADMIN";
+  phone: string | null;
+  address: string | null;
 }
 
 interface AuthContextType {

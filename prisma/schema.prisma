@@ -1,11 +1,6 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
-  provider = "prisma-client-js"
-  output   = "../src/prisma-client"
+  provider      = "prisma-client-js"
+  output        = "../src/prisma-client"
   binaryTargets = ["native"]
 }
 
@@ -16,124 +11,102 @@ datasource db {
 model Admin {
   id        String    @id @default(uuid())
   name      String
-  email     String    @unique
+  email     String?   @unique
   password  String
   role      AdminRole @default(ADMIN)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  address   String?
+  phone     String?
+  username  String    @unique
+}
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Doctor {
+  id              String                    @id @default(uuid())
+  firstName       String
+  lastName        String
+  email           String                    @unique
+  phone           String
+  gender          String
+  dob             DateTime
+  profilePhoto    String?
+  specialization  String
+  department      String
+  consultationFee Float
+  status          String
+  createdAt       DateTime                  @default(now())
+  updatedAt       DateTime                  @updatedAt
+  appointments    Appointment[]
+  blocks          DoctorAvailabilityBlock[]
+  exceptions      DoctorException[]
+  schedules       DoctorSchedule[]
+}
+
+model Patient {
+  id           String        @id @default(uuid())
+  fullName     String
+  gender       String
+  age          Int
+  phone        String        @unique
+  email        String?
+  bloodGroup   String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  displayId    String?       @unique
+  appointments Appointment[]
+}
+
+model DoctorSchedule {
+  id           String @id @default(uuid())
+  doctorId     String
+  dayOfWeek    Int
+  startTime    String
+  endTime      String
+  slotDuration Int
+  doctor       Doctor @relation(fields: [doctorId], references: [id])
+}
+
+model DoctorAvailabilityBlock {
+  id        String @id @default(uuid())
+  doctorId  String
+  dayOfWeek Int
+  startTime String
+  endTime   String
+  doctor    Doctor @relation(fields: [doctorId], references: [id])
+}
+
+model DoctorException {
+  id        String   @id @default(uuid())
+  doctorId  String
+  date      DateTime
+  isFullDay Boolean  @default(false)
+  startTime String?
+  endTime   String?
+  reason    String?
+  doctor    Doctor   @relation(fields: [doctorId], references: [id])
+}
+
+model Appointment {
+  id             String   @id @default(uuid())
+  doctorId       String
+  patientId      String
+  date           DateTime
+  startTime      String
+  endTime        String
+  status         String
+  createdAt      DateTime @default(now())
+  department     String
+  specialization String
+  token          String?
+  bookingType    String   @default("Online")
+  doctor         Doctor   @relation(fields: [doctorId], references: [id])
+  patient        Patient  @relation(fields: [patientId], references: [id])
+
+  @@unique([doctorId, date, startTime])
+  @@unique([doctorId, date, token])
 }
 
 enum AdminRole {
   SUPER_ADMIN
   ADMIN
-}
-
-model Doctor {
-  id        String   @id @default(uuid())
-  firstName String
-  lastName  String
-  email     String   @unique
-  phone     String
-  gender    String
-  dob       DateTime
-
-  profilePhoto String?
-
-  specialization String
-  department     String
-
-  consultationFee Float
-  status          String // ACTIVE / INACTIVE
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  schedules    DoctorSchedule[]
-  exceptions   DoctorException[]
-  appointments Appointment[]
-  blocks       DoctorAvailabilityBlock[]
-}
-
-model Patient {
-  id        String   @id @default(uuid())
-  displayId String?  @unique // P-001 format
-  fullName  String
-  gender    String
-  age       Int
-  phone     String   @unique
-  email     String?
-  bloodGroup String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  appointments Appointment[]
-}
-
-model DoctorSchedule {
-  id       String @id @default(uuid())
-  doctorId String
-
-  dayOfWeek Int // 0=Sunday, 1=Monday...
-
-  startTime String // "09:00"
-  endTime   String // "17:00"
-
-  slotDuration Int // minutes
-
-  doctor Doctor @relation(fields: [doctorId], references: [id])
-}
-
-model DoctorAvailabilityBlock {
-  id       String @id @default(uuid())
-  doctorId String
-
-  dayOfWeek Int
-
-  startTime String
-  endTime   String
-
-  doctor Doctor @relation(fields: [doctorId], references: [id])
-}
-
-model DoctorException {
-  id       String   @id @default(uuid())
-  doctorId String
-
-  date DateTime
-
-  isFullDay Boolean @default(false)
-
-  startTime String?
-  endTime   String?
-
-  reason String?
-
-  doctor Doctor @relation(fields: [doctorId], references: [id])
-}
-
-model Appointment {
-  id        String @id @default(uuid())
-  doctorId  String
-  patientId String
-
-  specialization String
-  department     String
-
-  date      DateTime
-  startTime String
-  endTime   String
-
-  bookingType String @default("Online") // Walk-in / Online
-  status      String // WAITING / IN_CONSULTATION / DONE / CANCELLED
-  token       String?
-
-  createdAt DateTime @default(now())
-
-  doctor  Doctor  @relation(fields: [doctorId], references: [id])
-  patient Patient @relation(fields: [patientId], references: [id])
-
-  @@unique([doctorId, date, startTime]) // PREVENT DOUBLE BOOKING
-  @@unique([doctorId, date, token])     // PREVENT DUPLICATE TOKENS
 }

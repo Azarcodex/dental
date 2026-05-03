@@ -79,6 +79,34 @@ export class PatientRepository {
     });
   }
 
+  async findPaginated(skip: number, take: number, query?: string) {
+    const where: any = query ? {
+      OR: [
+        { fullName: { contains: query, mode: "insensitive" } },
+        { phone: { contains: query, mode: "insensitive" } },
+        { displayId: { contains: query, mode: "insensitive" } },
+      ],
+    } : {};
+
+    const [items, total] = await Promise.all([
+      prisma.patient.findMany({
+        where,
+        skip,
+        take,
+        include: {
+          appointments: {
+            include: { doctor: true },
+            orderBy: { date: "desc" },
+          },
+        },
+        orderBy: { createdAt: "desc" },
+      }),
+      prisma.patient.count({ where }),
+    ]);
+
+    return { items, total };
+  }
+
   async getStats() {
     const [totalPatients, newPatients] = await Promise.all([
       prisma.patient.count(),

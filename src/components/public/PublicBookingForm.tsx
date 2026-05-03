@@ -373,7 +373,7 @@ export function PublicBookingForm() {
 
                   {/* Email */}
                   <div className="space-y-1">
-                     <Label required>Email Address</Label>
+                     <Label optional>Email Address</Label>
                      <div className="relative">
                         <Mail className={cn("absolute left-5 top-1/2 -translate-y-1/2 transition-colors duration-300", errors.email ? "text-red-400" : "text-slate-300")} size={18} />
                         <input 

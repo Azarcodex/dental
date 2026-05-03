@@ -4,7 +4,7 @@ import { AppError } from "@/lib/apiHandler";
 
 export interface AuthenticatedAdmin {
   id: string;
-  email: string;
+  username: string;
   role: "ADMIN" | "SUPER_ADMIN";
 }
 
