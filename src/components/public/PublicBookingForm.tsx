@@ -205,7 +205,7 @@ export function PublicBookingForm() {
     return (
       <section id="booking" className="section-padding bg-slate-50/30">
         <div className="container-custom">
-          <div className="max-w-xl mx-auto bg-white p-10 lg:p-14 rounded-[40px] shadow-xl shadow-primary-blue/5 animate-fade-in text-center space-y-8 relative overflow-hidden">
+          <div className="max-w-xl mx-auto bg-white p-6 md:p-10 lg:p-14 rounded-[40px] shadow-xl shadow-primary-blue/5 animate-fade-in text-center space-y-8 relative overflow-hidden">
             <div className="w-20 h-20 bg-primary-green text-white rounded-full flex items-center justify-center shadow-lg shadow-primary-green/20 mx-auto">
                <CheckCircle2 size={40} strokeWidth={2.5} />
             </div>
@@ -215,7 +215,7 @@ export function PublicBookingForm() {
                <p className="text-sm text-slate-500 font-medium leading-relaxed">Your application has been logged. Please present this token at the clinic.</p>
             </div>
 
-            <div className="bg-slate-50 p-8 rounded-3xl border border-slate-100 space-y-6">
+            <div className="bg-slate-50 p-6 sm:p-8 rounded-3xl border border-slate-100 space-y-6">
                <div className="space-y-1">
                   <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Appointment Token</span>
                   <p className="text-6xl font-black text-primary-blue tracking-tighter">{successData.token}</p>
@@ -273,13 +273,13 @@ export function PublicBookingForm() {
            </div>
            
            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-50 space-y-4">
+              <div className="bg-white p-5 sm:p-6 rounded-3xl shadow-sm border border-slate-50 space-y-4">
                  <div className="w-10 h-10 bg-primary-blue/10 rounded-xl flex items-center justify-center text-primary-blue">
                     <Check size={20} />
                  </div>
                  <p className="text-xs font-black text-slate-950">Secure Records</p>
               </div>
-              <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-50 space-y-4">
+              <div className="bg-white p-5 sm:p-6 rounded-3xl shadow-sm border border-slate-50 space-y-4">
                  <div className="w-10 h-10 bg-primary-green/10 rounded-xl flex items-center justify-center text-primary-green">
                     <Clock3 size={20} />
                  </div>
@@ -290,14 +290,14 @@ export function PublicBookingForm() {
 
         {/* Right Column: Form */}
         <div className="lg:col-span-8 bg-white rounded-[40px] shadow-2xl shadow-primary-blue/5 overflow-hidden animate-fade-in border border-slate-50">
-          <div className="bg-slate-950 p-10 lg:p-12 text-white">
+          <div className="bg-slate-950 p-6 md:p-10 lg:p-12 text-white">
              <h3 className="text-2xl font-black mb-2">Patient Details</h3>
              <p className="text-sm text-slate-400 font-medium">Accuracy ensures better care and faster processing.</p>
           </div>
 
-          <form onSubmit={handleSubmit(onSubmit, onInvalid)} className="p-10 lg:p-12 space-y-12">
+          <form onSubmit={handleSubmit(onSubmit, onInvalid)} className="p-6 md:p-10 lg:p-12 space-y-8 md:space-y-12">
             {showErrorSummary && (
-              <div className="bg-red-50 p-5 rounded-[24px] border border-red-100 flex items-center gap-3 animate-slide-up">
+              <div className="bg-red-50 p-4 md:p-5 rounded-[24px] border border-red-100 flex items-center gap-3 animate-slide-up">
                  <AlertCircle className="text-red-500" size={24} />
                  <p className="text-sm font-black text-red-600">Kindly address the errors below to confirm your request.</p>
               </div>
@@ -310,7 +310,7 @@ export function PublicBookingForm() {
                   <h4 className="text-xl font-black text-slate-950 tracking-tight">Patient Personal Information</h4>
                </div>
                
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-8">
                   {/* Full Name */}
                   <div className="space-y-1">
                      <Label required>Full Patient Name</Label>
@@ -467,7 +467,7 @@ export function PublicBookingForm() {
                   <h4 className="text-xl font-black text-slate-950 tracking-tight">Department & Schedule</h4>
                </div>
                
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-8">
                   {/* Specialization */}
                   <div className="space-y-1">
                      <Label required>Medical Department</Label>
@@ -546,7 +546,7 @@ export function PublicBookingForm() {
                   </div>
                   
                   <div className={cn(
-                    "p-8 lg:p-10 rounded-[40px] border-2 transition-all relative min-h-[140px] flex items-center justify-center overflow-hidden",
+                    "p-5 md:p-8 lg:p-10 rounded-[40px] border-2 transition-all relative min-h-[140px] flex items-center justify-center overflow-hidden",
                     errors.slot ? "bg-red-50 border-red-500/20" : "bg-slate-50/50 border-slate-100"
                   )}>
                      {slotsLoading ? (
