@@ -149,7 +149,7 @@ export function OurDoctors() {
             {filteredDoctors.map((doctor: any, idx: number) => (
               <div
                 key={doctor.id}
-                className="min-w-[80vw] sm:min-w-[240px] max-w-[240px] snap-start group relative p-4 bg-white hover:bg-slate-50 backdrop-blur-xl border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-500 rounded-[2rem] flex flex-col h-full"
+                className="min-w-[75vw] sm:min-w-[240px] max-w-[240px] snap-start group relative p-4 bg-white hover:bg-slate-50 backdrop-blur-xl border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-500 rounded-[2rem] flex flex-col h-full"
                 style={{ animationDelay: `${idx * 100}ms` }}
               >
                 {/* Top Image Container */}
@@ -157,7 +157,7 @@ export function OurDoctors() {
                   {doctor.profilePhoto ? (
                     <img
                       src={doctor.profilePhoto}
-                      alt={`${doctor.firstName} ${doctor.lastName}`}
+                      alt={`Dr. ${doctor.firstName} ${doctor.lastName || ''}`}
                       className="absolute inset-0 w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700"
                     />
                   ) : (
@@ -178,7 +178,7 @@ export function OurDoctors() {
                 <div className="flex-1 flex flex-col justify-between">
                   <div className="mb-4">
                     <h3 className="text-base font-bold text-slate-900 group-hover:text-blue-600 transition-colors truncate">
-                      Dr. {doctor.firstName} {doctor.lastName}
+                      Dr. {doctor.firstName} {doctor.lastName || ''}
                     </h3>
                     <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest mt-0.5 truncate">
                       {doctor.specialization}

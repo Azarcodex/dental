@@ -38,9 +38,7 @@ export default function RootPage() {
         <OurDoctors />
       </div>
 
-      <div id="booking" className="scroll-mt-24">
-        <PublicBookingForm />
-      </div>
+      <PublicBookingForm />
 
       <Testimonials />
 

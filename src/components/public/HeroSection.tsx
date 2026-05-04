@@ -52,9 +52,8 @@ export function HeroSection() {
             <div className="space-y-3">
               <h1 className="text-4xl sm:text-5xl xl:text-6xl font-black text-slate-950 leading-[1.08] tracking-tight">
                 Clinical Excellence
-              </h1>
-              <h1 className="text-4xl sm:text-5xl xl:text-6xl font-black text-primary-green leading-[1.08] tracking-tight">
-                With Compassion.
+                <br />
+                <span className="text-primary-green">With Compassion.</span>
               </h1>
             </div>
 
@@ -237,7 +236,7 @@ export function HeroSection() {
       {/* Scroll Indicator */}
       <button
         onClick={() => scrollToSection("about")}
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 animate-bounce opacity-40 hover:opacity-100 transition-opacity cursor-pointer bg-transparent border-none p-0"
+        className="absolute bottom-10 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-1.5 animate-bounce opacity-40 hover:opacity-100 transition-opacity cursor-pointer bg-transparent border-none p-0"
         aria-label="Scroll to About Section"
       >
         <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">
