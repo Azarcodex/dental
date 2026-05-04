@@ -12,8 +12,8 @@ export function ContactSection() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-20 lg:gap-24 items-start">
            
            {/* Left: Contact Info */}
-           <div className="lg:col-span-12 xl:col-span-12 grid grid-cols-1 lg:grid-cols-3 gap-12 animate-slide-up">
-              <div className="lg:col-span-3 space-y-6 mb-10">
+           <div className="lg:col-span-5 space-y-12 animate-slide-up">
+              <div className="space-y-6">
                  <span className="section-tag">Direct Support</span>
                  <h2 className="section-title">Get In Touch With Our Team</h2>
                  <p className="section-desc">
@@ -59,7 +59,7 @@ export function ContactSection() {
            </div>
 
            {/* Right: Map */}
-           <div className="lg:col-span-12 xl:col-span-7 relative group animate-fade-in">
+           <div className="lg:col-span-7 relative group animate-fade-in">
               <div className="absolute -inset-2 bg-gradient-to-tr from-primary-green/20 via-transparent to-primary-blue/20 rounded-[56px] blur-2xl opacity-50 group-hover:opacity-100 transition-opacity duration-700" />
               <div className="h-[500px] lg:h-[700px] bg-slate-50 rounded-[48px] overflow-hidden border border-slate-100 shadow-2xl relative">
                   <iframe 

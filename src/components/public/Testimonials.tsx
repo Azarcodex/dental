@@ -40,11 +40,11 @@ export function Testimonials() {
            {testimonials.map((t, idx) => (
              <div 
                key={t.name} 
-               className="p-10 rounded-[32px] hover:bg-white hover:shadow-xl hover:shadow-slate-200/40 transition-all duration-500 animate-slide-up relative flex flex-col justify-between group"
+               className="p-10 rounded-[32px] bg-white md:bg-transparent hover:bg-white border border-slate-50 md:border-transparent hover:shadow-xl hover:shadow-slate-200/40 transition-all duration-500 animate-slide-up relative flex flex-col justify-between group"
                style={{ animationDelay: `${idx * 150}ms` }}
              >
                 <div className="absolute top-8 right-8 text-slate-100 group-hover:text-primary-green/10 transition-colors">
-                   <Quote size={64} fill="currentColor" />
+                   <Quote className="w-12 h-12 md:w-16 md:h-16" fill="currentColor" />
                 </div>
                 
                 <div className="relative z-10 space-y-6">

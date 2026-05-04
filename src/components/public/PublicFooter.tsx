@@ -12,7 +12,7 @@ export function PublicFooter() {
       {/* Subtle Background pattern */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary-green/5 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/3" />
       
-      <div className="container-custom grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 lg:gap-24 relative z-10">
+      <div className="container-custom grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-24 relative z-10">
         
         {/* Brand Column */}
         <div className="space-y-10">
