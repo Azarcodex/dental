@@ -54,7 +54,7 @@ export default function DoctorsPage() {
   const filteredDoctors = useMemo(() => {
     if (!doctors) return [];
     return doctors.filter((d: any) => 
-      `${d.firstName} ${d.lastName}`.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+      `${d.firstName} ${d.lastName || ''}`.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
       d.specialization.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
       d.department.toLowerCase().includes(debouncedSearch.toLowerCase())
     );
@@ -141,7 +141,7 @@ export default function DoctorsPage() {
                     )}
                   </div>
                   <div className="flex flex-col">
-                    <span className="font-bold text-slate-900 text-[14px] leading-tight">{doctor.firstName} {doctor.lastName}</span>
+                    <span className="font-bold text-slate-900 text-[14px] leading-tight">{doctor.firstName} {doctor.lastName || ''}</span>
                     <span className="text-[11px] text-slate-500 font-semibold uppercase tracking-wider">{doctor.email}</span>
                   </div>
                 </div>
@@ -199,7 +199,7 @@ export default function DoctorsPage() {
         onClose={() => setShowConfirm(false)}
         onConfirm={() => toggleStatusMutation.mutate({ id: targetDoctor.id, status: targetDoctor.status })}
         title={targetDoctor?.status === "ACTIVE" ? "Deactivate Doctor Account" : "Activate Doctor Account"}
-        description={`Are you sure you want to change the status of Dr. ${targetDoctor?.firstName} ${targetDoctor?.lastName}? This will impact their availability for bookings.`}
+        description={`Are you sure you want to change the status of Dr. ${targetDoctor?.firstName} ${targetDoctor?.lastName || ''}? This will impact their availability for bookings.`}
         confirmText={targetDoctor?.status === "ACTIVE" ? "Deactivate" : "Activate"}
         isDanger={targetDoctor?.status === "ACTIVE"}
         isLoading={toggleStatusMutation.isPending}

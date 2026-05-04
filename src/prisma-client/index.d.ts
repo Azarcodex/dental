@@ -2804,7 +2804,7 @@ export namespace Prisma {
   export type DoctorGroupByOutputType = {
     id: string
     firstName: string
-    lastName: string
+    lastName: string | null
     email: string
     phone: string
     gender: string
@@ -2932,7 +2932,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       firstName: string
-      lastName: string
+      lastName: string | null
       email: string
       phone: string
       gender: string
@@ -9840,7 +9840,7 @@ export namespace Prisma {
     NOT?: DoctorWhereInput | DoctorWhereInput[]
     id?: StringFilter<"Doctor"> | string
     firstName?: StringFilter<"Doctor"> | string
-    lastName?: StringFilter<"Doctor"> | string
+    lastName?: StringNullableFilter<"Doctor"> | string | null
     email?: StringFilter<"Doctor"> | string
     phone?: StringFilter<"Doctor"> | string
     gender?: StringFilter<"Doctor"> | string
@@ -9861,7 +9861,7 @@ export namespace Prisma {
   export type DoctorOrderByWithRelationInput = {
     id?: SortOrder
     firstName?: SortOrder
-    lastName?: SortOrder
+    lastName?: SortOrderInput | SortOrder
     email?: SortOrder
     phone?: SortOrder
     gender?: SortOrder
@@ -9886,7 +9886,7 @@ export namespace Prisma {
     OR?: DoctorWhereInput[]
     NOT?: DoctorWhereInput | DoctorWhereInput[]
     firstName?: StringFilter<"Doctor"> | string
-    lastName?: StringFilter<"Doctor"> | string
+    lastName?: StringNullableFilter<"Doctor"> | string | null
     phone?: StringFilter<"Doctor"> | string
     gender?: StringFilter<"Doctor"> | string
     dob?: DateTimeFilter<"Doctor"> | Date | string
@@ -9906,7 +9906,7 @@ export namespace Prisma {
   export type DoctorOrderByWithAggregationInput = {
     id?: SortOrder
     firstName?: SortOrder
-    lastName?: SortOrder
+    lastName?: SortOrderInput | SortOrder
     email?: SortOrder
     phone?: SortOrder
     gender?: SortOrder
@@ -9931,7 +9931,7 @@ export namespace Prisma {
     NOT?: DoctorScalarWhereWithAggregatesInput | DoctorScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Doctor"> | string
     firstName?: StringWithAggregatesFilter<"Doctor"> | string
-    lastName?: StringWithAggregatesFilter<"Doctor"> | string
+    lastName?: StringNullableWithAggregatesFilter<"Doctor"> | string | null
     email?: StringWithAggregatesFilter<"Doctor"> | string
     phone?: StringWithAggregatesFilter<"Doctor"> | string
     gender?: StringWithAggregatesFilter<"Doctor"> | string
@@ -10400,7 +10400,7 @@ export namespace Prisma {
   export type DoctorCreateInput = {
     id?: string
     firstName: string
-    lastName: string
+    lastName?: string | null
     email: string
     phone: string
     gender: string
@@ -10421,7 +10421,7 @@ export namespace Prisma {
   export type DoctorUncheckedCreateInput = {
     id?: string
     firstName: string
-    lastName: string
+    lastName?: string | null
     email: string
     phone: string
     gender: string
@@ -10442,7 +10442,7 @@ export namespace Prisma {
   export type DoctorUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     gender?: StringFieldUpdateOperationsInput | string
@@ -10463,7 +10463,7 @@ export namespace Prisma {
   export type DoctorUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     gender?: StringFieldUpdateOperationsInput | string
@@ -10484,7 +10484,7 @@ export namespace Prisma {
   export type DoctorCreateManyInput = {
     id?: string
     firstName: string
-    lastName: string
+    lastName?: string | null
     email: string
     phone: string
     gender: string
@@ -10501,7 +10501,7 @@ export namespace Prisma {
   export type DoctorUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     gender?: StringFieldUpdateOperationsInput | string
@@ -10518,7 +10518,7 @@ export namespace Prisma {
   export type DoctorUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     gender?: StringFieldUpdateOperationsInput | string
@@ -12236,7 +12236,7 @@ export namespace Prisma {
   export type DoctorCreateWithoutSchedulesInput = {
     id?: string
     firstName: string
-    lastName: string
+    lastName?: string | null
     email: string
     phone: string
     gender: string
@@ -12256,7 +12256,7 @@ export namespace Prisma {
   export type DoctorUncheckedCreateWithoutSchedulesInput = {
     id?: string
     firstName: string
-    lastName: string
+    lastName?: string | null
     email: string
     phone: string
     gender: string
@@ -12292,7 +12292,7 @@ export namespace Prisma {
   export type DoctorUpdateWithoutSchedulesInput = {
     id?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     gender?: StringFieldUpdateOperationsInput | string
@@ -12312,7 +12312,7 @@ export namespace Prisma {
   export type DoctorUncheckedUpdateWithoutSchedulesInput = {
     id?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     gender?: StringFieldUpdateOperationsInput | string
@@ -12332,7 +12332,7 @@ export namespace Prisma {
   export type DoctorCreateWithoutBlocksInput = {
     id?: string
     firstName: string
-    lastName: string
+    lastName?: string | null
     email: string
     phone: string
     gender: string
@@ -12352,7 +12352,7 @@ export namespace Prisma {
   export type DoctorUncheckedCreateWithoutBlocksInput = {
     id?: string
     firstName: string
-    lastName: string
+    lastName?: string | null
     email: string
     phone: string
     gender: string
@@ -12388,7 +12388,7 @@ export namespace Prisma {
   export type DoctorUpdateWithoutBlocksInput = {
     id?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     gender?: StringFieldUpdateOperationsInput | string
@@ -12408,7 +12408,7 @@ export namespace Prisma {
   export type DoctorUncheckedUpdateWithoutBlocksInput = {
     id?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     gender?: StringFieldUpdateOperationsInput | string
@@ -12428,7 +12428,7 @@ export namespace Prisma {
   export type DoctorCreateWithoutExceptionsInput = {
     id?: string
     firstName: string
-    lastName: string
+    lastName?: string | null
     email: string
     phone: string
     gender: string
@@ -12448,7 +12448,7 @@ export namespace Prisma {
   export type DoctorUncheckedCreateWithoutExceptionsInput = {
     id?: string
     firstName: string
-    lastName: string
+    lastName?: string | null
     email: string
     phone: string
     gender: string
@@ -12484,7 +12484,7 @@ export namespace Prisma {
   export type DoctorUpdateWithoutExceptionsInput = {
     id?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     gender?: StringFieldUpdateOperationsInput | string
@@ -12504,7 +12504,7 @@ export namespace Prisma {
   export type DoctorUncheckedUpdateWithoutExceptionsInput = {
     id?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     gender?: StringFieldUpdateOperationsInput | string
@@ -12524,7 +12524,7 @@ export namespace Prisma {
   export type DoctorCreateWithoutAppointmentsInput = {
     id?: string
     firstName: string
-    lastName: string
+    lastName?: string | null
     email: string
     phone: string
     gender: string
@@ -12544,7 +12544,7 @@ export namespace Prisma {
   export type DoctorUncheckedCreateWithoutAppointmentsInput = {
     id?: string
     firstName: string
-    lastName: string
+    lastName?: string | null
     email: string
     phone: string
     gender: string
@@ -12611,7 +12611,7 @@ export namespace Prisma {
   export type DoctorUpdateWithoutAppointmentsInput = {
     id?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     gender?: StringFieldUpdateOperationsInput | string
@@ -12631,7 +12631,7 @@ export namespace Prisma {
   export type DoctorUncheckedUpdateWithoutAppointmentsInput = {
     id?: StringFieldUpdateOperationsInput | string
     firstName?: StringFieldUpdateOperationsInput | string
-    lastName?: StringFieldUpdateOperationsInput | string
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     gender?: StringFieldUpdateOperationsInput | string

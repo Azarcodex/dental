@@ -204,7 +204,7 @@ export default function Dashboard() {
             >
               <option value="">All Doctors</option>
               {doctors?.map((doc: any) => (
-                <option key={doc.id} value={doc.id}>Dr. {doc.firstName} {doc.lastName}</option>
+                <option key={doc.id} value={doc.id}>Dr. {doc.firstName} {doc.lastName || ''}</option>
               ))}
             </select>
           </div>
@@ -280,7 +280,7 @@ export default function Dashboard() {
                           {app.doctor.profilePhoto ? (
                             <img 
                               src={app.doctor.profilePhoto} 
-                              alt={app.doctor.lastName}
+                              alt={app.doctor.firstName}
                               className="w-full h-full object-cover" 
                             />
                           ) : (
@@ -288,7 +288,7 @@ export default function Dashboard() {
                           )}
                         </div>
                         <div>
-                          <p className="text-sm font-semibold text-gray-900">Dr. {app.doctor.firstName} {app.doctor.lastName}</p>
+                          <p className="text-sm font-semibold text-gray-900">Dr. {app.doctor.firstName} {app.doctor.lastName || ''}</p>
                           <p className="text-[10px] font-bold text-gray-500 uppercase tracking-tight flex items-center gap-2">
                             <Clock size={10} /> {formatTimeTo12h(app.startTime)}
                           </p>

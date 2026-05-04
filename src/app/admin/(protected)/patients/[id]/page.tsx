@@ -173,7 +173,7 @@ export default function PatientProfilePage() {
                         </td>
                         <td className="px-6 py-5">
                           <p className="text-sm font-bold text-gray-900">
-                            Dr. {app.doctor?.firstName} {app.doctor?.lastName}
+                            Dr. {app.doctor?.firstName} {app.doctor?.lastName || ''}
                           </p>
                         </td>
                         <td className="px-6 py-5 whitespace-nowrap">

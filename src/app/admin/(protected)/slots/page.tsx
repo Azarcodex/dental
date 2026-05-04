@@ -27,7 +27,7 @@ interface Break {
 interface Doctor {
   id: string;
   firstName: string;
-  lastName: string;
+  lastName?: string | null;
   specialization: string;
   status: string;
   profilePhoto?: string;
@@ -147,7 +147,7 @@ export default function SlotManagementPage() {
   }, [startTime, endTime, slotDuration]);
 
   const filteredDoctors = doctors?.filter((d: any) => 
-    `${d.firstName} ${d.lastName}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    `${d.firstName} ${d.lastName || ''}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
     d.specialization.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -247,7 +247,7 @@ export default function SlotManagementPage() {
                 )}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="font-bold text-slate-900 truncate">Dr. {doctor.firstName} {doctor.lastName}</p>
+                <p className="font-bold text-slate-900 truncate">Dr. {doctor.firstName} {doctor.lastName || ''}</p>
                 <div className="flex items-center gap-2 mt-0.5">
                   <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest truncate">{doctor.specialization}</span>
                   <div className={cn(
@@ -278,7 +278,7 @@ export default function SlotManagementPage() {
             {/* Panel Header */}
             <div className="px-8 py-6 bg-slate-50/30 border-b border-gray-100 flex items-center justify-between">
               <div>
-                <h2 className="text-2xl font-bold text-slate-900">Dr. {selectedDoctor?.firstName} {selectedDoctor?.lastName}</h2>
+                <h2 className="text-2xl font-bold text-slate-900">Dr. {selectedDoctor?.firstName} {selectedDoctor?.lastName || ''}</h2>
                 <div className="flex items-center gap-2 mt-1">
                   <span className="text-xs font-bold text-primary-blue bg-primary-blue/5 border border-primary-blue/10 px-2 py-0.5 rounded-md uppercase tracking-wider">{selectedDoctor?.specialization}</span>
                   <span className="text-xs font-medium text-slate-400">• Availability Manager</span>

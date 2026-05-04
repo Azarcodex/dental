@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const CreateDoctorSchema = z.object({
   firstName: z.string().min(2, "First name is required"),
-  lastName: z.string().min(2, "Last name is required"),
+  lastName: z.string().optional(),
   email: z.string().email("Invalid email"),
   phone: z.string().min(10, "Phone number is required"),
   gender: z.string(),
@@ -22,7 +22,7 @@ export const UpdateDoctorSchema = CreateDoctorSchema.partial().extend({
 // during the react-hook-form lifecycle.
 export const DoctorFormSchema = z.object({
   firstName: z.string().min(2, "First name is required"),
-  lastName: z.string().min(2, "Last name is required"),
+  lastName: z.string().optional(),
   email: z.string().email("Invalid email"),
   phone: z.string().min(10, "Phone number is required"),
   gender: z.string(),

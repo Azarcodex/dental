@@ -502,7 +502,7 @@ export function PublicBookingForm() {
                           )}
                         >
                            <option value="">{watchSpec ? "Pick Your Doctor..." : "Select specialty first"}</option>
-                           {filteredDoctors?.map((d: any) => <option key={d.id} value={d.id}>Dr. {d.firstName} {d.lastName}</option>)}
+                           {filteredDoctors?.map((d: any) => <option key={d.id} value={d.id}>Dr. {d.firstName} {d.lastName || ''}</option>)}
                         </select>
                         <ChevronDown className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none group-hover:text-primary-green transition-colors" size={18} />
                      </div>

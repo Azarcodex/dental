@@ -351,7 +351,7 @@ export default function BookingWizard() {
                   className="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:border-primary-green outline-none font-bold text-slate-800 disabled:opacity-40 transition-all shadow-inner"
                 >
                   <option value="">Pick Medical Staff...</option>
-                  {filteredDoctors?.map((d: any) => <option key={d.id} value={d.id}>Dr. {d.firstName} {d.lastName}</option>)}
+                  {filteredDoctors?.map((d: any) => <option key={d.id} value={d.id}>Dr. {d.firstName} {d.lastName || ''}</option>)}
                 </select>
                </div>
                <div className="space-y-2">
@@ -479,7 +479,7 @@ export default function BookingWizard() {
                     <div>
                        <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Provider Allocation</p>
                        <p className="text-xl font-bold text-slate-900">
-                        Dr. {doctorsData?.find((d: any) => d.id === doctorId)?.firstName} {doctorsData?.find((d: any) => d.id === doctorId)?.lastName}
+                        Dr. {doctorsData?.find((d: any) => d.id === doctorId)?.firstName} {doctorsData?.find((d: any) => d.id === doctorId)?.lastName || ''}
                        </p>
                     </div>
                  </div>
@@ -544,7 +544,7 @@ export default function BookingWizard() {
                         <div className="w-full space-y-4 border-t border-slate-100 pt-6">
                            <div className="flex justify-between items-center text-sm">
                               <span className="text-slate-400 font-bold">Doctor</span>
-                              <span className="text-slate-900 font-black tracking-tight uppercase">Dr. {doctorsData?.find((d: any) => d.id === bookingResult.doctorId)?.lastName}</span>
+                              <span className="text-slate-900 font-black tracking-tight uppercase">Dr. {doctorsData?.find((d: any) => d.id === bookingResult.doctorId)?.lastName || doctorsData?.find((d: any) => d.id === bookingResult.doctorId)?.firstName}</span>
                            </div>
                            <div className="flex justify-between items-center text-sm">
                               <span className="text-slate-400 font-bold">Date</span>

@@ -24,7 +24,7 @@ model Admin {
 model Doctor {
   id              String                    @id @default(uuid())
   firstName       String
-  lastName        String
+  lastName        String?
   email           String                    @unique
   phone           String
   gender          String
