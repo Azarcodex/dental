@@ -28,17 +28,13 @@ export default function DoctorForm({ onSuccess, initialData }: DoctorFormProps) 
   } = useForm({
     defaultValues: initialData ? {
       ...initialData,
-      dob: initialData.dob ? new Date(initialData.dob).toISOString().split('T')[0] : "1990-01-01",
+      ...initialData,
     } : {
       firstName: "",
       lastName: "",
       email: "",
       phone: "",
       gender: "MALE",
-      dob: "1990-01-01",
-      specialization: "",
-      department: "",
-      consultationFee: 1000,
       status: "ACTIVE",
       profilePhoto: "",
     }
@@ -51,7 +47,6 @@ export default function DoctorForm({ onSuccess, initialData }: DoctorFormProps) 
     if (initialData) {
       reset({
         ...initialData,
-        dob: initialData.dob ? new Date(initialData.dob).toISOString().split('T')[0] : "1990-01-01",
         profilePhoto: initialData.profilePhoto || "",
       });
     } else {
@@ -61,7 +56,6 @@ export default function DoctorForm({ onSuccess, initialData }: DoctorFormProps) 
         email: "",
         phone: "",
         gender: "MALE",
-        dob: "1990-01-01",
         specialization: "",
         department: "",
         consultationFee: 1000,
@@ -243,14 +237,6 @@ export default function DoctorForm({ onSuccess, initialData }: DoctorFormProps) 
                 <option value="FEMALE">Female</option>
                 <option value="OTHER">Other</option>
               </select>
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">DOB</label>
-              <input
-                type="date"
-                {...register("dob")}
-                className="w-full px-3 py-2 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:ring-4 focus:ring-primary-green/5 focus:border-primary-green transition-all font-medium text-[13px] text-black"
-              />
             </div>
           </div>
         </div>

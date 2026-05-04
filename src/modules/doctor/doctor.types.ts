@@ -6,7 +6,6 @@ export const CreateDoctorSchema = z.object({
   email: z.string().email("Invalid email"),
   phone: z.string().min(10, "Phone number is required"),
   gender: z.string(),
-  dob: z.string().transform((val) => new Date(val)),
   profilePhoto: z.string().nullable().optional(),
   specialization: z.string().min(2, "Specialization is required"),
   department: z.string().min(2, "Department is required"),
@@ -14,9 +13,7 @@ export const CreateDoctorSchema = z.object({
   status: z.enum(["ACTIVE", "INACTIVE"]).default("ACTIVE"),
 });
 
-export const UpdateDoctorSchema = CreateDoctorSchema.partial().extend({
-  dob: z.string().transform((val) => new Date(val)).optional(),
-});
+export const UpdateDoctorSchema = CreateDoctorSchema.partial();
 
 // A dedicated schema for the frontend form to avoid issues with Zod transformations 
 // during the react-hook-form lifecycle.
@@ -26,7 +23,6 @@ export const DoctorFormSchema = z.object({
   email: z.string().email("Invalid email"),
   phone: z.string().min(10, "Phone number is required"),
   gender: z.string(),
-  dob: z.string().min(1, "Date of birth is required"), // Keep as string for the form
   profilePhoto: z.string().nullable().optional(),
   specialization: z.string().min(2, "Specialization is required"),
   department: z.string().min(2, "Department is required"),

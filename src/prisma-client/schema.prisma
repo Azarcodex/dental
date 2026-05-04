@@ -1,6 +1,6 @@
 generator client {
   provider      = "prisma-client-js"
-  output        = "../src/prisma-client"
+  output        = "./"
   binaryTargets = ["native"]
 }
 
@@ -28,7 +28,6 @@ model Doctor {
   email           String                    @unique
   phone           String
   gender          String
-  dob             DateTime
   profilePhoto    String?
   specialization  String
   department      String

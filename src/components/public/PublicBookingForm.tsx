@@ -36,7 +36,9 @@ const Label = ({ children, required, optional }: { children: React.ReactNode, re
 );
 
 const ErrorMsg = ({ children }: { children?: string }) => (
-  children ? <p className="text-[11px] font-semibold text-red-500 mt-2 ml-1 animate-slide-up select-none">{children}</p> : null
+  <div className="min-h-[20px]">
+    {children ? <p className="text-[11px] font-semibold text-red-500 mt-1 ml-1 animate-slide-up select-none leading-tight">{children}</p> : null}
+  </div>
 );
 
 // --- Main Form Component ---
@@ -163,21 +165,13 @@ export function PublicBookingForm() {
   const onSubmit = (data: PublicBookingInput) => {
     setShowErrorSummary(false);
     
-    const birthDate = new Date(data.dob);
-    const today = new Date();
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const m = today.getMonth() - birthDate.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-      age--;
-    }
-
     bookingMutation.mutate({
       patientData: {
         fullName: data.fullName,
         phone: `+91${data.phone}`,
         gender: data.gender,
         email: data.email,
-        age: age,
+        age: data.age,
         bloodGroup: (data as any).bloodGroup
       },
       doctorId: data.doctorId,
@@ -395,24 +389,24 @@ export function PublicBookingForm() {
                      <ErrorMsg>{errors.email?.message}</ErrorMsg>
                   </div>
 
-                  {/* DOB */}
+                  {/* Age */}
                   <div className="space-y-1">
-                     <Label required>Date of Birth</Label>
+                     <Label required>Patient Age</Label>
                      <div className="relative h-14">
-                        <CalendarDays className={cn("absolute left-5 top-1/2 -translate-y-1/2 transition-colors duration-300", errors.dob ? "text-red-400" : "text-slate-300")} size={18} />
+                        <CalendarDays className={cn("absolute left-5 top-1/2 -translate-y-1/2 transition-colors duration-300", errors.age ? "text-red-400" : "text-slate-300")} size={18} />
                         <input 
-                          {...register("dob")}
-                          type="date"
-                          onBlur={() => trigger("dob")}
+                          {...register("age", { valueAsNumber: true })}
+                          type="number"
+                          placeholder="e.g. 25"
                           className={cn(
                             "w-full pl-14 pr-5 py-4.5 bg-slate-50 border-2 rounded-[22px] outline-none font-bold transition-all text-sm h-14",
-                            errors.dob ? "border-red-500/20 focus:border-red-500 bg-red-50/10 text-red-900" : 
-                            touchedFields.dob && !errors.dob ? "border-green-500/20 focus:border-green-500 bg-green-50/10 text-slate-800" :
+                            errors.age ? "border-red-500/20 focus:border-red-500 bg-red-50/10 text-red-900" : 
+                            touchedFields.age && !errors.age ? "border-green-500/20 focus:border-green-500 bg-green-50/10 text-slate-800" :
                             "border-slate-100 focus:border-primary-blue focus:bg-white text-slate-800"
                           )}
                         />
                      </div>
-                     <ErrorMsg>{errors.dob?.message}</ErrorMsg>
+                     <ErrorMsg>{errors.age?.message}</ErrorMsg>
                   </div>
 
                   {/* Gender */}

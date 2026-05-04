@@ -57,7 +57,9 @@ export default function PatientForm({ onSuccess, initialPhone }: PatientFormProp
             className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green outline-none transition-all placeholder:text-gray-400 text-black font-semibold"
             placeholder="John Doe"
           />
-          {errors.fullName && <p className="text-xs text-red-500">{errors.fullName.message as string}</p>}
+          <div className="min-h-[20px]">
+            {errors.fullName && <p className="text-xs text-red-500">{errors.fullName.message as string}</p>}
+          </div>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
@@ -91,7 +93,9 @@ export default function PatientForm({ onSuccess, initialPhone }: PatientFormProp
             className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green outline-none transition-all placeholder:text-gray-400 text-black font-semibold"
             placeholder="07xxxxxxxx"
           />
-          {errors.phone && <p className="text-xs text-red-500">{errors.phone.message as string}</p>}
+          <div className="min-h-[20px]">
+            {errors.phone && <p className="text-xs text-red-500">{errors.phone.message as string}</p>}
+          </div>
         </div>
 
         <div className="space-y-2">
@@ -103,7 +107,9 @@ export default function PatientForm({ onSuccess, initialPhone }: PatientFormProp
             className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green outline-none transition-all placeholder:text-gray-400 text-black font-semibold"
             placeholder="john@example.com"
           />
-          {errors.email && <p className="text-xs text-red-500">{errors.email.message as string}</p>}
+          <div className="min-h-[20px]">
+            {errors.email && <p className="text-xs text-red-500">{errors.email.message as string}</p>}
+          </div>
         </div>
       </div>
 

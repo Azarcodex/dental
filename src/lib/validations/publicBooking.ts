@@ -15,23 +15,9 @@ export const publicBookingSchema = z.object({
     .optional()
     .or(z.literal("")),
     
-  dob: z.string()
-    .nonempty("Date of birth is required")
-    .refine((val) => {
-      const birthDate = new Date(val);
-      const today = new Date();
-      return birthDate < today;
-    }, "Please enter a valid date of birth")
-    .refine((val) => {
-      const birthDate = new Date(val);
-      const today = new Date();
-      let age = today.getFullYear() - birthDate.getFullYear();
-      const m = today.getMonth() - birthDate.getMonth();
-      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-        age--;
-      }
-      return age >= 1;
-    }, "Please enter a valid date of birth (min 1 year)"),
+  age: z.number({ error: "Age is required" })
+    .min(1, "Age must be at least 1")
+    .max(120, "Please enter a valid age"),
     
   gender: z.string().nonempty("Please select your gender"),
   

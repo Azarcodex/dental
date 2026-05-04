@@ -18,8 +18,10 @@ export function PublicNavbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
       
@@ -73,7 +75,7 @@ export function PublicNavbar() {
     <nav
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
-        isScrolled 
+        mounted && isScrolled 
           ? "bg-white/80 backdrop-blur-xl border-b border-slate-100 py-3 shadow-sm" 
           : "bg-transparent py-6"
       )}

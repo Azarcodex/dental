@@ -2609,7 +2609,6 @@ export namespace Prisma {
     email: string | null
     phone: string | null
     gender: string | null
-    dob: Date | null
     profilePhoto: string | null
     specialization: string | null
     department: string | null
@@ -2626,7 +2625,6 @@ export namespace Prisma {
     email: string | null
     phone: string | null
     gender: string | null
-    dob: Date | null
     profilePhoto: string | null
     specialization: string | null
     department: string | null
@@ -2643,7 +2641,6 @@ export namespace Prisma {
     email: number
     phone: number
     gender: number
-    dob: number
     profilePhoto: number
     specialization: number
     department: number
@@ -2670,7 +2667,6 @@ export namespace Prisma {
     email?: true
     phone?: true
     gender?: true
-    dob?: true
     profilePhoto?: true
     specialization?: true
     department?: true
@@ -2687,7 +2683,6 @@ export namespace Prisma {
     email?: true
     phone?: true
     gender?: true
-    dob?: true
     profilePhoto?: true
     specialization?: true
     department?: true
@@ -2704,7 +2699,6 @@ export namespace Prisma {
     email?: true
     phone?: true
     gender?: true
-    dob?: true
     profilePhoto?: true
     specialization?: true
     department?: true
@@ -2808,7 +2802,6 @@ export namespace Prisma {
     email: string
     phone: string
     gender: string
-    dob: Date
     profilePhoto: string | null
     specialization: string
     department: string
@@ -2844,7 +2837,6 @@ export namespace Prisma {
     email?: boolean
     phone?: boolean
     gender?: boolean
-    dob?: boolean
     profilePhoto?: boolean
     specialization?: boolean
     department?: boolean
@@ -2866,7 +2858,6 @@ export namespace Prisma {
     email?: boolean
     phone?: boolean
     gender?: boolean
-    dob?: boolean
     profilePhoto?: boolean
     specialization?: boolean
     department?: boolean
@@ -2883,7 +2874,6 @@ export namespace Prisma {
     email?: boolean
     phone?: boolean
     gender?: boolean
-    dob?: boolean
     profilePhoto?: boolean
     specialization?: boolean
     department?: boolean
@@ -2900,7 +2890,6 @@ export namespace Prisma {
     email?: boolean
     phone?: boolean
     gender?: boolean
-    dob?: boolean
     profilePhoto?: boolean
     specialization?: boolean
     department?: boolean
@@ -2910,7 +2899,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type DoctorOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "firstName" | "lastName" | "email" | "phone" | "gender" | "dob" | "profilePhoto" | "specialization" | "department" | "consultationFee" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["doctor"]>
+  export type DoctorOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "firstName" | "lastName" | "email" | "phone" | "gender" | "profilePhoto" | "specialization" | "department" | "consultationFee" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["doctor"]>
   export type DoctorInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     appointments?: boolean | Doctor$appointmentsArgs<ExtArgs>
     blocks?: boolean | Doctor$blocksArgs<ExtArgs>
@@ -2936,7 +2925,6 @@ export namespace Prisma {
       email: string
       phone: string
       gender: string
-      dob: Date
       profilePhoto: string | null
       specialization: string
       department: string
@@ -3377,7 +3365,6 @@ export namespace Prisma {
     readonly email: FieldRef<"Doctor", 'String'>
     readonly phone: FieldRef<"Doctor", 'String'>
     readonly gender: FieldRef<"Doctor", 'String'>
-    readonly dob: FieldRef<"Doctor", 'DateTime'>
     readonly profilePhoto: FieldRef<"Doctor", 'String'>
     readonly specialization: FieldRef<"Doctor", 'String'>
     readonly department: FieldRef<"Doctor", 'String'>
@@ -9565,7 +9552,6 @@ export namespace Prisma {
     email: 'email',
     phone: 'phone',
     gender: 'gender',
-    dob: 'dob',
     profilePhoto: 'profilePhoto',
     specialization: 'specialization',
     department: 'department',
@@ -9844,7 +9830,6 @@ export namespace Prisma {
     email?: StringFilter<"Doctor"> | string
     phone?: StringFilter<"Doctor"> | string
     gender?: StringFilter<"Doctor"> | string
-    dob?: DateTimeFilter<"Doctor"> | Date | string
     profilePhoto?: StringNullableFilter<"Doctor"> | string | null
     specialization?: StringFilter<"Doctor"> | string
     department?: StringFilter<"Doctor"> | string
@@ -9865,7 +9850,6 @@ export namespace Prisma {
     email?: SortOrder
     phone?: SortOrder
     gender?: SortOrder
-    dob?: SortOrder
     profilePhoto?: SortOrderInput | SortOrder
     specialization?: SortOrder
     department?: SortOrder
@@ -9889,7 +9873,6 @@ export namespace Prisma {
     lastName?: StringNullableFilter<"Doctor"> | string | null
     phone?: StringFilter<"Doctor"> | string
     gender?: StringFilter<"Doctor"> | string
-    dob?: DateTimeFilter<"Doctor"> | Date | string
     profilePhoto?: StringNullableFilter<"Doctor"> | string | null
     specialization?: StringFilter<"Doctor"> | string
     department?: StringFilter<"Doctor"> | string
@@ -9910,7 +9893,6 @@ export namespace Prisma {
     email?: SortOrder
     phone?: SortOrder
     gender?: SortOrder
-    dob?: SortOrder
     profilePhoto?: SortOrderInput | SortOrder
     specialization?: SortOrder
     department?: SortOrder
@@ -9935,7 +9917,6 @@ export namespace Prisma {
     email?: StringWithAggregatesFilter<"Doctor"> | string
     phone?: StringWithAggregatesFilter<"Doctor"> | string
     gender?: StringWithAggregatesFilter<"Doctor"> | string
-    dob?: DateTimeWithAggregatesFilter<"Doctor"> | Date | string
     profilePhoto?: StringNullableWithAggregatesFilter<"Doctor"> | string | null
     specialization?: StringWithAggregatesFilter<"Doctor"> | string
     department?: StringWithAggregatesFilter<"Doctor"> | string
@@ -10404,7 +10385,6 @@ export namespace Prisma {
     email: string
     phone: string
     gender: string
-    dob: Date | string
     profilePhoto?: string | null
     specialization: string
     department: string
@@ -10425,7 +10405,6 @@ export namespace Prisma {
     email: string
     phone: string
     gender: string
-    dob: Date | string
     profilePhoto?: string | null
     specialization: string
     department: string
@@ -10446,7 +10425,6 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     gender?: StringFieldUpdateOperationsInput | string
-    dob?: DateTimeFieldUpdateOperationsInput | Date | string
     profilePhoto?: NullableStringFieldUpdateOperationsInput | string | null
     specialization?: StringFieldUpdateOperationsInput | string
     department?: StringFieldUpdateOperationsInput | string
@@ -10467,7 +10445,6 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     gender?: StringFieldUpdateOperationsInput | string
-    dob?: DateTimeFieldUpdateOperationsInput | Date | string
     profilePhoto?: NullableStringFieldUpdateOperationsInput | string | null
     specialization?: StringFieldUpdateOperationsInput | string
     department?: StringFieldUpdateOperationsInput | string
@@ -10488,7 +10465,6 @@ export namespace Prisma {
     email: string
     phone: string
     gender: string
-    dob: Date | string
     profilePhoto?: string | null
     specialization: string
     department: string
@@ -10505,7 +10481,6 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     gender?: StringFieldUpdateOperationsInput | string
-    dob?: DateTimeFieldUpdateOperationsInput | Date | string
     profilePhoto?: NullableStringFieldUpdateOperationsInput | string | null
     specialization?: StringFieldUpdateOperationsInput | string
     department?: StringFieldUpdateOperationsInput | string
@@ -10522,7 +10497,6 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     gender?: StringFieldUpdateOperationsInput | string
-    dob?: DateTimeFieldUpdateOperationsInput | Date | string
     profilePhoto?: NullableStringFieldUpdateOperationsInput | string | null
     specialization?: StringFieldUpdateOperationsInput | string
     department?: StringFieldUpdateOperationsInput | string
@@ -11126,7 +11100,6 @@ export namespace Prisma {
     email?: SortOrder
     phone?: SortOrder
     gender?: SortOrder
-    dob?: SortOrder
     profilePhoto?: SortOrder
     specialization?: SortOrder
     department?: SortOrder
@@ -11147,7 +11120,6 @@ export namespace Prisma {
     email?: SortOrder
     phone?: SortOrder
     gender?: SortOrder
-    dob?: SortOrder
     profilePhoto?: SortOrder
     specialization?: SortOrder
     department?: SortOrder
@@ -11164,7 +11136,6 @@ export namespace Prisma {
     email?: SortOrder
     phone?: SortOrder
     gender?: SortOrder
-    dob?: SortOrder
     profilePhoto?: SortOrder
     specialization?: SortOrder
     department?: SortOrder
@@ -12240,7 +12211,6 @@ export namespace Prisma {
     email: string
     phone: string
     gender: string
-    dob: Date | string
     profilePhoto?: string | null
     specialization: string
     department: string
@@ -12260,7 +12230,6 @@ export namespace Prisma {
     email: string
     phone: string
     gender: string
-    dob: Date | string
     profilePhoto?: string | null
     specialization: string
     department: string
@@ -12296,7 +12265,6 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     gender?: StringFieldUpdateOperationsInput | string
-    dob?: DateTimeFieldUpdateOperationsInput | Date | string
     profilePhoto?: NullableStringFieldUpdateOperationsInput | string | null
     specialization?: StringFieldUpdateOperationsInput | string
     department?: StringFieldUpdateOperationsInput | string
@@ -12316,7 +12284,6 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     gender?: StringFieldUpdateOperationsInput | string
-    dob?: DateTimeFieldUpdateOperationsInput | Date | string
     profilePhoto?: NullableStringFieldUpdateOperationsInput | string | null
     specialization?: StringFieldUpdateOperationsInput | string
     department?: StringFieldUpdateOperationsInput | string
@@ -12336,7 +12303,6 @@ export namespace Prisma {
     email: string
     phone: string
     gender: string
-    dob: Date | string
     profilePhoto?: string | null
     specialization: string
     department: string
@@ -12356,7 +12322,6 @@ export namespace Prisma {
     email: string
     phone: string
     gender: string
-    dob: Date | string
     profilePhoto?: string | null
     specialization: string
     department: string
@@ -12392,7 +12357,6 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     gender?: StringFieldUpdateOperationsInput | string
-    dob?: DateTimeFieldUpdateOperationsInput | Date | string
     profilePhoto?: NullableStringFieldUpdateOperationsInput | string | null
     specialization?: StringFieldUpdateOperationsInput | string
     department?: StringFieldUpdateOperationsInput | string
@@ -12412,7 +12376,6 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     gender?: StringFieldUpdateOperationsInput | string
-    dob?: DateTimeFieldUpdateOperationsInput | Date | string
     profilePhoto?: NullableStringFieldUpdateOperationsInput | string | null
     specialization?: StringFieldUpdateOperationsInput | string
     department?: StringFieldUpdateOperationsInput | string
@@ -12432,7 +12395,6 @@ export namespace Prisma {
     email: string
     phone: string
     gender: string
-    dob: Date | string
     profilePhoto?: string | null
     specialization: string
     department: string
@@ -12452,7 +12414,6 @@ export namespace Prisma {
     email: string
     phone: string
     gender: string
-    dob: Date | string
     profilePhoto?: string | null
     specialization: string
     department: string
@@ -12488,7 +12449,6 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     gender?: StringFieldUpdateOperationsInput | string
-    dob?: DateTimeFieldUpdateOperationsInput | Date | string
     profilePhoto?: NullableStringFieldUpdateOperationsInput | string | null
     specialization?: StringFieldUpdateOperationsInput | string
     department?: StringFieldUpdateOperationsInput | string
@@ -12508,7 +12468,6 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     gender?: StringFieldUpdateOperationsInput | string
-    dob?: DateTimeFieldUpdateOperationsInput | Date | string
     profilePhoto?: NullableStringFieldUpdateOperationsInput | string | null
     specialization?: StringFieldUpdateOperationsInput | string
     department?: StringFieldUpdateOperationsInput | string
@@ -12528,7 +12487,6 @@ export namespace Prisma {
     email: string
     phone: string
     gender: string
-    dob: Date | string
     profilePhoto?: string | null
     specialization: string
     department: string
@@ -12548,7 +12506,6 @@ export namespace Prisma {
     email: string
     phone: string
     gender: string
-    dob: Date | string
     profilePhoto?: string | null
     specialization: string
     department: string
@@ -12615,7 +12572,6 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     gender?: StringFieldUpdateOperationsInput | string
-    dob?: DateTimeFieldUpdateOperationsInput | Date | string
     profilePhoto?: NullableStringFieldUpdateOperationsInput | string | null
     specialization?: StringFieldUpdateOperationsInput | string
     department?: StringFieldUpdateOperationsInput | string
@@ -12635,7 +12591,6 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     gender?: StringFieldUpdateOperationsInput | string
-    dob?: DateTimeFieldUpdateOperationsInput | Date | string
     profilePhoto?: NullableStringFieldUpdateOperationsInput | string | null
     specialization?: StringFieldUpdateOperationsInput | string
     department?: StringFieldUpdateOperationsInput | string
