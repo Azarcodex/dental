@@ -24,9 +24,9 @@ export function PublicNavbar() {
     setMounted(true);
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
-      
+
       // Simple intersection observer logic
-      const sections = ["home", "about", "services", "doctors", "contact"];
+      const sections = ["home", "doctors", "about", "services", "contact"];
       for (const section of sections) {
         const element = document.getElementById(section);
         if (element) {
@@ -45,14 +45,19 @@ export function PublicNavbar() {
   // Lock body scroll when mobile menu is open
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     }
-    return () => { document.body.style.overflow = ''; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [isOpen]);
 
-  const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+  const scrollToSection = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    href: string,
+  ) => {
     e.preventDefault();
     const targetId = href.replace("#", "");
     const elem = document.getElementById(targetId);
@@ -65,7 +70,7 @@ export function PublicNavbar() {
 
       window.scrollTo({
         top: offsetPosition,
-        behavior: "smooth"
+        behavior: "smooth",
       });
     }
     setIsOpen(false);
@@ -75,21 +80,24 @@ export function PublicNavbar() {
     <nav
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
-        mounted && isScrolled 
-          ? "bg-white/80 backdrop-blur-xl border-b border-slate-100 py-3 shadow-sm" 
-          : "bg-transparent py-6"
+        mounted && isScrolled
+          ? "bg-white/80 backdrop-blur-xl border-b border-slate-100 py-3 shadow-sm"
+          : "bg-transparent py-6",
       )}
     >
       <div className="container-custom flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="relative h-10 w-40 transition-transform duration-300 hover:scale-105">
-           <Image 
-            src="/Main.jpeg" 
-            alt="ADAMS Poly Clinic" 
-            fill 
+        <Link
+          href="/"
+          className="relative h-10 w-40 transition-transform duration-300 hover:scale-105"
+        >
+          <Image
+            src="/Main.jpeg"
+            alt="ADAMS Poly Clinic"
+            fill
             className="object-contain"
             priority
-           />
+          />
         </Link>
 
         {/* Desktop Links */}
@@ -103,9 +111,9 @@ export function PublicNavbar() {
                 onClick={(e) => scrollToSection(e, link.href)}
                 className={cn(
                   "relative text-sm font-bold transition-all duration-300 py-2",
-                  isActive 
-                    ? "text-primary-green" 
-                    : "text-slate-600 hover:text-primary-green"
+                  isActive
+                    ? "text-primary-green"
+                    : "text-slate-600 hover:text-primary-green",
                 )}
               >
                 {link.name}
@@ -119,17 +127,24 @@ export function PublicNavbar() {
 
         {/* Action Button */}
         <div className="hidden lg:block">
-           <button 
-             onClick={() => document.getElementById("booking")?.scrollIntoView({ behavior: "smooth" })}
-             className="btn-primary flex items-center gap-2 group"
-           >
-             Book Appointment 
-             <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-           </button>
+          <button
+            onClick={() =>
+              document
+                .getElementById("booking")
+                ?.scrollIntoView({ behavior: "smooth" })
+            }
+            className="btn-primary flex items-center gap-2 group"
+          >
+            Book Appointment
+            <ArrowRight
+              size={18}
+              className="group-hover:translate-x-1 transition-transform"
+            />
+          </button>
         </div>
 
         {/* Mobile Menu Toggle */}
-        <button 
+        <button
           className="lg:hidden p-2 text-slate-900 bg-white shadow-sm border border-slate-100 rounded-xl"
           onClick={() => setIsOpen(!isOpen)}
         >
@@ -138,10 +153,14 @@ export function PublicNavbar() {
       </div>
 
       {/* Mobile Menu */}
-      <div className={cn(
-        "lg:hidden absolute top-full left-0 right-0 bg-white border-b border-slate-100 transition-all duration-500 ease-in-out origin-top",
-        isOpen ? "scale-y-100 opacity-100" : "scale-y-0 opacity-0 pointer-events-none"
-      )}>
+      <div
+        className={cn(
+          "lg:hidden absolute top-full left-0 right-0 bg-white border-b border-slate-100 transition-all duration-500 ease-in-out origin-top",
+          isOpen
+            ? "scale-y-100 opacity-100"
+            : "scale-y-0 opacity-0 pointer-events-none",
+        )}
+      >
         <div className="p-8 flex flex-col gap-6">
           {navLinks.map((link) => (
             <a
@@ -153,9 +172,11 @@ export function PublicNavbar() {
               {link.name}
             </a>
           ))}
-          <button 
+          <button
             onClick={() => {
-              document.getElementById("booking")?.scrollIntoView({ behavior: "smooth" });
+              document
+                .getElementById("booking")
+                ?.scrollIntoView({ behavior: "smooth" });
               setIsOpen(false);
             }}
             className="w-full bg-primary-green text-white py-5 rounded-2xl font-black text-lg shadow-xl shadow-primary-green/20"
