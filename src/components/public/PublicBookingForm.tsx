@@ -77,6 +77,7 @@ export function PublicBookingForm() {
   const { data: doctorsData } = useQuery({
     queryKey: ["public-doctors-booking"],
     queryFn: async () => {
+      if (typeof window === "undefined") return null;
       const { data } = await axiosInstance.get("/doctors");
       return data.data;
     }
@@ -95,6 +96,7 @@ export function PublicBookingForm() {
   const { data: slots, isLoading: slotsLoading, refetch, isRefetching } = useQuery({
     queryKey: ["public-slots", watchDoctorId, watchDate],
     queryFn: async () => {
+      if (typeof window === "undefined") return null;
       const { data } = await axiosInstance.get(`/doctors/${watchDoctorId}/slots`, { params: { date: watchDate } });
       return data.slots;
     },

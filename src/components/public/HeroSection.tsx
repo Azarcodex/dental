@@ -28,6 +28,7 @@ export function HeroSection() {
   const { data: doctorsData } = useQuery({
     queryKey: ["public-doctors-count"],
     queryFn: async () => {
+      if (typeof window === "undefined") return null;
       const { data } = await axiosInstance.get("/doctors");
       return data.data;
     },

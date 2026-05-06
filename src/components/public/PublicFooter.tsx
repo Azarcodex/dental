@@ -22,6 +22,7 @@ export function PublicFooter() {
                 alt="ADAMS Poly Clinic" 
                 fill 
                 className="object-contain" 
+                sizes="192px"
               />
            </Link>
            <p className="text-slate-400 font-medium leading-relaxed">

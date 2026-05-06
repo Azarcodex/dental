@@ -96,6 +96,7 @@ export function PublicNavbar() {
             alt="ADAMS Poly Clinic"
             fill
             className="object-contain"
+            sizes="(max-width: 768px) 100vw, 160px"
             priority
           />
         </Link>

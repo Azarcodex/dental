@@ -26,6 +26,7 @@ export function OurDoctors() {
   const { data: doctors, isLoading } = useQuery({
     queryKey: ["public-doctors"],
     queryFn: async () => {
+      if (typeof window === "undefined") return null;
       const { data } = await axiosInstance.get("/doctors");
       return data.data;
     },

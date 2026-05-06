@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { Toaster } from "react-hot-toast";
 import { PublicNavbar } from "@/components/public/PublicNavbar";
 import { HeroSection } from "@/components/public/HeroSection";
@@ -17,35 +18,37 @@ export default function RootPage() {
     <main className="min-h-screen bg-white selection:bg-primary-green selection:text-white">
       <Toaster position="top-right" />
 
-      <PublicNavbar />
+      <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-white"><div className="w-10 h-10 border-4 border-primary-green border-t-transparent rounded-full animate-spin" /></div>}>
+        <PublicNavbar />
 
-      {/* Sections - Each handles its own padding & internal container */}
-      <div id="home" className="scroll-mt-screen">
-        <HeroSection />
-      </div>
+        {/* Sections - Each handles its own padding & internal container */}
+        <div id="home" className="scroll-mt-screen">
+          <HeroSection />
+        </div>
 
-      <div id="doctors" className="scroll-mt-24">
-        <OurDoctors />
-      </div>
-      <HowItWorks />
+        <div id="doctors" className="scroll-mt-24">
+          <OurDoctors />
+        </div>
+        <HowItWorks />
 
-      <PublicBookingForm />
+        <PublicBookingForm />
 
-      <div id="about" className="scroll-mt-24">
-        <WhyChooseUs />
-      </div>
+        <div id="about" className="scroll-mt-24">
+          <WhyChooseUs />
+        </div>
 
-      <div id="services" className="scroll-mt-24">
-        <OurServices />
-      </div>
+        <div id="services" className="scroll-mt-24">
+          <OurServices />
+        </div>
 
-      {/* <Testimonials /> */}
+        {/* <Testimonials /> */}
 
-      <div id="contact" className="scroll-mt-24">
-        <ContactSection />
-      </div>
+        <div id="contact" className="scroll-mt-24">
+          <ContactSection />
+        </div>
 
-      <PublicFooter />
+        <PublicFooter />
+      </Suspense>
     </main>
   );
 }
