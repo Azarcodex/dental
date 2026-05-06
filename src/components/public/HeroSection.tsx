@@ -121,7 +121,7 @@ export function HeroSection() {
             </div>
 
             {/* Trust Row */}
-            <div className="flex items-center gap-4 pt-2">
+            {/* <div className="flex items-center gap-4 pt-2">
               <div className="flex -space-x-3">
                 {[1, 2, 3, 4].map((i) => (
                   <img
@@ -149,7 +149,7 @@ export function HeroSection() {
                   Trusted by thousands
                 </p>
               </div>
-            </div>
+            </div> */}
           </article>
 
           {/* ── RIGHT VISUAL ── */}
