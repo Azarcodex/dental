@@ -6,7 +6,7 @@ import { Search, Plus, UserCircle2, Phone, ChevronRight, Filter, Loader2, Calend
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useDebounce } from "@/hooks/useDebounce";
-import { cn } from "@/lib/utils";
+import { cn, formatTimeTo12h } from "@/lib/utils";
 
 const fetchPatients = async (query: string, page: number = 1, limit: number = 10) => {
   const { data } = await axiosInstance.get("/admin/patients", {
@@ -147,7 +147,7 @@ export default function PatientsRegistryPage() {
                                 month: 'short', day: 'numeric', year: 'numeric' 
                               })}
                             </p>
-                            <p className="text-[10px] text-gray-500 font-medium">{lastAppointment.startTime}</p>
+                            <p className="text-[10px] text-gray-500 font-medium">{formatTimeTo12h(lastAppointment.startTime)}</p>
                           </div>
                         ) : (
                           <span className="text-xs text-gray-400 italic">No history</span>

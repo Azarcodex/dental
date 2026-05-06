@@ -1,6 +1,6 @@
 import React from "react";
 import { X, User, Phone, Calendar, Info, Clock, Stethoscope } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, formatTimeTo12h } from "@/lib/utils";
 
 interface PatientDrawerProps {
   isOpen: boolean;
@@ -90,7 +90,7 @@ export const PatientDrawer: React.FC<PatientDrawerProps> = ({ isOpen, onClose, p
                 </div>
                 <div className="text-right">
                   <p className="text-xs text-gray-500">Slot</p>
-                  <p className="text-sm font-bold text-gray-900">{appointment?.startTime}</p>
+                  <p className="text-sm font-bold text-gray-900">{formatTimeTo12h(appointment?.startTime)}</p>
                 </div>
               </div>
 

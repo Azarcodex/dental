@@ -12,11 +12,15 @@ import {
   CalendarDays,
   ShieldAlert,
   Loader2,
-  CheckCircle2
+  CheckCircle2,
+  Sunrise,
+  Sun,
+  Sunset,
+  Info
 } from "lucide-react";
 import { useState, useMemo, useEffect } from "react";
 import { toast } from "react-hot-toast";
-import { cn } from "@/lib/utils";
+import { cn, formatTimeTo12h } from "@/lib/utils";
 
 // --- Types ---
 interface Break {
@@ -145,6 +149,23 @@ export default function SlotManagementPage() {
     }
     return slots;
   }, [startTime, endTime, slotDuration]);
+  
+  const groupedSlots = useMemo(() => {
+    const groups = {
+      morning: [] as string[],
+      afternoon: [] as string[],
+      evening: [] as string[],
+    };
+
+    generatedSlots.forEach(slot => {
+      const hour = parseInt(slot.split(":")[0]);
+      if (hour < 12) groups.morning.push(slot);
+      else if (hour < 17) groups.afternoon.push(slot);
+      else groups.evening.push(slot);
+    });
+
+    return groups;
+  }, [generatedSlots]);
 
   const filteredDoctors = doctors?.filter((d: any) => 
     `${d.firstName} ${d.lastName || ''}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -225,9 +246,16 @@ export default function SlotManagementPage() {
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-4 space-y-3 luxe-scrollbar">
+        <div className="flex-1 overflow-y-auto p-4 space-y-2 luxe-scrollbar">
           {loadingDoctors ? (
-             [1,2,3,4].map(i => <div key={i} className="h-20 bg-gray-50 rounded-2xl animate-pulse" />)
+             [1,2,3,4,5].map(i => <div key={i} className="h-20 bg-gray-50 rounded-2xl animate-pulse" />)
+          ) : filteredDoctors?.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-10 text-center px-4">
+              <div className="w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center text-slate-300 mb-3">
+                <Search size={20} />
+              </div>
+              <p className="text-sm font-bold text-slate-400">No doctors found</p>
+            </div>
           ) : filteredDoctors?.map((doctor: any) => (
             <div 
               key={doctor.id}
@@ -236,25 +264,25 @@ export default function SlotManagementPage() {
                 "p-4 rounded-2xl border transition-all cursor-pointer group flex items-center gap-4",
                 selectedDoctorId === doctor.id 
                   ? "bg-primary-green/5 border-primary-green shadow-sm ring-1 ring-primary-green/20" 
-                  : "bg-white border-gray-100 hover:border-primary-green/30 hover:bg-slate-50/50"
+                  : "bg-white border-transparent hover:bg-slate-50/50"
               )}
             >
-              <div className="w-12 h-12 rounded-xl border border-gray-100 overflow-hidden bg-slate-100 shrink-0">
-                {doctor.profilePhoto ? (
-                  <img src={doctor.profilePhoto} className="w-full h-full object-cover" />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-slate-400"><UserSquare2 size={24} /></div>
-                )}
+              <div className="relative shrink-0">
+                <div className="w-12 h-12 rounded-xl border border-gray-100 overflow-hidden bg-slate-100">
+                  {doctor.profilePhoto ? (
+                    <img src={doctor.profilePhoto} className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-slate-400"><UserSquare2 size={24} /></div>
+                  )}
+                </div>
+                <div className={cn(
+                  "absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full border-2 border-white",
+                  doctor.status === "ACTIVE" ? "bg-green-500" : "bg-slate-300"
+                )} />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-bold text-slate-900 truncate">Dr. {doctor.firstName} {doctor.lastName || ''}</p>
-                <div className="flex items-center gap-2 mt-0.5">
-                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest truncate">{doctor.specialization}</span>
-                  <div className={cn(
-                    "w-1.5 h-1.5 rounded-full",
-                    doctor.status === "ACTIVE" ? "bg-green-500" : "bg-slate-300"
-                  )} />
-                </div>
+                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest truncate mt-0.5">{doctor.specialization}</p>
               </div>
             </div>
           ))}
@@ -277,11 +305,16 @@ export default function SlotManagementPage() {
           <div className="flex-1 flex flex-col overflow-hidden">
             {/* Panel Header */}
             <div className="px-8 py-6 bg-slate-50/30 border-b border-gray-100 flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold text-slate-900">Dr. {selectedDoctor?.firstName} {selectedDoctor?.lastName || ''}</h2>
-                <div className="flex items-center gap-2 mt-1">
-                  <span className="text-xs font-bold text-primary-blue bg-primary-blue/5 border border-primary-blue/10 px-2 py-0.5 rounded-md uppercase tracking-wider">{selectedDoctor?.specialization}</span>
-                  <span className="text-xs font-medium text-slate-400">• Availability Manager</span>
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-primary-blue/10 rounded-2xl flex items-center justify-center text-primary-blue">
+                   <Clock size={24} />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-black text-slate-900 tracking-tight">Dr. {selectedDoctor?.firstName} {selectedDoctor?.lastName || ''}</h2>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <span className="text-[10px] font-black text-primary-blue bg-primary-blue/5 border border-primary-blue/10 px-2 py-0.5 rounded-md uppercase tracking-[0.1em]">{selectedDoctor?.specialization}</span>
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">• Availability Manager</span>
+                  </div>
                 </div>
               </div>
               <button 
@@ -298,117 +331,147 @@ export default function SlotManagementPage() {
               
               {/* SECTION 1: WORKING DAYS */}
               <section className="space-y-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <CalendarDays size={18} className="text-slate-400" />
-                  <h3 className="text-sm font-bold text-slate-700 uppercase tracking-widest">1. Clinical Working Days</h3>
+                <div className="flex items-center justify-between mb-4 px-1">
+                  <div className="flex items-center gap-2">
+                    <CalendarDays size={18} className="text-primary-blue" />
+                    <h3 className="text-xs font-black text-slate-700 uppercase tracking-[0.15em]">Weekly Clinical Cycle</h3>
+                  </div>
+                  <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest bg-slate-100 px-2 py-1 rounded-lg">
+                    {activeDays.length} Days Selected
+                  </div>
                 </div>
-                <div className="grid grid-cols-4 sm:grid-cols-7 gap-3">
-                  {DAYS.map((day, index) => (
-                    <button
-                      key={day}
-                      onClick={() => handleToggleDay(index)}
-                      className={cn(
-                        "py-3 rounded-2xl text-[13px] font-bold transition-all border",
-                        activeDays.includes(index)
-                          ? "bg-primary-blue border-primary-blue text-white shadow-md shadow-primary-blue/20"
-                          : "bg-white border-gray-100 text-slate-400 hover:border-primary-blue/30"
-                      )}
-                    >
-                      {day.substring(0, 3)}
-                    </button>
-                  ))}
+                <div className="bg-slate-50/50 p-4 rounded-[28px] border border-slate-100">
+                  <div className="grid grid-cols-4 sm:grid-cols-7 gap-3">
+                    {DAYS.map((day, index) => (
+                      <button
+                        key={day}
+                        onClick={() => handleToggleDay(index)}
+                        className={cn(
+                          "py-4 rounded-2xl text-[12px] font-black transition-all border flex flex-col items-center gap-1",
+                          activeDays.includes(index)
+                            ? "bg-primary-blue border-primary-blue text-white shadow-lg shadow-primary-blue/20 scale-[1.02]"
+                            : "bg-white border-gray-100 text-slate-400 hover:border-primary-blue/30 hover:text-slate-600"
+                        )}
+                      >
+                        <span className="opacity-50">{day.substring(0, 3)}</span>
+                        <span>{day.substring(0, 1)}</span>
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </section>
 
               {/* SECTION 2: SHIFT TIMINGS */}
               <section className="space-y-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <Clock size={18} className="text-slate-400" />
-                  <h3 className="text-sm font-bold text-slate-700 uppercase tracking-widest">2. Shift & Session Timings</h3>
+                <div className="flex items-center gap-2 mb-4 px-1">
+                  <Clock size={18} className="text-primary-blue" />
+                  <h3 className="text-xs font-black text-slate-700 uppercase tracking-[0.15em]">Shift & Session Config</h3>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-slate-50/50 p-6 rounded-[28px] border border-slate-100 shadow-inner">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-white p-6 rounded-[32px] border border-slate-100 shadow-sm relative overflow-hidden group">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-primary-blue/5 rounded-full translate-x-1/2 -translate-y-1/2 -z-10 group-hover:scale-110 transition-transform duration-700" />
+                  
                   <div className="space-y-2">
-                    <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider ml-1">Start Time</label>
-                    <input 
-                      type="time" 
-                      value={startTime}
-                      onChange={(e) => setStartTime(e.target.value)}
-                      className="w-full px-4 py-3 bg-white border border-gray-100 rounded-xl focus:ring-4 focus:ring-primary-blue/5 focus:border-primary-blue outline-none font-bold text-slate-900"
-                    />
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Daily Start</label>
+                    <div className="relative">
+                      <input 
+                        type="time" 
+                        value={startTime}
+                        onChange={(e) => setStartTime(e.target.value)}
+                        className="w-full pl-4 pr-4 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-primary-blue/5 focus:border-primary-blue outline-none font-black text-slate-900 transition-all"
+                      />
+                    </div>
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider ml-1">End Time</label>
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Daily End</label>
                     <input 
                       type="time" 
                       value={endTime}
                       onChange={(e) => setEndTime(e.target.value)}
-                      className="w-full px-4 py-3 bg-white border border-gray-100 rounded-xl focus:ring-4 focus:ring-primary-blue/5 focus:border-primary-blue outline-none font-bold text-slate-900"
+                      className="w-full px-4 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-primary-blue/5 focus:border-primary-blue outline-none font-black text-slate-900 transition-all"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider ml-1">Slot Duration (Min)</label>
-                    <input 
-                      type="number" 
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Slot Size (Min)</label>
+                    <select 
                       value={slotDuration}
-                      min={5}
-                      step={5}
                       onChange={(e) => setSlotDuration(Number(e.target.value))}
-                      className="w-full px-4 py-3 bg-white border border-gray-100 rounded-xl focus:ring-4 focus:ring-primary-blue/5 focus:border-primary-blue outline-none font-bold text-slate-900"
-                    />
+                      className="w-full px-4 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-primary-blue/5 focus:border-primary-blue outline-none font-black text-slate-900 transition-all appearance-none"
+                    >
+                      {[15, 20, 30, 45, 60, 90, 120].map(v => (
+                        <option key={v} value={v}>{v} Minutes</option>
+                      ))}
+                    </select>
                   </div>
                 </div>
                 {generatedSlots.length > 0 && (
-                  <p className="text-[13px] text-slate-500 flex items-center gap-2 ml-1">
-                    <CheckCircle2 size={14} className="text-primary-green" />
-                    Slots from <span className="font-bold text-slate-900">{startTime}</span> to <span className="font-bold text-slate-900">{endTime}</span> every <span className="font-bold text-slate-900">{slotDuration} mins</span> generate <span className="font-black text-primary-blue bg-primary-blue/5 px-2 py-0.5 rounded-lg">{generatedSlots.length} sessions</span>.
-                  </p>
+                  <div className="flex items-center gap-3 bg-primary-green/5 border border-primary-green/10 p-4 rounded-2xl animate-in fade-in slide-in-from-top-2">
+                    <div className="w-8 h-8 rounded-lg bg-primary-green flex items-center justify-center text-white shadow-sm">
+                      <CheckCircle2 size={16} />
+                    </div>
+                    <p className="text-xs font-medium text-slate-600">
+                      Generating <span className="font-black text-slate-900 bg-white px-2 py-0.5 rounded border border-slate-100 mx-1">{generatedSlots.length} sessions</span> every clinical day from <span className="font-black text-slate-900">{formatTimeTo12h(startTime)}</span> to <span className="font-black text-slate-900">{formatTimeTo12h(endTime)}</span>.
+                    </p>
+                  </div>
                 )}
               </section>
 
               {/* SECTION 4: BREAK TIMES */}
               <section className="space-y-4">
-                <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center justify-between mb-4 px-1">
                   <div className="flex items-center gap-2">
-                    <ShieldAlert size={18} className="text-slate-400" />
-                    <h3 className="text-sm font-bold text-slate-700 uppercase tracking-widest">3. Scheduled Breaks</h3>
+                    <ShieldAlert size={18} className="text-primary-blue" />
+                    <h3 className="text-xs font-black text-slate-700 uppercase tracking-[0.15em]">Clinical Session Breaks</h3>
                   </div>
                   <button 
                     onClick={handleAddBreak}
-                    className="text-xs font-bold text-primary-blue flex items-center gap-1 hover:underline"
+                    className="group px-4 py-2 bg-primary-blue/5 hover:bg-primary-blue text-primary-blue hover:text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2"
                   >
-                    <Plus size={14} /> Add Session Break
+                    <Plus size={14} className="transition-transform group-hover:rotate-90" /> Add Session Break
                   </button>
                 </div>
                 
-                <div className="space-y-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {breaks.map((br, index) => (
-                    <div key={index} className="flex flex-col sm:flex-row items-center gap-4 bg-white p-4 rounded-2xl border border-gray-100 group animate-in slide-in-from-left-2">
-                      <div className="flex-1 flex items-center gap-3 w-full">
-                        <input 
-                          type="time" 
-                          value={br.startTime}
-                          onChange={(e) => handleUpdateBreak(index, "startTime", e.target.value)}
-                          className="flex-1 px-3 py-2 bg-slate-50/50 border border-transparent rounded-xl focus:bg-white focus:border-primary-blue outline-none text-sm font-bold text-slate-900"
-                        />
-                        <span className="text-slate-300">to</span>
-                        <input 
-                          type="time" 
-                          value={br.endTime}
-                          onChange={(e) => handleUpdateBreak(index, "endTime", e.target.value)}
-                          className="flex-1 px-3 py-2 bg-slate-50/50 border border-transparent rounded-xl focus:bg-white focus:border-primary-blue outline-none text-sm font-bold text-slate-900"
-                        />
+                    <div key={index} className="flex items-center gap-4 bg-white p-5 rounded-[24px] border border-slate-100 group animate-in slide-in-from-left-2 shadow-sm hover:border-primary-blue/20 transition-all">
+                      <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center text-amber-500 shrink-0">
+                         <Clock size={20} />
+                      </div>
+                      <div className="flex-1 flex items-center gap-3">
+                        <div className="flex-1">
+                          <p className="text-[9px] font-black text-slate-400 uppercase mb-1 ml-1">From</p>
+                          <input 
+                            type="time" 
+                            value={br.startTime}
+                            onChange={(e) => handleUpdateBreak(index, "startTime", e.target.value)}
+                            className="w-full px-3 py-2 bg-slate-50 border border-transparent rounded-xl focus:bg-white focus:border-primary-blue outline-none text-xs font-black text-slate-900 transition-all"
+                          />
+                        </div>
+                        <div className="w-4 h-0.5 bg-slate-100 mt-5" />
+                        <div className="flex-1">
+                          <p className="text-[9px] font-black text-slate-400 uppercase mb-1 ml-1">Until</p>
+                          <input 
+                            type="time" 
+                            value={br.endTime}
+                            onChange={(e) => handleUpdateBreak(index, "endTime", e.target.value)}
+                            className="w-full px-3 py-2 bg-slate-50 border border-transparent rounded-xl focus:bg-white focus:border-primary-blue outline-none text-xs font-black text-slate-900 transition-all"
+                          />
+                        </div>
                       </div>
                       <button 
                         onClick={() => handleRemoveBreak(index)}
-                        className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                        className="p-2.5 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all mt-4"
                       >
                         <Trash2 size={18} />
                       </button>
                     </div>
                   ))}
                   {breaks.length === 0 && (
-                    <div className="p-8 border-2 border-dashed border-gray-50 rounded-[28px] text-center">
-                      <p className="text-xs font-medium text-slate-400 italic">No clinical breaks scheduled for this shift template.</p>
+                    <div className="sm:col-span-2 p-10 border-2 border-dashed border-slate-100 rounded-[32px] text-center bg-slate-50/30">
+                      <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-slate-200 mx-auto mb-4 shadow-sm">
+                        <ShieldAlert size={24} />
+                      </div>
+                      <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">No Active Breaks</p>
+                      <p className="text-[10px] text-slate-400 mt-1">Add breaks to block time for lunch or clinical meetings.</p>
                     </div>
                   )}
                 </div>
@@ -416,36 +479,102 @@ export default function SlotManagementPage() {
 
               {/* SECTION 3: GENERATED SLOTS PREVIEW */}
               <section className="space-y-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <ShieldAlert size={18} className="text-slate-400" />
-                  <h3 className="text-sm font-bold text-slate-700 uppercase tracking-widest">4. Session Grid & Personal Blocking</h3>
+                <div className="flex items-center justify-between mb-2 px-1">
+                  <div className="flex items-center gap-2">
+                    <Sunrise size={18} className="text-primary-blue" />
+                    <h3 className="text-xs font-black text-slate-700 uppercase tracking-[0.15em]">Live Session Grid & Blocking</h3>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-1.5">
+                      <div className="w-2.5 h-2.5 rounded-full bg-green-500" />
+                      <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Active</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <div className="w-2.5 h-2.5 rounded-full bg-red-500" />
+                      <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Blocked</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <div className="w-2.5 h-2.5 rounded-full bg-slate-200" />
+                      <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Break</span>
+                    </div>
+                  </div>
                 </div>
-                <p className="text-xs text-slate-400 ml-1">Click any slot to manually toggle its availability for this doctor's weekly profile.</p>
                 
-                <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-3">
-                  {generatedSlots.map(slot => {
-                    const isBreak = breaks.some(br => isInsideRange(slot, br.startTime, br.endTime));
-                    const isBlocked = manualBlocks.includes(slot);
+                <div className="bg-slate-50/50 p-8 rounded-[40px] border border-slate-100 space-y-10">
+                  {/* GROUP: MORNING */}
+                  {groupedSlots.morning.length > 0 && (
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-3 pb-2 border-b border-slate-200/60">
+                        <Sunrise size={16} className="text-orange-400" />
+                        <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Morning Sessions</h4>
+                      </div>
+                      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3">
+                        {groupedSlots.morning.map(slot => (
+                          <SlotButton 
+                            key={slot}
+                            slot={slot}
+                            breaks={breaks}
+                            manualBlocks={manualBlocks}
+                            handleToggleSlot={handleToggleSlot}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  )}
 
-                    return (
-                      <button
-                        key={slot}
-                        onClick={() => !isBreak && handleToggleSlot(slot)}
-                        disabled={isBreak}
-                        className={cn(
-                          "py-3 rounded-xl text-[11px] font-black transition-all border shadow-sm relative group overflow-hidden",
-                          isBreak 
-                            ? "bg-slate-50 border-slate-100 text-slate-300 cursor-not-allowed" 
-                            : isBlocked 
-                              ? "bg-red-500 border-red-500 text-white shadow-red-500/20" 
-                              : "bg-green-500 border-green-500 text-white shadow-green-500/20 hover:scale-105"
-                        )}
-                      >
-                        {slot}
-                        {isBreak && <span className="absolute inset-0 flex items-center justify-center bg-slate-100/50 text-[8px] font-bold text-slate-400 uppercase tracking-tighter">BREAK</span>}
-                      </button>
-                    );
-                  })}
+                  {/* GROUP: AFTERNOON */}
+                  {groupedSlots.afternoon.length > 0 && (
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-3 pb-2 border-b border-slate-200/60">
+                        <Sun size={16} className="text-blue-400" />
+                        <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Afternoon Sessions</h4>
+                      </div>
+                      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3">
+                        {groupedSlots.afternoon.map(slot => (
+                          <SlotButton 
+                            key={slot}
+                            slot={slot}
+                            breaks={breaks}
+                            manualBlocks={manualBlocks}
+                            handleToggleSlot={handleToggleSlot}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* GROUP: EVENING */}
+                  {groupedSlots.evening.length > 0 && (
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-3 pb-2 border-b border-slate-200/60">
+                        <Sunset size={16} className="text-indigo-400" />
+                        <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Evening Sessions</h4>
+                      </div>
+                      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3">
+                        {groupedSlots.evening.map(slot => (
+                          <SlotButton 
+                            key={slot}
+                            slot={slot}
+                            breaks={breaks}
+                            manualBlocks={manualBlocks}
+                            handleToggleSlot={handleToggleSlot}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {generatedSlots.length === 0 && (
+                    <div className="py-20 text-center space-y-4">
+                      <div className="w-16 h-16 bg-white rounded-3xl flex items-center justify-center text-slate-200 mx-auto shadow-sm">
+                        <Info size={32} />
+                      </div>
+                      <div>
+                        <p className="text-sm font-black text-slate-900">No Slots Generated</p>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Adjust start and end times to generate clinical windows.</p>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </section>
 
@@ -455,5 +584,42 @@ export default function SlotManagementPage() {
         )}
       </div>
     </div>
+  );
+}
+
+// --- Sub-components ---
+
+function SlotButton({ slot, breaks, manualBlocks, handleToggleSlot }: { 
+  slot: string; 
+  breaks: Break[]; 
+  manualBlocks: string[]; 
+  handleToggleSlot: (s: string) => void;
+}) {
+  const isBreak = breaks.some(br => isInsideRange(slot, br.startTime, br.endTime));
+  const isBlocked = manualBlocks.includes(slot);
+
+  return (
+    <button
+      onClick={() => !isBreak && handleToggleSlot(slot)}
+      disabled={isBreak}
+      className={cn(
+        "py-3.5 rounded-2xl text-[10px] font-black transition-all border shadow-sm relative group overflow-hidden",
+        isBreak 
+          ? "bg-slate-100 border-slate-200 text-slate-300 cursor-not-allowed opacity-60" 
+          : isBlocked 
+            ? "bg-red-500 border-red-500 text-white shadow-lg shadow-red-500/20 ring-4 ring-red-500/10 scale-[1.02]" 
+            : "bg-white border-slate-200 text-slate-900 hover:border-primary-green hover:text-primary-green hover:scale-[1.05] hover:shadow-md hover:z-10"
+      )}
+    >
+      {formatTimeTo12h(slot)}
+      {isBreak && (
+        <span className="absolute inset-0 flex items-center justify-center bg-slate-100/40 text-[7px] font-black text-slate-400 uppercase tracking-tighter mix-blend-multiply">
+          BREAK
+        </span>
+      )}
+      {!isBreak && !isBlocked && (
+        <div className="absolute top-1 right-1 w-1 h-1 rounded-full bg-primary-green opacity-0 group-hover:opacity-100 transition-opacity" />
+      )}
+    </button>
   );
 }
