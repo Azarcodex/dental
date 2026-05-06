@@ -41,4 +41,10 @@ export class AdminRepository {
       orderBy: { createdAt: "desc" },
     });
   }
+
+  async deleteAdmin(id: string) {
+    return await prisma.admin.delete({
+      where: { id },
+    });
+  }
 }

@@ -8,6 +8,7 @@ import {
   ChevronDown,
   Star,
   HeartPulse,
+  Phone,
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import axiosInstance from "@/lib/axios";
@@ -34,9 +35,20 @@ export function HeroSection() {
     },
   });
 
+  const { data: contactData } = useQuery({
+    queryKey: ["public-contact-info"],
+    queryFn: async () => {
+      if (typeof window === "undefined") return null;
+      const { data } = await axiosInstance.get("/contact");
+      return data.data;
+    },
+  });
+
   const activeDoctorsCount = doctorsData 
     ? doctorsData.filter((d: any) => d.status === "ACTIVE").length 
-    : 25; // Fallback to 25 if loading or empty
+    : 25; 
+
+  const clinicPhone = contactData?.phone || "+91 98765 43210";
 
   return (
     <section
@@ -195,16 +207,21 @@ export function HeroSection() {
 
               {/* Right Column Cards */}
               <div className="col-span-2 flex flex-col gap-5">
-                {/* 24/7 Card */}
+                {/* Emergency Contact Card */}
                 <article className="bg-white rounded-[24px] p-6 space-y-3 border border-slate-100 shadow-sm hover:border-primary-green/30 hover:shadow-md transition-all duration-300">
                   <div className="w-11 h-11 bg-primary-green/10 rounded-2xl flex items-center justify-center text-primary-green">
-                    <Clock size={22} />
+                    <Phone size={22} />
                   </div>
-                  <h3 className="text-sm font-black text-slate-950 leading-snug">
-                    24/7 Response
-                  </h3>
-                  <p className="text-xs text-slate-500 font-medium leading-relaxed">
-                    Always available for emergency and general consultation.
+                  <div className="space-y-1">
+                    <h3 className="text-sm font-black text-slate-950 leading-snug">
+                      Emergency Support
+                    </h3>
+                    <p className="text-base font-black text-primary-green">
+                      {clinicPhone}
+                    </p>
+                  </div>
+                  <p className="text-[10px] text-slate-500 font-medium leading-relaxed">
+                    Always available for immediate medical consultation.
                   </p>
                 </article>
 

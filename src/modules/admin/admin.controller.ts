@@ -110,3 +110,25 @@ export const getStatsHandler = apiHandler(async () => {
   const stats = await statsService.getDashboardStats();
   return NextResponse.json({ success: true, data: stats });
 });
+
+export const deleteAdminHandler = apiHandler(async (req: NextRequest, { params }: { params: Promise<{ id: string }> }) => {
+  const caller = await authenticateAdmin(req);
+  const { id: targetId } = await params;
+  
+  await adminService.deleteAdmin(caller.role, caller.id, targetId);
+  
+  return NextResponse.json({ success: true, message: "Admin deleted successfully" });
+});
+
+export const updateAdminHandler = apiHandler(async (req: NextRequest, { params }: { params: Promise<{ id: string }> }) => {
+  const caller = await authenticateAdmin(req);
+  const { id: targetId } = await params;
+  const body = await req.json();
+
+  if (body.password === "") {
+    delete body.password;
+  }
+
+  const admin = await adminService.updateAdmin(caller.role, targetId, body);
+  return NextResponse.json({ success: true, data: admin });
+});

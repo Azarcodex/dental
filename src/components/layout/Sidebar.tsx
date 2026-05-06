@@ -34,7 +34,7 @@ export default function Sidebar() {
   const filteredMenuItems = useMemo(() => {
     const items = [...menuItems];
     if (user?.role === "SUPER_ADMIN") {
-      items.push({ name: "Admins", href: "/admin/management", icon: ShieldCheck });
+      items.push({ name: "Manage Admins", href: "/admin/management", icon: ShieldCheck });
     }
     return items;
   }, [user]);

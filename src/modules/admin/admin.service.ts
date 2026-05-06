@@ -101,4 +101,34 @@ export class AdminService {
     }
     return await this.repository.findAll();
   }
+
+  async deleteAdmin(callerRole: string, callerId: string, targetId: string) {
+    // 1. Authorization check
+    if (callerRole !== "SUPER_ADMIN") {
+      throw new AppError("Only Super Admin can delete admins", 403);
+    }
+
+    // 2. Self-deletion prevention
+    if (callerId === targetId) {
+      throw new AppError("You cannot delete your own account", 400);
+    }
+
+    // 3. Perform deletion
+    return await this.repository.deleteAdmin(targetId);
+  }
+
+  async updateAdmin(callerRole: string, targetId: string, data: any) {
+    if (callerRole !== "SUPER_ADMIN") {
+      throw new AppError("Only Super Admin can update admins", 403);
+    }
+
+    const updateData = { ...data };
+    if (updateData.password) {
+      updateData.password = await bcrypt.hash(updateData.password, 10);
+    } else {
+      delete updateData.password;
+    }
+
+    return await this.repository.updateAdmin(targetId, updateData);
+  }
 }

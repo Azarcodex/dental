@@ -3,9 +3,24 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Globe, Camera, Send, MessageCircle, Mail, Phone, MapPin, ExternalLink, Heart } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import axiosInstance from "@/lib/axios";
 
 export function PublicFooter() {
   const currentYear = new Date().getFullYear();
+
+  const { data: contactData } = useQuery({
+    queryKey: ["public-contact-info"],
+    queryFn: async () => {
+      if (typeof window === "undefined") return null;
+      const { data } = await axiosInstance.get("/contact");
+      return data.data;
+    },
+  });
+
+  const clinicPhone = contactData?.phone || "+91 98765 43210";
+  const clinicEmail = contactData?.email || "care@adamsclinic.com";
+  const clinicAddress = contactData?.address || "123 Medical Avenue, Health City, Sector 45, India.";
 
   return (
     <footer className="bg-slate-950 text-white pt-24 pb-12 overflow-hidden relative">
@@ -59,20 +74,20 @@ export function PublicFooter() {
                     <MapPin size={18} />
                  </div>
                  <p className="text-slate-400 font-medium text-sm leading-relaxed">
-                    123 Medical Avenue, Health City, Sector 45, India.
+                    {clinicAddress}
                  </p>
               </div>
               <div className="flex items-start gap-4">
                  <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center shrink-0 text-primary-green">
                     <Phone size={18} />
                  </div>
-                 <p className="text-slate-400 font-medium text-sm">+91 98765 43210</p>
+                 <p className="text-slate-400 font-medium text-sm">{clinicPhone}</p>
               </div>
               <div className="flex items-start gap-4">
                  <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center shrink-0 text-primary-green">
                     <Mail size={18} />
                  </div>
-                 <p className="text-slate-400 font-medium text-sm">support@adamsclinic.com</p>
+                 <p className="text-slate-400 font-medium text-sm">{clinicEmail}</p>
               </div>
            </div>
         </div>
