@@ -20,6 +20,7 @@ import {
   Clock3,
   RotateCcw
 } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 import { cn, formatTimeTo12h } from "@/lib/utils";
 import { toast } from "react-hot-toast";
 import { publicBookingSchema, type PublicBookingInput } from "@/lib/validations/publicBooking";
@@ -47,6 +48,7 @@ export function PublicBookingForm() {
   const [view, setView] = useState<"FORM" | "SUCCESS">("FORM");
   const [successData, setSuccessData] = useState<any>(null);
   const [showErrorSummary, setShowErrorSummary] = useState(false);
+  const searchParams = useSearchParams();
 
   const {
     register,
@@ -127,6 +129,24 @@ export function PublicBookingForm() {
   useEffect(() => {
     setValue("slot", "");
   }, [watchDoctorId, watchDate, setValue]);
+
+  // --- Autofill Flow ---
+  useEffect(() => {
+    const doctorParam = searchParams.get("doctor");
+    const specialtyParam = searchParams.get("specialty");
+
+    if (specialtyParam && watchSpec !== specialtyParam) {
+      setValue("specialization", specialtyParam, { shouldValidate: true });
+    }
+
+    if (doctorParam && watchDoctorId !== doctorParam) {
+      // Delay setting doctorId slightly to ensure specialization-based filtering has updated
+      const timer = setTimeout(() => {
+        setValue("doctorId", doctorParam, { shouldValidate: true });
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [searchParams, setValue, watchSpec, watchDoctorId]);
 
   // --- Mutation ---
 

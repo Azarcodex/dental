@@ -9,6 +9,8 @@ import {
   Star,
   HeartPulse,
 } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import axiosInstance from "@/lib/axios";
 
 export function HeroSection() {
   const scrollToSection = (id: string) => {
@@ -22,6 +24,18 @@ export function HeroSection() {
       window.scrollTo({ top: offsetPosition, behavior: "smooth" });
     }
   };
+
+  const { data: doctorsData } = useQuery({
+    queryKey: ["public-doctors-count"],
+    queryFn: async () => {
+      const { data } = await axiosInstance.get("/doctors");
+      return data.data;
+    },
+  });
+
+  const activeDoctorsCount = doctorsData 
+    ? doctorsData.filter((d: any) => d.status === "ACTIVE").length 
+    : 25; // Fallback to 25 if loading or empty
 
   return (
     <section
@@ -71,7 +85,7 @@ export function HeroSection() {
             <div className="grid grid-cols-3 gap-4 py-6 border-y border-slate-100">
               {[
                 { value: "10K+", label: "Happy Patients" },
-                { value: "25+", label: "Specialists" },
+                { value: `${activeDoctorsCount}+`, label: "Specialists" },
                 { value: "15+", label: "Years of Care" },
               ].map((stat) => (
                 <div key={stat.label} className="flex flex-col gap-1">

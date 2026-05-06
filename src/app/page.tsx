@@ -16,13 +16,20 @@ export default function RootPage() {
   return (
     <main className="min-h-screen bg-white selection:bg-primary-green selection:text-white">
       <Toaster position="top-right" />
-      
+
       <PublicNavbar />
-      
+
       {/* Sections - Each handles its own padding & internal container */}
       <div id="home" className="scroll-mt-screen">
         <HeroSection />
       </div>
+
+      <div id="doctors" className="scroll-mt-24">
+        <OurDoctors />
+      </div>
+      <HowItWorks />
+
+      <PublicBookingForm />
 
       <div id="about" className="scroll-mt-24">
         <WhyChooseUs />
@@ -32,15 +39,7 @@ export default function RootPage() {
         <OurServices />
       </div>
 
-      <HowItWorks />
-
-      <div id="doctors" className="scroll-mt-24">
-        <OurDoctors />
-      </div>
-
-      <PublicBookingForm />
-
-      <Testimonials />
+      {/* <Testimonials /> */}
 
       <div id="contact" className="scroll-mt-24">
         <ContactSection />
