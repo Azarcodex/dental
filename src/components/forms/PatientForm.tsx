@@ -13,13 +13,16 @@ interface PatientFormProps {
   initialPhone?: string;
 }
 
-export default function PatientForm({ onSuccess, initialPhone }: PatientFormProps) {
+export default function PatientForm({
+  onSuccess,
+  initialPhone,
+}: PatientFormProps) {
   const queryClient = useQueryClient();
 
   const {
     register,
     handleSubmit,
-    formState: { errors }
+    formState: { errors },
   } = useForm({
     resolver: zodResolver(CreatePatientSchema),
     defaultValues: {
@@ -28,7 +31,7 @@ export default function PatientForm({ onSuccess, initialPhone }: PatientFormProp
       age: 0,
       phone: initialPhone || "",
       email: "",
-    }
+    },
   });
 
   const mutation = useMutation({
@@ -42,11 +45,14 @@ export default function PatientForm({ onSuccess, initialPhone }: PatientFormProp
     },
     onError: (err: any) => {
       toast.error(err.message || "Failed to register patient");
-    }
+    },
   });
 
   return (
-    <form onSubmit={handleSubmit((data) => mutation.mutate(data))} className="space-y-6">
+    <form
+      onSubmit={handleSubmit((data) => mutation.mutate(data))}
+      className="space-y-6"
+    >
       <div className="space-y-4">
         <div className="space-y-2">
           <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
@@ -58,13 +64,19 @@ export default function PatientForm({ onSuccess, initialPhone }: PatientFormProp
             placeholder="John Doe"
           />
           <div className="min-h-[20px]">
-            {errors.fullName && <p className="text-xs text-red-500">{errors.fullName.message as string}</p>}
+            {errors.fullName && (
+              <p className="text-xs text-red-500">
+                {errors.fullName.message as string}
+              </p>
+            )}
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <label className="text-sm font-semibold text-gray-700">Gender</label>
+            <label className="text-sm font-semibold text-gray-700">
+              Gender
+            </label>
             <select
               {...register("gender")}
               className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none text-black font-semibold"
@@ -76,11 +88,36 @@ export default function PatientForm({ onSuccess, initialPhone }: PatientFormProp
           </div>
           <div className="space-y-2">
             <label className="text-sm font-semibold text-gray-700">Age</label>
+
             <input
               type="number"
-              {...register("age", { valueAsNumber: true })}
+              min={1}
+              max={120}
+              {...register("age", {
+                valueAsNumber: true,
+                required: "Age is required",
+                min: {
+                  value: 1,
+                  message: "Age must be greater than 0",
+                },
+                max: {
+                  value: 120,
+                  message: "Please enter a valid age",
+                },
+                validate: (value) =>
+                  !Number.isNaN(value) || "Age must be a number",
+              })}
               className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none text-black font-bold"
+              placeholder="Enter age"
             />
+
+            <div className="min-h-[20px]">
+              {errors.age && (
+                <p className="text-xs text-red-500">
+                  {errors.age.message as string}
+                </p>
+              )}
+            </div>
           </div>
         </div>
 
@@ -94,7 +131,11 @@ export default function PatientForm({ onSuccess, initialPhone }: PatientFormProp
             placeholder="07xxxxxxxx"
           />
           <div className="min-h-[20px]">
-            {errors.phone && <p className="text-xs text-red-500">{errors.phone.message as string}</p>}
+            {errors.phone && (
+              <p className="text-xs text-red-500">
+                {errors.phone.message as string}
+              </p>
+            )}
           </div>
         </div>
 
@@ -108,7 +149,11 @@ export default function PatientForm({ onSuccess, initialPhone }: PatientFormProp
             placeholder="john@example.com"
           />
           <div className="min-h-[20px]">
-            {errors.email && <p className="text-xs text-red-500">{errors.email.message as string}</p>}
+            {errors.email && (
+              <p className="text-xs text-red-500">
+                {errors.email.message as string}
+              </p>
+            )}
           </div>
         </div>
       </div>
