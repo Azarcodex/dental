@@ -72,6 +72,7 @@ export default function SlotManagementPage() {
   const [slotDuration, setSlotDuration] = useState(30);
   const [breaks, setBreaks] = useState<Break[]>([]);
   const [manualBlocks, setManualBlocks] = useState<string[]>([]); // Array of startTimes
+  const [loadingSlot, setLoadingSlot] = useState<string | null>(null);
 
   // --- Queries ---
   const { data: doctors, isLoading: loadingDoctors } = useQuery({
@@ -196,10 +197,51 @@ export default function SlotManagementPage() {
   };
 
   const handleToggleSlot = (slotTime: string) => {
-    setManualBlocks(prev => 
-      prev.includes(slotTime) ? prev.filter(t => t !== slotTime) : [...prev, slotTime]
-    );
+    if (loadingSlot) return; // Prevent duplicate clicks while a mutation is in progress
+    setLoadingSlot(slotTime);
+    
+    const updatedBlocks = manualBlocks.includes(slotTime)
+      ? manualBlocks.filter(t => t !== slotTime)
+      : [...manualBlocks, slotTime];
+      
+    toggleSlotMutation.mutate(updatedBlocks);
   };
+
+  const toggleSlotMutation = useMutation({
+    mutationFn: async (updatedBlocks: string[]) => {
+      const allBlocks = [
+        ...breaks,
+        ...updatedBlocks.map(t => ({
+          startTime: t,
+          endTime: minutesToTime(timeToMinutes(t) + slotDuration)
+        }))
+      ];
+
+      return axiosInstance.post(`/doctors/${selectedDoctorId}/schedule`, {
+        days: activeDays,
+        startTime,
+        endTime,
+        slotDuration,
+        blocks: allBlocks
+      });
+    },
+    onMutate: async (updatedBlocks) => {
+      // Optimistic update
+      setManualBlocks(updatedBlocks);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["doctor-schedule", selectedDoctorId] });
+      toast.success("Slot status updated instantly!");
+    },
+    onError: () => {
+      toast.error("Failed to update slot status. Rolling back.");
+      // Rollback by refetching
+      queryClient.invalidateQueries({ queryKey: ["doctor-schedule", selectedDoctorId] });
+    },
+    onSettled: () => {
+      setLoadingSlot(null);
+    }
+  });
 
   const saveMutation = useMutation({
     mutationFn: async () => {
@@ -516,6 +558,7 @@ export default function SlotManagementPage() {
                             breaks={breaks}
                             manualBlocks={manualBlocks}
                             handleToggleSlot={handleToggleSlot}
+                            isUpdating={loadingSlot === slot}
                           />
                         ))}
                       </div>
@@ -537,6 +580,7 @@ export default function SlotManagementPage() {
                             breaks={breaks}
                             manualBlocks={manualBlocks}
                             handleToggleSlot={handleToggleSlot}
+                            isUpdating={loadingSlot === slot}
                           />
                         ))}
                       </div>
@@ -558,6 +602,7 @@ export default function SlotManagementPage() {
                             breaks={breaks}
                             manualBlocks={manualBlocks}
                             handleToggleSlot={handleToggleSlot}
+                            isUpdating={loadingSlot === slot}
                           />
                         ))}
                       </div>
@@ -589,21 +634,22 @@ export default function SlotManagementPage() {
 
 // --- Sub-components ---
 
-function SlotButton({ slot, breaks, manualBlocks, handleToggleSlot }: { 
+function SlotButton({ slot, breaks, manualBlocks, handleToggleSlot, isUpdating }: { 
   slot: string; 
   breaks: Break[]; 
   manualBlocks: string[]; 
   handleToggleSlot: (s: string) => void;
+  isUpdating?: boolean;
 }) {
   const isBreak = breaks.some(br => isInsideRange(slot, br.startTime, br.endTime));
   const isBlocked = manualBlocks.includes(slot);
 
   return (
     <button
-      onClick={() => !isBreak && handleToggleSlot(slot)}
-      disabled={isBreak}
+      onClick={() => !isBreak && !isUpdating && handleToggleSlot(slot)}
+      disabled={isBreak || isUpdating}
       className={cn(
-        "py-3.5 rounded-2xl text-[10px] font-black transition-all border shadow-sm relative group overflow-hidden",
+        "py-3.5 rounded-2xl text-[10px] font-black transition-all border shadow-sm relative group overflow-hidden flex items-center justify-center",
         isBreak 
           ? "bg-slate-100 border-slate-200 text-slate-300 cursor-not-allowed opacity-60" 
           : isBlocked 
@@ -611,7 +657,11 @@ function SlotButton({ slot, breaks, manualBlocks, handleToggleSlot }: {
             : "bg-white border-slate-200 text-slate-900 hover:border-primary-green hover:text-primary-green hover:scale-[1.05] hover:shadow-md hover:z-10"
       )}
     >
-      {formatTimeTo12h(slot)}
+      {isUpdating ? (
+        <Loader2 size={14} className="animate-spin opacity-70" />
+      ) : (
+        formatTimeTo12h(slot)
+      )}
       {isBreak && (
         <span className="absolute inset-0 flex items-center justify-center bg-slate-100/40 text-[7px] font-black text-slate-400 uppercase tracking-tighter mix-blend-multiply">
           BREAK
