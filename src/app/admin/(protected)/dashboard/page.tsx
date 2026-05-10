@@ -17,11 +17,13 @@ import {
   AlertCircle,
   MoreVertical,
   SkipForward,
-  UserX
+  UserX,
+  Printer
 } from "lucide-react";
 import { cn, formatTimeTo12h } from "@/lib/utils";
 import { StatusBadge, AppointmentStatus } from "@/components/dashboard/StatusBadge";
 import { PatientDrawer } from "@/components/dashboard/PatientDrawer";
+import { PrintableReport } from "@/components/dashboard/PrintableReport";
 import { toast } from "react-hot-toast";
 import { getLocalDateString } from "@/lib/dateUtils";
 
@@ -145,24 +147,13 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
+    <>
+      <div className="space-y-6 print:hidden">
+        {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-black">Today's Appointments</h1>
           <p className="text-sm text-black font-semibold">Manage patient flow and consultation statuses.</p>
-        </div>
-        <div className="flex items-center gap-2 text-sm text-gray-500 bg-white px-4 py-2 rounded-xl border border-gray-100 shadow-sm">
-          {statsRefetching || appsRefetching ? (
-            <Loader2 size={16} className="text-primary-green animate-spin" />
-          ) : (
-            <Clock size={16} className="text-primary-green" />
-          )}
-          <span className="font-bold text-black uppercase text-[10px] tracking-widest">Live Feed</span>
-          <div className={cn(
-            "w-2 h-2 rounded-full ml-1",
-            statsRefetching || appsRefetching ? "bg-amber-500 animate-bounce" : "bg-green-500 animate-pulse"
-          )} />
         </div>
       </div>
 
@@ -221,6 +212,14 @@ export default function Dashboard() {
               <option value="DONE">Completed</option>
             </select>
           </div>
+          
+          <button 
+            onClick={() => window.print()}
+            className="ml-auto flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 text-gray-700 text-sm font-bold rounded-xl shadow-sm hover:bg-gray-50 hover:text-primary-blue transition-all"
+          >
+            <Printer size={16} />
+            Print Bookings
+          </button>
         </div>
 
         {/* Table Content */}
@@ -357,6 +356,16 @@ export default function Dashboard() {
         appointment={activeAppointment}
       />
     </div>
+    <div className="hidden print:block w-full h-full">
+      <PrintableReport
+        appointments={appointments || []}
+        selectedDate={selectedDate}
+        selectedDoctor={selectedDoctor}
+        selectedStatus={selectedStatus}
+        doctors={doctors || []}
+      />
+    </div>
+  </>
   );
 }
 

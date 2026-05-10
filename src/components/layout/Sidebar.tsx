@@ -42,7 +42,7 @@ export default function Sidebar() {
   return (
     <div 
       className={cn(
-        "h-screen bg-white border-r border-gray-100 flex flex-col transition-all duration-300 relative",
+        "h-screen bg-white border-r border-gray-100 flex flex-col transition-all duration-300 relative print:hidden",
         collapsed ? "w-20" : "w-64"
       )}
     >
