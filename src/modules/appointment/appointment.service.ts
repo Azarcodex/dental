@@ -46,9 +46,6 @@ export class AppointmentService {
             data: {
               fullName: data.patientData.fullName,
               gender: data.patientData.gender,
-              age: data.patientData.age,
-              ...(data.patientData.email && { email: data.patientData.email }),
-              ...(data.patientData.bloodGroup && { bloodGroup: data.patientData.bloodGroup }),
             },
           });
         } else {
@@ -69,9 +66,6 @@ export class AppointmentService {
               fullName: data.patientData.fullName,
               phone: data.patientData.phone,
               gender: data.patientData.gender,
-              age: data.patientData.age,
-              email: data.patientData.email || undefined,
-              bloodGroup: data.patientData.bloodGroup || undefined,
               displayId: nextId,
             },
           });
@@ -148,9 +142,7 @@ export class AppointmentService {
                 fullName: true,
                 phone: true,
                 displayId: true,
-                age: true,
                 gender: true,
-                bloodGroup: true,
               },
             },
           },

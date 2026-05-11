@@ -28,10 +28,8 @@ model Doctor {
   email           String                    @unique
   phone           String
   gender          String
-  dob             DateTime
   profilePhoto    String?
   specialization  String
-  department      String
   consultationFee Float
   status          String
   createdAt       DateTime                  @default(now())
@@ -46,10 +44,7 @@ model Patient {
   id           String        @id @default(uuid())
   fullName     String
   gender       String
-  age          Int
   phone        String        @unique
-  email        String?
-  bloodGroup   String?
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   displayId    String?       @unique

@@ -142,7 +142,6 @@ exports.Prisma.DoctorScalarFieldEnum = {
   gender: 'gender',
   profilePhoto: 'profilePhoto',
   specialization: 'specialization',
-  department: 'department',
   consultationFee: 'consultationFee',
   status: 'status',
   createdAt: 'createdAt',
@@ -153,10 +152,7 @@ exports.Prisma.PatientScalarFieldEnum = {
   id: 'id',
   fullName: 'fullName',
   gender: 'gender',
-  age: 'age',
   phone: 'phone',
-  email: 'email',
-  bloodGroup: 'bloodGroup',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   displayId: 'displayId'

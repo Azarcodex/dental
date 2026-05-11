@@ -4,46 +4,50 @@ import { Suspense } from "react";
 import { Toaster } from "react-hot-toast";
 import { PublicNavbar } from "@/components/public/PublicNavbar";
 import { HeroSection } from "@/components/public/HeroSection";
-import { WhyChooseUs } from "@/components/public/WhyChooseUs";
 import { OurServices } from "@/components/public/OurServices";
 import { HowItWorks } from "@/components/public/HowItWorks";
 import { OurDoctors } from "@/components/public/OurDoctors";
 import { PublicBookingForm } from "@/components/public/PublicBookingForm";
-import { Testimonials } from "@/components/public/Testimonials";
+import { BookingBanner } from "@/components/public/BookingBanner";
 import { ContactSection } from "@/components/public/ContactSection";
 import { PublicFooter } from "@/components/public/PublicFooter";
 
 export default function RootPage() {
   return (
-    <main className="min-h-screen bg-white selection:bg-primary-green selection:text-white">
+    <main className="min-h-screen bg-white selection:bg-primary-green selection:text-white overflow-clip">
       <Toaster position="top-right" />
 
-      <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-white"><div className="w-10 h-10 border-4 border-primary-green border-t-transparent rounded-full animate-spin" /></div>}>
+      <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-navy-950"><div className="w-10 h-10 border-4 border-primary-green border-t-transparent rounded-full animate-spin" /></div>}>
         <PublicNavbar />
 
-        {/* Sections - Each handles its own padding & internal container */}
-        <div id="home" className="scroll-mt-screen">
+        {/* Hero Section */}
+        <div id="home">
           <HeroSection />
         </div>
 
-        <div id="doctors" className="scroll-mt-24">
-          <OurDoctors />
-        </div>
-        <HowItWorks />
-
-        <PublicBookingForm />
-
-        <div id="about" className="scroll-mt-24">
-          <WhyChooseUs />
-        </div>
-
-        <div id="services" className="scroll-mt-24">
+        {/* Services Section */}
+        <div id="services">
           <OurServices />
         </div>
 
-        {/* <Testimonials /> */}
+        {/* Doctors Section */}
+        <div id="doctors">
+          <OurDoctors />
+        </div>
 
-        <div id="contact" className="scroll-mt-24">
+        {/* How It Works Section */}
+        <HowItWorks />
+
+        {/* Booking CTA Banner */}
+        <BookingBanner />
+
+        {/* Booking Form Section */}
+        <div id="booking">
+          <PublicBookingForm />
+        </div>
+
+        {/* Contact Section */}
+        <div id="contact">
           <ContactSection />
         </div>
 

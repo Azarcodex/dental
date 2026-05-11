@@ -1,121 +1,117 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: var(--font-poppins), system-ui, -apple-system, sans-serif;
-  --font-heading: var(--font-poppins), "Outfit", "Inter", sans-serif;
-
-  /* Clinic Branding Colors - Extracted from Logo */
-  --color-primary-green: #009639;
-  --color-primary-green-light: #e6f5eb; /* Tint */
-  --color-primary-green-muted: #d1ecd9;
-  --color-primary-green-dark: #007a2e;
-
-  --color-primary-blue: #004b93;
-  --color-primary-blue-light: #ebf2fa; /* Tint */
-  --color-primary-blue-muted: #d1e1f3;
-  --color-primary-blue-dark: #00366b;
-
-  --color-slate-950: #0f172a;
-  --color-slate-900: #1e293b;
-  --color-slate-600: #475569;
-  --color-slate-400: #94a3b8;
-  --color-slate-200: #e2e8f0;
-  --color-slate-100: #f1f5f9;
-  --color-slate-50: #f8fafc;
+  --font-sans: var(--font-plus-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-inter: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  
+  --color-navy-950: #0a0f1e;
+  --color-navy-900: #0f172a;
+  --color-primary-green: #10B981;
 }
 
-:root {
-  --background: #ffffff;
-  --foreground: #0f172a; /* Slate 950 for better readability */
+@layer base {
+  :root {
+    --primary-navy: #0a0f1e;
+    --primary-green: #10B981;
+  }
+
+  * {
+    border-color: #e2e8f0;
+  }
+  
+  body {
+    @apply bg-white text-navy-950 font-sans selection:bg-primary-green/30;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: var(--font-sans);
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
+@layer components {
+  .btn-premium-primary {
+    @apply relative px-8 py-4 rounded-full font-bold text-sm tracking-wide transition-all duration-500 overflow-hidden bg-primary-green text-white hover:bg-emerald-600 hover:shadow-[0_8px_20px_rgba(16,185,129,0.3)] active:scale-95 shadow-lg shadow-emerald-500/20;
+  }
+
+  .section-title {
+    @apply text-4xl md:text-5xl lg:text-6xl font-black tracking-tight leading-[1.1] text-navy-950 mb-6;
+  }
+
+  .container-custom {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: var(--font-heading);
-  letter-spacing: -0.02em;
-}
+@layer utilities {
+  /* Sequential Entrance Animations */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
 
-/* --- Professional Utilities --- */
+  @keyframes slideRight {
+    from { opacity: 0; transform: translateX(40px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
 
-.section-padding {
-  @apply py-24 lg:py-32;
-}
+  @keyframes bounceSubtle {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
 
-.container-custom {
-  @apply max-w-[1240px] mx-auto px-6 lg:px-10;
-}
-
-.card-base {
-  @apply bg-white rounded-[32px] border border-slate-50 shadow-sm transition-all duration-500 overflow-hidden;
-}
-
-.card-hover {
-  @apply hover:shadow-xl hover:shadow-slate-200/40 hover:border-slate-100 hover:-translate-y-1.5;
-}
-
-.btn-primary {
-  @apply bg-primary-green text-white px-8 py-4 rounded-[18px] font-bold text-sm shadow-lg shadow-primary-green/10 hover:bg-primary-green-dark hover:-translate-y-0.5 active:translate-y-0 transition-all;
-}
-
-.btn-secondary {
-  @apply bg-primary-blue text-white px-8 py-4 rounded-[18px] font-bold text-sm shadow-lg shadow-primary-blue/10 hover:bg-primary-blue-dark hover:-translate-y-0.5 active:translate-y-0 transition-all;
-}
-
-/* Section Header pattern */
-.section-tag {
-  @apply text-[10px] font-black text-primary-green underline decoration-2 underline-offset-8 uppercase tracking-[0.2em] mb-6 block;
-}
-
-.section-title {
-  @apply text-3xl lg:text-4xl font-black text-slate-950 leading-[1.2] mb-6 tracking-tight;
-}
-
-.section-desc {
-  @apply text-base text-slate-500 font-medium max-w-2xl leading-relaxed mb-12;
-}
-
-/* Animations */
-.animate-fade-in {
-  animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.animate-slide-up {
-  animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes fadeIn {
-  from {
+  .animate-fade-up {
+    animation: fadeUp 0.8s ease-out forwards;
     opacity: 0;
   }
-  to {
-    opacity: 1;
-  }
-}
 
-@keyframes slideUp {
-  from {
+  .animate-slide-right {
+    animation: slideRight 0.8s ease-out forwards;
     opacity: 0;
-    transform: translateY(30px);
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+
+  .animate-bounce-subtle {
+    animation: bounceSubtle 1.5s ease-in-out infinite;
+  }
+
+  .delay-label { animation-delay: 0.4s; }
+  .delay-headline { animation-delay: 0.6s; }
+  .delay-subline { animation-delay: 0.8s; }
+  .delay-cta { animation-delay: 1s; }
+  .delay-badges { animation-delay: 1.2s; }
+  .delay-image { animation-delay: 0.5s; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-fade-up, .animate-slide-right {
+      animation: none !important;
+      opacity: 1 !important;
+      transform: none !important;
+    }
   }
 }
 
-/* Smooth Scroll */
-html {
-  scroll-behavior: smooth;
+/* Exact CSS provided by the user for Hero animation */
+#hero-tooth {
+  width: 420px;
+  max-width: 90vw;
+  border-radius: 24px;
+  transform-origin: center bottom;
+  will-change: transform, opacity;
+  transition: none; /* scroll drives this, not CSS transition */
+  animation: toothFloat 3.5s ease-in-out infinite;
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.12);
+}
+
+@keyframes toothFloat {
+  0%, 100% { transform: translateY(0px) rotate(3deg); }
+  50%       { transform: translateY(-18px) rotate(3deg); }
+}
+
+/* When scroll kicks in, JS overwrites the transform inline — 
+   so add this to pause the float once scrolling starts */
+#hero-tooth.is-scrolling {
+  animation: none;
+}
+
+@keyframes scrollLine {
+  0%   { transform: scaleY(0); transform-origin: top; opacity: 1; }
+  50%  { transform: scaleY(1); transform-origin: top; opacity: 1; }
+  100% { transform: scaleY(1); transform-origin: bottom; opacity: 0; }
 }

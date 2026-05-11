@@ -1,12 +1,16 @@
-import { Poppins } from "next/font/google";
+import { Plus_Jakarta_Sans, Inter } from "next/font/google";
 import "./globals.css";
 import Providers from "@/components/Providers";
 import { AuthProvider } from "@/context/AuthContext";
 import { Metadata } from "next";
 
-const poppins = Poppins({
-  weight: ["300", "400", "500", "600", "700", "800", "900"],
-  variable: "--font-poppins",
+const plusJakarta = Plus_Jakarta_Sans({
+  variable: "--font-plus-jakarta",
+  subsets: ["latin"],
+});
+
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
@@ -22,7 +26,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" data-scroll-behavior="smooth">
-      <body className={`${poppins.variable} font-sans antialiased`}>
+      <body className={`${plusJakarta.variable} ${inter.variable} font-sans antialiased`}>
         <Providers>
           <AuthProvider>
             {children}

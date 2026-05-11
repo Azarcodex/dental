@@ -15,10 +15,6 @@ export const publicBookingSchema = z.object({
     .optional()
     .or(z.literal("")),
     
-  age: z.number({ error: "Age is required" })
-    .min(1, "Age must be at least 1")
-    .max(120, "Please enter a valid age"),
-    
   gender: z.string().nonempty("Please select your gender"),
   
   specialization: z.string().nonempty("Please select a specialization"),

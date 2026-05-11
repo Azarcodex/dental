@@ -1,281 +1,399 @@
 "use client";
 
-import {
-  ArrowRight,
-  ShieldCheck,
-  Clock,
-  Users,
-  ChevronDown,
-  Star,
-  HeartPulse,
-  Phone,
-} from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
-import axiosInstance from "@/lib/axios";
+import React, { useEffect, useState } from "react";
+import { ArrowRight, Users, Award, CalendarCheck } from "lucide-react";
 
 export function HeroSection() {
-  const scrollToSection = (id: string) => {
-    const elem = document.getElementById(id);
-    if (elem) {
-      const offset = 80;
-      const bodyRect = document.body.getBoundingClientRect().top;
-      const elementRect = elem.getBoundingClientRect().top;
-      const elementPosition = elementRect - bodyRect;
-      const offsetPosition = elementPosition - offset;
-      window.scrollTo({ top: offsetPosition, behavior: "smooth" });
+  const words = ["Smile", "Confidence", "Health", "Comfort", "Brilliance"];
+  const [index, setIndex] = useState(0);
+  const [isExiting, setIsExiting] = useState(false);
+
+  // Rotating text logic
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIsExiting(true);
+      setTimeout(() => {
+        setIndex((prev) => (prev + 1) % words.length);
+        setIsExiting(false);
+      }, 380);
+    }, 3380);
+    
+    return () => clearInterval(interval);
+  }, []);
+
+  // Main scroll & resize animation controller
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const desktopImg = document.getElementById('hero-tooth-desktop');
+    const hero = document.getElementById('hero-section');
+    const fixedWrapper = document.getElementById('fixed-image-wrapper');
+    if (!desktopImg || !hero) return;
+
+    let isMobile = window.innerWidth < 768;
+    let scrollHandler: any = null;
+
+    const applyScroll = () => {
+      const rect = hero.getBoundingClientRect();
+      const heroHeight = hero.offsetHeight;
+      
+      const scrolledThrough = Math.max(0, -rect.top);
+      const progress = Math.min(scrolledThrough / heroHeight, 1);
+
+      const translateY = progress * 200; 
+      const rotate = progress * 15;  
+      const scale = 1 + progress * 0.12; 
+      const opacity = 1 - progress * 0.4; 
+
+      desktopImg.style.transform = `translateY(${translateY}px) rotate(${rotate}deg) scale(${scale})`;
+      desktopImg.style.opacity = opacity.toString();
+
+      // Pause idle animation when scrolling
+      if (scrolledThrough > 30) {
+        desktopImg.classList.add('is-scrolling');
+      } else {
+        desktopImg.classList.remove('is-scrolling');
+      }
+
+      if (fixedWrapper) {
+        if (progress >= 1) {
+          fixedWrapper.style.opacity = '0';
+          fixedWrapper.style.pointerEvents = 'none';
+        } else {
+          fixedWrapper.style.opacity = '1';
+        }
+      }
+    };
+
+    const resetStyles = () => {
+      desktopImg.style.transform = '';
+      desktopImg.style.opacity = '';
+      desktopImg.classList.remove('is-scrolling');
+      if (fixedWrapper) {
+        fixedWrapper.style.opacity = '0';
+      }
+    };
+
+    const handleResize = () => {
+      const currentlyMobile = window.innerWidth < 768;
+      
+      if (currentlyMobile !== isMobile) {
+        isMobile = currentlyMobile;
+        
+        if (isMobile) {
+          if (scrollHandler) {
+            window.removeEventListener('scroll', scrollHandler);
+            scrollHandler = null;
+          }
+          resetStyles();
+        } else {
+          if (!scrollHandler) {
+            scrollHandler = () => applyScroll();
+            window.addEventListener('scroll', scrollHandler, { passive: true });
+          }
+          applyScroll();
+        }
+      } else if (!isMobile) {
+         applyScroll();
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    if (!isMobile) {
+      scrollHandler = () => applyScroll();
+      window.addEventListener('scroll', scrollHandler, { passive: true });
+      applyScroll();
+    } else {
+      resetStyles();
+    }
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      if (scrollHandler) {
+        window.removeEventListener('scroll', scrollHandler);
+      }
+    };
+  }, []);
+
+  // Scroll indicator fade out
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const indicator = document.getElementById('scroll-indicator');
+    if (!indicator) return;
+    const handleScroll = () => {
+      indicator.style.opacity = window.scrollY > 80 ? '0' : '1';
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Mobile Animation Handoff
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const mobileImg = document.getElementById('hero-tooth-mobile');
+    if (!mobileImg) return;
+    
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) {
+      mobileImg.classList.add('float-mobile-idle');
+      mobileImg.classList.remove('animate-image-entrance');
+      return;
+    }
+
+    const handleAnimationEnd = (e: AnimationEvent) => {
+      if (e.animationName === 'imageDropIn') {
+        mobileImg.classList.remove('animate-image-entrance');
+        mobileImg.classList.add('float-mobile-idle');
+      }
+    };
+    
+    mobileImg.addEventListener('animationend', handleAnimationEnd);
+    return () => mobileImg.removeEventListener('animationend', handleAnimationEnd);
+  }, []);
+
+  const scrollToBooking = () => {
+    const booking = document.getElementById("booking");
+    if (booking) {
+      booking.scrollIntoView({ behavior: "smooth" });
     }
   };
 
-  const { data: doctorsData } = useQuery({
-    queryKey: ["public-doctors-count"],
-    queryFn: async () => {
-      if (typeof window === "undefined") return null;
-      const { data } = await axiosInstance.get("/doctors");
-      return data.data;
-    },
-  });
-
-  const { data: contactData } = useQuery({
-    queryKey: ["public-contact-info"],
-    queryFn: async () => {
-      if (typeof window === "undefined") return null;
-      const { data } = await axiosInstance.get("/contact");
-      return data.data;
-    },
-  });
-
-  const activeDoctorsCount = doctorsData 
-    ? doctorsData.filter((d: any) => d.status === "ACTIVE").length 
-    : 25; 
-
-  const clinicPhone = contactData?.phone || "+91 98765 43210";
-
   return (
-    <section
-      id="home"
-      className="relative pt-28 pb-20 lg:pt-44 lg:pb-36 overflow-hidden"
-    >
-      {/* Background Decor — unchanged */}
-      <div
-        className="absolute top-0 right-0 w-[40%] h-full bg-primary-green/5 -z-10 rounded-l-[100px] animate-fade-in"
-        aria-hidden="true"
-      />
-      <div
-        className="absolute top-1/4 -left-20 w-80 h-80 bg-primary-blue/5 -z-10 rounded-full blur-[100px] animate-fade-in"
-        aria-hidden="true"
-      />
+    <>
+      <style>{`
+        .bg-mobile-gradient {
+          background: linear-gradient(160deg, #f0fdf8 0%, #ffffff 50%, #f0f9ff 100%);
+        }
+        @media (min-width: 768px) {
+          .bg-mobile-gradient { background: #ffffff; }
+        }
 
-      <div className="container-custom">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 xl:gap-20 items-center">
-          {/* ── LEFT CONTENT ── */}
-          <article className="flex flex-col gap-8 animate-slide-up">
-            {/* Badge */}
-            <span className="self-start inline-flex items-center gap-2 bg-primary-green/10 text-primary-green px-4 py-2 rounded-full text-[9px] font-black uppercase tracking-[0.2em] shadow-sm">
-              <ShieldCheck size={13} />
-              Premium Multispecialty Medical Center
+        /* Rotating Headline Word */
+        .word-container {
+          display: inline-block;
+          position: relative;
+          overflow: hidden;
+          vertical-align: bottom;
+          min-width: 140px;
+          height: 1.2em;
+        }
+        @media (min-width: 768px) { .word-container { min-width: 180px; } }
+        @media (min-width: 1024px) { .word-container { min-width: 380px; } }
+
+        .word-item {
+          display: block;
+          color: #10B981;
+          font-style: italic;
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 100%;
+          line-height: 1.2em;
+        }
+
+        .word-underline {
+          position: absolute;
+          bottom: 4px;
+          left: 0;
+          height: 3px;
+          background: #10B981;
+          border-radius: 2px;
+          width: 0%;
+        }
+        .active .word-underline {
+          animation: underlineGrow 350ms ease-out forwards;
+        }
+
+        @keyframes underlineGrow {
+          from { width: 0%; }
+          to { width: 100%; }
+        }
+
+        @media (prefers-reduced-motion: no-preference) {
+          .word-exit { animation: wordExit 380ms ease-in forwards; }
+          .word-enter { animation: wordEnter 380ms ease-out forwards; }
+          @keyframes wordExit {
+            from { transform: translateY(0); opacity: 1; }
+            to { transform: translateY(-110%); opacity: 0; }
+          }
+          @keyframes wordEnter {
+            from { transform: translateY(110%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+          }
+
+          .animate-text-up { animation: textFadeUp 0.5s ease-out both; }
+          .delay-label { animation-delay: 0.3s; }
+          .delay-headline { animation-delay: 0.5s; }
+          .delay-subline { animation-delay: 0.7s; }
+          .delay-btn { animation-delay: 0.9s; }
+          @keyframes textFadeUp {
+            0% { opacity: 0; transform: translateY(16px); }
+            100% { opacity: 1; transform: translateY(0); }
+          }
+          @keyframes imageDropIn {
+            0% { opacity: 0; transform: translateY(-30px); }
+            100% { opacity: 1; transform: translateY(0); }
+          }
+          .animate-image-entrance { animation: imageDropIn 0.8s ease-out forwards; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .word-exit { opacity: 0; transition: opacity 200ms; }
+          .word-enter { opacity: 1; transition: opacity 200ms; }
+        }
+
+        /* Pendulum Animations */
+        .float-desktop-idle {
+          animation: toothPendulum 6s ease-in-out infinite;
+          transform-origin: center bottom;
+        }
+        .glow-desktop-sync {
+          animation: glowSync 6s ease-in-out infinite;
+          transform-origin: center center;
+        }
+        @keyframes toothPendulum {
+          0%, 50%, 100% { transform: translateY(0px) rotate(0deg) scale(1); }
+          25% { transform: translateY(-14px) rotate(8deg) scale(1.03); }
+          75% { transform: translateY(-10px) rotate(-6deg) scale(1.02); }
+        }
+        @keyframes glowSync {
+          0%, 50%, 100% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
+          25% { transform: translate(-50%, -50%) rotate(4deg) scale(1.05); }
+          75% { transform: translate(-50%, -50%) rotate(-3deg) scale(1.03); }
+        }
+
+        .float-mobile-idle {
+          animation: toothPendulumMobile 6s ease-in-out infinite;
+          transform-origin: center bottom;
+        }
+        @keyframes toothPendulumMobile {
+          0%, 50%, 100% { transform: translateY(0px) rotate(0deg) scale(1); }
+          25% { transform: translateY(-8px) rotate(5deg) scale(1.02); }
+          75% { transform: translateY(-6px) rotate(-5deg) scale(1.01); }
+        }
+
+        /* Floating Shapes */
+        .dental-shape { position: absolute; pointer-events: none; z-index: 5; }
+        .shape-circle {
+          width: 16px; height: 16px; background: #D1FAE5; border-radius: 50%;
+          top: 0; right: 0; animation: floatCircle 4s ease-in-out infinite;
+        }
+        .shape-rect {
+          width: 8px; height: 24px; background: #DBEAFE; border-radius: 4px;
+          bottom: 0; left: 0; animation: spinRect 8s linear infinite;
+        }
+        .shape-diamond {
+          width: 12px; height: 12px; background: rgba(16, 185, 129, 0.4);
+          transform: rotate(45deg); top: 50%; left: -20px;
+          animation: pulseDiamond 2.5s ease-in-out infinite;
+        }
+        @media (max-width: 768px) {
+          .shape-circle { width: 10px; height: 10px; }
+          .shape-rect { width: 5px; height: 15px; }
+          .shape-diamond { width: 8px; height: 8px; }
+        }
+        @keyframes floatCircle {
+          0%, 100% { transform: translateY(0) rotate(0deg); }
+          50% { transform: translateY(-15px) rotate(180deg); }
+        }
+        @keyframes spinRect { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes pulseDiamond {
+          0%, 100% { transform: rotate(45deg) scale(1); }
+          50% { transform: rotate(45deg) scale(1.4); }
+        }
+
+        .pulse-btn { animation: pulseBtn 2.5s infinite; }
+        @keyframes pulseBtn {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+          50% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+        }
+        .is-scrolling { animation: none !important; }
+      `}</style>
+
+      <section id="hero-section" className="relative min-h-[100vh] w-full overflow-x-hidden pt-20 bg-mobile-gradient">
+        <div className="container-custom mx-auto px-[24px] md:px-8 py-12 relative z-10 flex flex-col md:flex-row items-center justify-between min-h-[calc(100vh-80px)]">
+          {/* Mobile Image (Normal flow) */}
+          <div className="w-full md:hidden order-1 flex justify-center relative pt-4" style={{ paddingBottom: '32px' }}>
+            <div className="relative">
+              <div 
+                className="absolute z-0 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none rounded-full"
+                style={{ width: '110%', height: '110%', background: 'radial-gradient(circle, rgba(16, 185, 129, 0.18) 0%, transparent 70%)' }}
+              />
+              <div className="dental-shape shape-circle" />
+              <div className="dental-shape shape-rect" />
+              <div className="dental-shape shape-diamond" />
+              <img id="hero-tooth-mobile" src="/home.jpg" alt="Dental care"
+                className="w-full max-w-[320px] relative z-10 animate-image-entrance mix-blend-multiply"
+                style={{ background: 'transparent', border: 'none', boxShadow: 'none' }}
+              />
+            </div>
+          </div>
+          
+          <div className="w-full md:w-1/2 order-2 md:order-1 flex flex-col items-start text-left max-w-2xl">
+            <span className="animate-text-up delay-label text-primary-green font-bold uppercase block border-l-2 border-primary-green"
+              style={{ letterSpacing: '0.12em', paddingLeft: '8px', fontSize: '0.7rem', marginBottom: '12px' }}>
+              Trusted Dental Care
             </span>
-
-            {/* Headline */}
-            <div className="space-y-3">
-              <h1 className="text-4xl sm:text-5xl xl:text-6xl font-black text-slate-950 leading-[1.08] tracking-tight">
-                Clinical Excellence
-                <br />
-                <span className="text-primary-green">With Compassion.</span>
-              </h1>
-            </div>
-
-            {/* Description */}
-            <p className="text-base sm:text-lg text-slate-500 font-medium leading-relaxed max-w-lg">
-              Experience world-class medical excellence at{" "}
-              <span className="text-slate-700 font-bold">
-                ADAMS Poly Clinic
+            <h1 className="animate-text-up delay-headline text-[#0f172a] font-bold tracking-tight w-full max-w-[350px] md:max-w-full text-[2rem] md:text-[2.8rem] lg:text-[4.5rem]"
+              style={{ lineHeight: '1.2', marginBottom: '12px' }}>
+              Your{' '}
+              <span className="word-container">
+                <span className={`word-item ${isExiting ? 'word-exit' : 'word-enter active'}`}>
+                  {words[index]}
+                  <div className="word-underline" />
+                </span>
               </span>
-              . Our expert specialists use state-of-the-art technology to
-              provide personalized care for you and your loved ones.
+              <br /> Starts Here
+            </h1>
+            <p className="animate-text-up delay-subline text-slate-500 font-medium leading-relaxed text-base md:text-lg lg:text-[1.05rem]"
+              style={{ marginBottom: '24px' }}>
+              Experience world-class clinical excellence in a luxury environment tailored for your comfort.
             </p>
-
-            {/* Stats Row */}
-            <div className="grid grid-cols-3 gap-4 py-6 border-y border-slate-100">
-              {[
-                { value: "10K+", label: "Happy Patients" },
-                { value: `${activeDoctorsCount}+`, label: "Specialists" },
-                { value: "15+", label: "Years of Care" },
-              ].map((stat) => (
-                <div key={stat.label} className="flex flex-col gap-1">
-                  <span className="text-2xl sm:text-3xl font-black text-slate-950">
-                    {stat.value}
-                  </span>
-                  <span className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-widest leading-tight">
-                    {stat.label}
-                  </span>
-                </div>
-              ))}
-            </div>
-
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4">
-              <button
-                onClick={() => scrollToSection("booking")}
-                className="flex-1 sm:flex-none inline-flex items-center justify-center gap-3 bg-primary-green text-white px-8 py-4 rounded-full font-black text-base shadow-xl shadow-primary-green/25 hover:bg-primary-green-dark hover:-translate-y-1 active:scale-95 transition-all duration-300 group"
-              >
-                Book Appointment
-                <ArrowRight
-                  size={20}
-                  className="group-hover:translate-x-1 transition-transform"
-                />
-              </button>
-
-              <button
-                onClick={() => scrollToSection("about")}
-                className="flex-1 sm:flex-none inline-flex items-center justify-center gap-3 bg-white text-slate-700 px-8 py-4 rounded-full font-black text-base border border-slate-200 hover:border-primary-green/40 hover:text-primary-green hover:-translate-y-1 active:scale-95 transition-all duration-300"
-              >
-                Learn More
+            <div className="animate-text-up delay-btn w-full md:w-auto" style={{ marginBottom: '32px' }}>
+              <button onClick={scrollToBooking}
+                className="w-full md:w-auto bg-primary-green text-white rounded-[100px] font-bold text-lg transition-all duration-200 hover:-translate-y-[2px] active:translate-y-0 active:shadow-md flex items-center justify-center gap-3 pulse-btn"
+                style={{ minHeight: '52px', padding: '14px 32px' }}>
+                Book Appointment <ArrowRight size={20} />
               </button>
             </div>
-
-            {/* Trust Row */}
-            {/* <div className="flex items-center gap-4 pt-2">
-              <div className="flex -space-x-3">
-                {[1, 2, 3, 4].map((i) => (
-                  <img
-                    key={i}
-                    src={`https://i.pravatar.cc/150?u=${i + 20}`}
-                    alt="Patient"
-                    className="w-10 h-10 rounded-full border-[3px] border-white object-cover shadow-sm"
-                  />
-                ))}
+            <div className="animate-text-up delay-btn flex flex-col md:flex-row items-start gap-4 md:gap-6 pt-6 border-t border-slate-100 w-full">
+              <div className="flex items-center gap-2 text-slate-400">
+                <Users size={18} className="text-primary-green" /><span className="text-xs font-bold uppercase tracking-wider">500+ Patients</span>
               </div>
-              <div className="flex flex-col gap-0.5">
-                <div className="flex items-center gap-1">
-                  {[1, 2, 3, 4, 5].map((s) => (
-                    <Star
-                      key={s}
-                      size={12}
-                      className="fill-amber-400 text-amber-400"
-                    />
-                  ))}
-                  <span className="text-xs font-black text-slate-700 ml-1">
-                    4.9
-                  </span>
-                </div>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                  Trusted by thousands
-                </p>
+              <div className="flex items-center gap-2 text-slate-400">
+                <Award size={18} className="text-primary-green" /><span className="text-xs font-bold uppercase tracking-wider">Expert Dentists</span>
               </div>
-            </div> */}
-          </article>
-
-          {/* ── RIGHT VISUAL ── */}
-          <div className="hidden lg:flex flex-col gap-5 animate-fade-in">
-            {/* Top Row — Image + Stat Card */}
-            <div className="grid grid-cols-5 gap-5 items-end">
-              {/* Main Image */}
-              <figure className="col-span-3 relative rounded-[32px] overflow-hidden aspect-[3/4] shadow-2xl group m-0">
-                <img
-                  src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?q=80&w=1000&auto=format&fit=crop"
-                  alt="World Class Medical Care"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
-
-                {/* Floating badge on image */}
-                <div className="absolute top-5 left-5 bg-white/95 backdrop-blur-sm rounded-2xl px-4 py-3 shadow-lg">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-primary-green/10 rounded-xl flex items-center justify-center">
-                      <HeartPulse size={16} className="text-primary-green" />
-                    </div>
-                    <div>
-                      <p className="text-[10px] font-black text-slate-950 leading-none">
-                        Live Monitoring
-                      </p>
-                      <p className="text-[9px] text-slate-400 font-bold mt-0.5">
-                        Active Care
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <figcaption className="absolute bottom-6 left-6 right-6">
-                  <p className="text-white font-black text-base">
-                    World Class Facilities
-                  </p>
-                  <p className="text-white/60 text-xs font-medium mt-1">
-                    Equipped with modern diagnostics
-                  </p>
-                </figcaption>
-              </figure>
-
-              {/* Right Column Cards */}
-              <div className="col-span-2 flex flex-col gap-5">
-                {/* Emergency Contact Card */}
-                <article className="bg-white rounded-[24px] p-6 space-y-3 border border-slate-100 shadow-sm hover:border-primary-green/30 hover:shadow-md transition-all duration-300">
-                  <div className="w-11 h-11 bg-primary-green/10 rounded-2xl flex items-center justify-center text-primary-green">
-                    <Phone size={22} />
-                  </div>
-                  <div className="space-y-1">
-                    <h3 className="text-sm font-black text-slate-950 leading-snug">
-                      Emergency Support
-                    </h3>
-                    <p className="text-base font-black text-primary-green">
-                      {clinicPhone}
-                    </p>
-                  </div>
-                  <p className="text-[10px] text-slate-500 font-medium leading-relaxed">
-                    Always available for immediate medical consultation.
-                  </p>
-                </article>
-
-                {/* Secure Care Card */}
-                <article className="bg-primary-blue rounded-[24px] p-6 space-y-3 shadow-lg shadow-primary-blue/20 ring-4 ring-primary-blue/10">
-                  <div className="w-11 h-11 bg-white/20 rounded-2xl flex items-center justify-center text-white">
-                    <ShieldCheck size={22} />
-                  </div>
-                  <h3 className="text-sm font-black text-white leading-snug">
-                    Secure Care
-                  </h3>
-                  <p className="text-xs text-white/65 font-medium leading-relaxed">
-                    Bank-grade security for all your health records.
-                  </p>
-                </article>
+              <div className="flex items-center gap-2 text-slate-400">
+                <CalendarCheck size={18} className="text-primary-green" /><span className="text-xs font-bold uppercase tracking-wider">Easy Booking</span>
               </div>
             </div>
+          </div>
+          <div className="hidden md:block w-[320px] lg:w-[420px] order-2 shrink-0" />
+        </div>
 
-            {/* Bottom Row — Wide Specialists Card */}
-            <article className="bg-slate-50 rounded-[24px] p-6 border border-slate-100 flex items-center gap-6">
-              <div className="w-12 h-12 bg-primary-blue/10 rounded-2xl flex items-center justify-center text-primary-blue flex-shrink-0">
-                <Users size={24} />
-              </div>
-              <div className="flex-1 min-w-0">
-                <h3 className="text-sm font-black text-slate-950">
-                  Top Specialists
-                </h3>
-                <p className="text-xs text-slate-500 font-medium leading-relaxed mt-1">
-                  Consult with internationally certified doctors across all
-                  departments.
-                </p>
-              </div>
-              <button
-                onClick={() => scrollToSection("doctors")}
-                className="flex-shrink-0 bg-primary-blue text-white text-xs font-black px-5 py-3 rounded-full hover:opacity-90 transition-opacity whitespace-nowrap"
-              >
-                Meet Doctors
-              </button>
-            </article>
+        <div id="fixed-image-wrapper" className="hidden md:flex fixed top-0 left-0 w-full h-full z-0 pointer-events-none justify-center transition-opacity duration-300">
+          <div className="container-custom mx-auto px-[24px] md:px-8 w-full h-full flex items-center justify-between">
+            <div className="w-1/2 shrink-0" />
+            <div className="w-[320px] lg:w-[420px] flex justify-end items-center h-full relative shrink-0">
+              <div className="absolute z-0 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none rounded-full glow-desktop-sync"
+                style={{ width: '110%', height: '110%', background: 'radial-gradient(circle, rgba(16, 185, 129, 0.18) 0%, transparent 70%)' }} />
+              <div className="dental-shape shape-circle" />
+              <div className="dental-shape shape-rect" />
+              <div className="dental-shape shape-diamond" />
+              <img id="hero-tooth-desktop" src="/home.jpg" alt="Dental care"
+                className="pointer-events-auto relative z-10 float-desktop-idle mix-blend-multiply"
+                style={{ width: '100%', willChange: 'transform, opacity', background: 'transparent', border: 'none', boxShadow: 'none' }} />
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Scroll Indicator */}
-      <button
-        onClick={() => scrollToSection("about")}
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-1.5 animate-bounce opacity-40 hover:opacity-100 transition-opacity cursor-pointer bg-transparent border-none p-0"
-        aria-label="Scroll to About Section"
-      >
-        <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">
-          Scroll
-        </span>
-        <ChevronDown size={18} className="text-slate-400" />
-      </button>
-    </section>
+        <div id="scroll-indicator" className="hidden md:flex flex-col items-center gap-[6px] absolute bottom-[32px] left-1/2 -translate-x-1/2 z-20 transition-opacity duration-400">
+          <span style={{ fontSize: '0.75rem', letterSpacing: '0.1em', color: '#9ca3af' }}>SCROLL</span>
+          <div style={{ width: '1px', height: '48px', background: 'linear-gradient(to bottom, #9ca3af, transparent)', animation: 'scrollLine 1.5s ease-in-out infinite' }} />
+        </div>
+      </section>
+    </>
   );
 }
