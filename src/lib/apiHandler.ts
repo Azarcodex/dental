@@ -25,7 +25,19 @@ export const apiHandler = (handler: Handler) => {
         );
       }
 
-      // Handle Custom App Errors (if you decide to create a custom error class)
+      // Handle Prisma Errors
+      if (error.code && typeof error.code === 'string' && error.code.startsWith('P')) {
+        console.error(`[Prisma Error] ${error.code}:`, error.meta || {});
+        return NextResponse.json(
+          {
+            success: false,
+            message: `Database Error (${error.code})`,
+          },
+          { status: 500 },
+        );
+      }
+
+      // Handle Custom App Errors
       const status = error.status || 500;
       const message = error.message || "Internal Server Error";
 

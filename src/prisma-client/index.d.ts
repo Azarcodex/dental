@@ -3872,8 +3872,18 @@ export namespace Prisma {
 
   export type AggregatePatient = {
     _count: PatientCountAggregateOutputType | null
+    _avg: PatientAvgAggregateOutputType | null
+    _sum: PatientSumAggregateOutputType | null
     _min: PatientMinAggregateOutputType | null
     _max: PatientMaxAggregateOutputType | null
+  }
+
+  export type PatientAvgAggregateOutputType = {
+    age: number | null
+  }
+
+  export type PatientSumAggregateOutputType = {
+    age: number | null
   }
 
   export type PatientMinAggregateOutputType = {
@@ -3881,6 +3891,7 @@ export namespace Prisma {
     fullName: string | null
     gender: string | null
     phone: string | null
+    age: number | null
     createdAt: Date | null
     updatedAt: Date | null
     displayId: string | null
@@ -3891,6 +3902,7 @@ export namespace Prisma {
     fullName: string | null
     gender: string | null
     phone: string | null
+    age: number | null
     createdAt: Date | null
     updatedAt: Date | null
     displayId: string | null
@@ -3901,6 +3913,7 @@ export namespace Prisma {
     fullName: number
     gender: number
     phone: number
+    age: number
     createdAt: number
     updatedAt: number
     displayId: number
@@ -3908,11 +3921,20 @@ export namespace Prisma {
   }
 
 
+  export type PatientAvgAggregateInputType = {
+    age?: true
+  }
+
+  export type PatientSumAggregateInputType = {
+    age?: true
+  }
+
   export type PatientMinAggregateInputType = {
     id?: true
     fullName?: true
     gender?: true
     phone?: true
+    age?: true
     createdAt?: true
     updatedAt?: true
     displayId?: true
@@ -3923,6 +3945,7 @@ export namespace Prisma {
     fullName?: true
     gender?: true
     phone?: true
+    age?: true
     createdAt?: true
     updatedAt?: true
     displayId?: true
@@ -3933,6 +3956,7 @@ export namespace Prisma {
     fullName?: true
     gender?: true
     phone?: true
+    age?: true
     createdAt?: true
     updatedAt?: true
     displayId?: true
@@ -3977,6 +4001,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: PatientAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: PatientSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: PatientMinAggregateInputType
@@ -4007,6 +4043,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: PatientCountAggregateInputType | true
+    _avg?: PatientAvgAggregateInputType
+    _sum?: PatientSumAggregateInputType
     _min?: PatientMinAggregateInputType
     _max?: PatientMaxAggregateInputType
   }
@@ -4016,10 +4054,13 @@ export namespace Prisma {
     fullName: string
     gender: string
     phone: string
+    age: number | null
     createdAt: Date
     updatedAt: Date
     displayId: string | null
     _count: PatientCountAggregateOutputType | null
+    _avg: PatientAvgAggregateOutputType | null
+    _sum: PatientSumAggregateOutputType | null
     _min: PatientMinAggregateOutputType | null
     _max: PatientMaxAggregateOutputType | null
   }
@@ -4043,6 +4084,7 @@ export namespace Prisma {
     fullName?: boolean
     gender?: boolean
     phone?: boolean
+    age?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     displayId?: boolean
@@ -4055,6 +4097,7 @@ export namespace Prisma {
     fullName?: boolean
     gender?: boolean
     phone?: boolean
+    age?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     displayId?: boolean
@@ -4065,6 +4108,7 @@ export namespace Prisma {
     fullName?: boolean
     gender?: boolean
     phone?: boolean
+    age?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     displayId?: boolean
@@ -4075,12 +4119,13 @@ export namespace Prisma {
     fullName?: boolean
     gender?: boolean
     phone?: boolean
+    age?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     displayId?: boolean
   }
 
-  export type PatientOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "fullName" | "gender" | "phone" | "createdAt" | "updatedAt" | "displayId", ExtArgs["result"]["patient"]>
+  export type PatientOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "fullName" | "gender" | "phone" | "age" | "createdAt" | "updatedAt" | "displayId", ExtArgs["result"]["patient"]>
   export type PatientInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     appointments?: boolean | Patient$appointmentsArgs<ExtArgs>
     _count?: boolean | PatientCountOutputTypeDefaultArgs<ExtArgs>
@@ -4098,6 +4143,7 @@ export namespace Prisma {
       fullName: string
       gender: string
       phone: string
+      age: number | null
       createdAt: Date
       updatedAt: Date
       displayId: string | null
@@ -4529,6 +4575,7 @@ export namespace Prisma {
     readonly fullName: FieldRef<"Patient", 'String'>
     readonly gender: FieldRef<"Patient", 'String'>
     readonly phone: FieldRef<"Patient", 'String'>
+    readonly age: FieldRef<"Patient", 'Int'>
     readonly createdAt: FieldRef<"Patient", 'DateTime'>
     readonly updatedAt: FieldRef<"Patient", 'DateTime'>
     readonly displayId: FieldRef<"Patient", 'String'>
@@ -8286,7 +8333,6 @@ export namespace Prisma {
     endTime: string | null
     status: string | null
     createdAt: Date | null
-    department: string | null
     specialization: string | null
     token: string | null
     bookingType: string | null
@@ -8301,7 +8347,6 @@ export namespace Prisma {
     endTime: string | null
     status: string | null
     createdAt: Date | null
-    department: string | null
     specialization: string | null
     token: string | null
     bookingType: string | null
@@ -8316,7 +8361,6 @@ export namespace Prisma {
     endTime: number
     status: number
     createdAt: number
-    department: number
     specialization: number
     token: number
     bookingType: number
@@ -8333,7 +8377,6 @@ export namespace Prisma {
     endTime?: true
     status?: true
     createdAt?: true
-    department?: true
     specialization?: true
     token?: true
     bookingType?: true
@@ -8348,7 +8391,6 @@ export namespace Prisma {
     endTime?: true
     status?: true
     createdAt?: true
-    department?: true
     specialization?: true
     token?: true
     bookingType?: true
@@ -8363,7 +8405,6 @@ export namespace Prisma {
     endTime?: true
     status?: true
     createdAt?: true
-    department?: true
     specialization?: true
     token?: true
     bookingType?: true
@@ -8451,7 +8492,6 @@ export namespace Prisma {
     endTime: string
     status: string
     createdAt: Date
-    department: string
     specialization: string
     token: string | null
     bookingType: string
@@ -8483,7 +8523,6 @@ export namespace Prisma {
     endTime?: boolean
     status?: boolean
     createdAt?: boolean
-    department?: boolean
     specialization?: boolean
     token?: boolean
     bookingType?: boolean
@@ -8500,7 +8539,6 @@ export namespace Prisma {
     endTime?: boolean
     status?: boolean
     createdAt?: boolean
-    department?: boolean
     specialization?: boolean
     token?: boolean
     bookingType?: boolean
@@ -8517,7 +8555,6 @@ export namespace Prisma {
     endTime?: boolean
     status?: boolean
     createdAt?: boolean
-    department?: boolean
     specialization?: boolean
     token?: boolean
     bookingType?: boolean
@@ -8534,13 +8571,12 @@ export namespace Prisma {
     endTime?: boolean
     status?: boolean
     createdAt?: boolean
-    department?: boolean
     specialization?: boolean
     token?: boolean
     bookingType?: boolean
   }
 
-  export type AppointmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "doctorId" | "patientId" | "date" | "startTime" | "endTime" | "status" | "createdAt" | "department" | "specialization" | "token" | "bookingType", ExtArgs["result"]["appointment"]>
+  export type AppointmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "doctorId" | "patientId" | "date" | "startTime" | "endTime" | "status" | "createdAt" | "specialization" | "token" | "bookingType", ExtArgs["result"]["appointment"]>
   export type AppointmentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     doctor?: boolean | DoctorDefaultArgs<ExtArgs>
     patient?: boolean | PatientDefaultArgs<ExtArgs>
@@ -8569,7 +8605,6 @@ export namespace Prisma {
       endTime: string
       status: string
       createdAt: Date
-      department: string
       specialization: string
       token: string | null
       bookingType: string
@@ -9006,7 +9041,6 @@ export namespace Prisma {
     readonly endTime: FieldRef<"Appointment", 'String'>
     readonly status: FieldRef<"Appointment", 'String'>
     readonly createdAt: FieldRef<"Appointment", 'DateTime'>
-    readonly department: FieldRef<"Appointment", 'String'>
     readonly specialization: FieldRef<"Appointment", 'String'>
     readonly token: FieldRef<"Appointment", 'String'>
     readonly bookingType: FieldRef<"Appointment", 'String'>
@@ -9482,6 +9516,7 @@ export namespace Prisma {
     fullName: 'fullName',
     gender: 'gender',
     phone: 'phone',
+    age: 'age',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     displayId: 'displayId'
@@ -9535,7 +9570,6 @@ export namespace Prisma {
     endTime: 'endTime',
     status: 'status',
     createdAt: 'createdAt',
-    department: 'department',
     specialization: 'specialization',
     token: 'token',
     bookingType: 'bookingType'
@@ -9839,6 +9873,7 @@ export namespace Prisma {
     fullName?: StringFilter<"Patient"> | string
     gender?: StringFilter<"Patient"> | string
     phone?: StringFilter<"Patient"> | string
+    age?: IntNullableFilter<"Patient"> | number | null
     createdAt?: DateTimeFilter<"Patient"> | Date | string
     updatedAt?: DateTimeFilter<"Patient"> | Date | string
     displayId?: StringNullableFilter<"Patient"> | string | null
@@ -9850,6 +9885,7 @@ export namespace Prisma {
     fullName?: SortOrder
     gender?: SortOrder
     phone?: SortOrder
+    age?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     displayId?: SortOrderInput | SortOrder
@@ -9865,6 +9901,7 @@ export namespace Prisma {
     NOT?: PatientWhereInput | PatientWhereInput[]
     fullName?: StringFilter<"Patient"> | string
     gender?: StringFilter<"Patient"> | string
+    age?: IntNullableFilter<"Patient"> | number | null
     createdAt?: DateTimeFilter<"Patient"> | Date | string
     updatedAt?: DateTimeFilter<"Patient"> | Date | string
     appointments?: AppointmentListRelationFilter
@@ -9875,12 +9912,15 @@ export namespace Prisma {
     fullName?: SortOrder
     gender?: SortOrder
     phone?: SortOrder
+    age?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     displayId?: SortOrderInput | SortOrder
     _count?: PatientCountOrderByAggregateInput
+    _avg?: PatientAvgOrderByAggregateInput
     _max?: PatientMaxOrderByAggregateInput
     _min?: PatientMinOrderByAggregateInput
+    _sum?: PatientSumOrderByAggregateInput
   }
 
   export type PatientScalarWhereWithAggregatesInput = {
@@ -9891,6 +9931,7 @@ export namespace Prisma {
     fullName?: StringWithAggregatesFilter<"Patient"> | string
     gender?: StringWithAggregatesFilter<"Patient"> | string
     phone?: StringWithAggregatesFilter<"Patient"> | string
+    age?: IntNullableWithAggregatesFilter<"Patient"> | number | null
     createdAt?: DateTimeWithAggregatesFilter<"Patient"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Patient"> | Date | string
     displayId?: StringNullableWithAggregatesFilter<"Patient"> | string | null
@@ -10092,7 +10133,6 @@ export namespace Prisma {
     endTime?: StringFilter<"Appointment"> | string
     status?: StringFilter<"Appointment"> | string
     createdAt?: DateTimeFilter<"Appointment"> | Date | string
-    department?: StringFilter<"Appointment"> | string
     specialization?: StringFilter<"Appointment"> | string
     token?: StringNullableFilter<"Appointment"> | string | null
     bookingType?: StringFilter<"Appointment"> | string
@@ -10109,7 +10149,6 @@ export namespace Prisma {
     endTime?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
-    department?: SortOrder
     specialization?: SortOrder
     token?: SortOrderInput | SortOrder
     bookingType?: SortOrder
@@ -10131,7 +10170,6 @@ export namespace Prisma {
     endTime?: StringFilter<"Appointment"> | string
     status?: StringFilter<"Appointment"> | string
     createdAt?: DateTimeFilter<"Appointment"> | Date | string
-    department?: StringFilter<"Appointment"> | string
     specialization?: StringFilter<"Appointment"> | string
     token?: StringNullableFilter<"Appointment"> | string | null
     bookingType?: StringFilter<"Appointment"> | string
@@ -10148,7 +10186,6 @@ export namespace Prisma {
     endTime?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
-    department?: SortOrder
     specialization?: SortOrder
     token?: SortOrderInput | SortOrder
     bookingType?: SortOrder
@@ -10169,7 +10206,6 @@ export namespace Prisma {
     endTime?: StringWithAggregatesFilter<"Appointment"> | string
     status?: StringWithAggregatesFilter<"Appointment"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Appointment"> | Date | string
-    department?: StringWithAggregatesFilter<"Appointment"> | string
     specialization?: StringWithAggregatesFilter<"Appointment"> | string
     token?: StringNullableWithAggregatesFilter<"Appointment"> | string | null
     bookingType?: StringWithAggregatesFilter<"Appointment"> | string
@@ -10392,6 +10428,7 @@ export namespace Prisma {
     fullName: string
     gender: string
     phone: string
+    age?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     displayId?: string | null
@@ -10403,6 +10440,7 @@ export namespace Prisma {
     fullName: string
     gender: string
     phone: string
+    age?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     displayId?: string | null
@@ -10414,6 +10452,7 @@ export namespace Prisma {
     fullName?: StringFieldUpdateOperationsInput | string
     gender?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
+    age?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     displayId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -10425,6 +10464,7 @@ export namespace Prisma {
     fullName?: StringFieldUpdateOperationsInput | string
     gender?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
+    age?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     displayId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -10436,6 +10476,7 @@ export namespace Prisma {
     fullName: string
     gender: string
     phone: string
+    age?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     displayId?: string | null
@@ -10446,6 +10487,7 @@ export namespace Prisma {
     fullName?: StringFieldUpdateOperationsInput | string
     gender?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
+    age?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     displayId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -10456,6 +10498,7 @@ export namespace Prisma {
     fullName?: StringFieldUpdateOperationsInput | string
     gender?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
+    age?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     displayId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -10654,7 +10697,6 @@ export namespace Prisma {
     endTime: string
     status: string
     createdAt?: Date | string
-    department: string
     specialization: string
     token?: string | null
     bookingType?: string
@@ -10671,7 +10713,6 @@ export namespace Prisma {
     endTime: string
     status: string
     createdAt?: Date | string
-    department: string
     specialization: string
     token?: string | null
     bookingType?: string
@@ -10684,7 +10725,6 @@ export namespace Prisma {
     endTime?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    department?: StringFieldUpdateOperationsInput | string
     specialization?: StringFieldUpdateOperationsInput | string
     token?: NullableStringFieldUpdateOperationsInput | string | null
     bookingType?: StringFieldUpdateOperationsInput | string
@@ -10701,7 +10741,6 @@ export namespace Prisma {
     endTime?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    department?: StringFieldUpdateOperationsInput | string
     specialization?: StringFieldUpdateOperationsInput | string
     token?: NullableStringFieldUpdateOperationsInput | string | null
     bookingType?: StringFieldUpdateOperationsInput | string
@@ -10716,7 +10755,6 @@ export namespace Prisma {
     endTime: string
     status: string
     createdAt?: Date | string
-    department: string
     specialization: string
     token?: string | null
     bookingType?: string
@@ -10729,7 +10767,6 @@ export namespace Prisma {
     endTime?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    department?: StringFieldUpdateOperationsInput | string
     specialization?: StringFieldUpdateOperationsInput | string
     token?: NullableStringFieldUpdateOperationsInput | string | null
     bookingType?: StringFieldUpdateOperationsInput | string
@@ -10744,7 +10781,6 @@ export namespace Prisma {
     endTime?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    department?: StringFieldUpdateOperationsInput | string
     specialization?: StringFieldUpdateOperationsInput | string
     token?: NullableStringFieldUpdateOperationsInput | string | null
     bookingType?: StringFieldUpdateOperationsInput | string
@@ -11022,14 +11058,30 @@ export namespace Prisma {
     _max?: NestedFloatFilter<$PrismaModel>
   }
 
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
   export type PatientCountOrderByAggregateInput = {
     id?: SortOrder
     fullName?: SortOrder
     gender?: SortOrder
     phone?: SortOrder
+    age?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     displayId?: SortOrder
+  }
+
+  export type PatientAvgOrderByAggregateInput = {
+    age?: SortOrder
   }
 
   export type PatientMaxOrderByAggregateInput = {
@@ -11037,6 +11089,7 @@ export namespace Prisma {
     fullName?: SortOrder
     gender?: SortOrder
     phone?: SortOrder
+    age?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     displayId?: SortOrder
@@ -11047,9 +11100,30 @@ export namespace Prisma {
     fullName?: SortOrder
     gender?: SortOrder
     phone?: SortOrder
+    age?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     displayId?: SortOrder
+  }
+
+  export type PatientSumOrderByAggregateInput = {
+    age?: SortOrder
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -11222,7 +11296,6 @@ export namespace Prisma {
     endTime?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
-    department?: SortOrder
     specialization?: SortOrder
     token?: SortOrder
     bookingType?: SortOrder
@@ -11237,7 +11310,6 @@ export namespace Prisma {
     endTime?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
-    department?: SortOrder
     specialization?: SortOrder
     token?: SortOrder
     bookingType?: SortOrder
@@ -11252,7 +11324,6 @@ export namespace Prisma {
     endTime?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
-    department?: SortOrder
     specialization?: SortOrder
     token?: SortOrder
     bookingType?: SortOrder
@@ -11462,6 +11533,14 @@ export namespace Prisma {
     connectOrCreate?: AppointmentCreateOrConnectWithoutPatientInput | AppointmentCreateOrConnectWithoutPatientInput[]
     createMany?: AppointmentCreateManyPatientInputEnvelope
     connect?: AppointmentWhereUniqueInput | AppointmentWhereUniqueInput[]
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type AppointmentUpdateManyWithoutPatientNestedInput = {
@@ -11727,6 +11806,33 @@ export namespace Prisma {
     _max?: NestedFloatFilter<$PrismaModel>
   }
 
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -11763,7 +11869,6 @@ export namespace Prisma {
     endTime: string
     status: string
     createdAt?: Date | string
-    department: string
     specialization: string
     token?: string | null
     bookingType?: string
@@ -11778,7 +11883,6 @@ export namespace Prisma {
     endTime: string
     status: string
     createdAt?: Date | string
-    department: string
     specialization: string
     token?: string | null
     bookingType?: string
@@ -11900,7 +12004,6 @@ export namespace Prisma {
     endTime?: StringFilter<"Appointment"> | string
     status?: StringFilter<"Appointment"> | string
     createdAt?: DateTimeFilter<"Appointment"> | Date | string
-    department?: StringFilter<"Appointment"> | string
     specialization?: StringFilter<"Appointment"> | string
     token?: StringNullableFilter<"Appointment"> | string | null
     bookingType?: StringFilter<"Appointment"> | string
@@ -11997,7 +12100,6 @@ export namespace Prisma {
     endTime: string
     status: string
     createdAt?: Date | string
-    department: string
     specialization: string
     token?: string | null
     bookingType?: string
@@ -12012,7 +12114,6 @@ export namespace Prisma {
     endTime: string
     status: string
     createdAt?: Date | string
-    department: string
     specialization: string
     token?: string | null
     bookingType?: string
@@ -12354,6 +12455,7 @@ export namespace Prisma {
     fullName: string
     gender: string
     phone: string
+    age?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     displayId?: string | null
@@ -12364,6 +12466,7 @@ export namespace Prisma {
     fullName: string
     gender: string
     phone: string
+    age?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     displayId?: string | null
@@ -12437,6 +12540,7 @@ export namespace Prisma {
     fullName?: StringFieldUpdateOperationsInput | string
     gender?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
+    age?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     displayId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -12447,6 +12551,7 @@ export namespace Prisma {
     fullName?: StringFieldUpdateOperationsInput | string
     gender?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
+    age?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     displayId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -12460,7 +12565,6 @@ export namespace Prisma {
     endTime: string
     status: string
     createdAt?: Date | string
-    department: string
     specialization: string
     token?: string | null
     bookingType?: string
@@ -12497,7 +12601,6 @@ export namespace Prisma {
     endTime?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    department?: StringFieldUpdateOperationsInput | string
     specialization?: StringFieldUpdateOperationsInput | string
     token?: NullableStringFieldUpdateOperationsInput | string | null
     bookingType?: StringFieldUpdateOperationsInput | string
@@ -12512,7 +12615,6 @@ export namespace Prisma {
     endTime?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    department?: StringFieldUpdateOperationsInput | string
     specialization?: StringFieldUpdateOperationsInput | string
     token?: NullableStringFieldUpdateOperationsInput | string | null
     bookingType?: StringFieldUpdateOperationsInput | string
@@ -12526,7 +12628,6 @@ export namespace Prisma {
     endTime?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    department?: StringFieldUpdateOperationsInput | string
     specialization?: StringFieldUpdateOperationsInput | string
     token?: NullableStringFieldUpdateOperationsInput | string | null
     bookingType?: StringFieldUpdateOperationsInput | string
@@ -12612,7 +12713,6 @@ export namespace Prisma {
     endTime: string
     status: string
     createdAt?: Date | string
-    department: string
     specialization: string
     token?: string | null
     bookingType?: string
@@ -12625,7 +12725,6 @@ export namespace Prisma {
     endTime?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    department?: StringFieldUpdateOperationsInput | string
     specialization?: StringFieldUpdateOperationsInput | string
     token?: NullableStringFieldUpdateOperationsInput | string | null
     bookingType?: StringFieldUpdateOperationsInput | string
@@ -12640,7 +12739,6 @@ export namespace Prisma {
     endTime?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    department?: StringFieldUpdateOperationsInput | string
     specialization?: StringFieldUpdateOperationsInput | string
     token?: NullableStringFieldUpdateOperationsInput | string | null
     bookingType?: StringFieldUpdateOperationsInput | string
@@ -12654,7 +12752,6 @@ export namespace Prisma {
     endTime?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    department?: StringFieldUpdateOperationsInput | string
     specialization?: StringFieldUpdateOperationsInput | string
     token?: NullableStringFieldUpdateOperationsInput | string | null
     bookingType?: StringFieldUpdateOperationsInput | string

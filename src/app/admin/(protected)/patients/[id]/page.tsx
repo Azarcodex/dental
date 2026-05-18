@@ -105,15 +105,6 @@ export default function PatientProfilePage() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center text-gray-400">
-                  <Droplet size={18} />
-                </div>
-                <div>
-                  <p className="text-[10px] font-bold text-gray-400 uppercase">Blood Group</p>
-                  <p className="text-sm font-bold text-red-600">{patient.bloodGroup || "Not specified"}</p>
-                </div>
-              </div>
             </div>
 
             <div className="p-4 bg-gray-50 border-t border-gray-100 flex justify-center">
@@ -140,14 +131,13 @@ export default function PatientProfilePage() {
                     <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Date / Token</th>
                     <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Doctor</th>
                     <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Specialization</th>
-                    <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Department</th>
                     <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Status</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
                   {patient.appointments.length === 0 ? (
                     <tr>
-                      <td colSpan={5} className="py-20 text-center">
+                      <td colSpan={4} className="py-20 text-center">
                         <p className="text-gray-400 text-sm font-medium italic">No prior appointments found.</p>
                       </td>
                     </tr>
@@ -178,9 +168,6 @@ export default function PatientProfilePage() {
                         </td>
                         <td className="px-6 py-5 whitespace-nowrap">
                           <p className="text-xs font-semibold text-gray-600">{app.specialization}</p>
-                        </td>
-                        <td className="px-6 py-5">
-                          <p className="text-xs font-semibold text-gray-600">{app.department}</p>
                         </td>
                         <td className="px-6 py-5">
                           <StatusBadge status={app.status as AppointmentStatus} />

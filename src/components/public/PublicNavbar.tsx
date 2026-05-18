@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { Menu, X, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -79,30 +78,24 @@ export function PublicNavbar() {
   return (
     <nav
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-500 bg-[#000000]",
         mounted && isScrolled
-          ? "bg-white/80 backdrop-blur-xl border-b border-slate-100 py-3 shadow-sm"
-          : "bg-transparent py-6",
+          ? "border-b border-white/5 py-4 shadow-[0_4px_30px_rgba(0,0,0,0.6)]"
+          : "py-6",
       )}
     >
       <div className="container-custom flex items-center justify-between">
         {/* Logo */}
-        <Link
-          href="/"
-          className="relative h-10 w-40 transition-transform duration-300 hover:scale-105"
-        >
-          <Image
-            src="/Main.jpeg"
-            alt="ADAMS Poly Clinic"
-            fill
-            className="object-contain"
-            sizes="(max-width: 768px) 100vw, 160px"
-            priority
+        <Link href="/" className="flex items-center group no-underline">
+          <img 
+            src="/logo.jpg" 
+            alt="Clinic Logo" 
+            className="h-16 md:h-20 w-auto max-w-[280px] object-contain transition-transform duration-500 group-hover:scale-105 mix-blend-screen brightness-110" 
           />
         </Link>
 
         {/* Desktop Links */}
-        <div className="hidden lg:flex items-center gap-10">
+        <div className="hidden lg:flex items-center gap-12">
           {navLinks.map((link) => {
             const isActive = activeSection === link.href.replace("#", "");
             return (
@@ -113,13 +106,13 @@ export function PublicNavbar() {
                 className={cn(
                   "relative text-sm font-bold transition-all duration-300 py-2",
                   isActive
-                    ? "text-primary-green"
-                    : "text-slate-600 hover:text-primary-green",
+                    ? "text-[#C49228]"
+                    : "text-slate-300 hover:text-[#C49228]",
                 )}
               >
                 {link.name}
                 {isActive && (
-                  <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary-green rounded-full animate-in fade-in zoom-in-50 duration-500" />
+                  <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#C49228] rounded-full animate-in fade-in zoom-in-50 duration-500" />
                 )}
               </a>
             );
@@ -134,19 +127,24 @@ export function PublicNavbar() {
                 .getElementById("booking")
                 ?.scrollIntoView({ behavior: "smooth" })
             }
-            className="btn-primary flex items-center gap-2 group"
+            className="btn-premium-primary flex items-center gap-2.5 group"
           >
-            Book Appointment
+            {/* Premium Shine Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:animate-[shine_1.5s_infinite] transition-transform duration-1000" />
+
+            <span className="relative z-10 tracking-tight">
+              Book Appointment
+            </span>
             <ArrowRight
-              size={18}
-              className="group-hover:translate-x-1 transition-transform"
+              size={20}
+              className="relative z-10 group-hover:translate-x-1.5 transition-transform duration-300 ease-out"
             />
           </button>
         </div>
 
         {/* Mobile Menu Toggle */}
         <button
-          className="lg:hidden p-2 text-slate-900 bg-white shadow-sm border border-slate-100 rounded-xl"
+          className="lg:hidden p-2 text-white bg-white/5 shadow-sm border border-white/10 rounded-xl"
           onClick={() => setIsOpen(!isOpen)}
         >
           {isOpen ? <X size={24} /> : <Menu size={24} />}
@@ -156,7 +154,7 @@ export function PublicNavbar() {
       {/* Mobile Menu */}
       <div
         className={cn(
-          "lg:hidden absolute top-full left-0 right-0 bg-white border-b border-slate-100 transition-all duration-500 ease-in-out origin-top",
+          "lg:hidden absolute top-full left-0 right-0 bg-black/95 backdrop-blur-2xl border-b border-white/10 transition-all duration-500 ease-in-out origin-top",
           isOpen
             ? "scale-y-100 opacity-100"
             : "scale-y-0 opacity-0 pointer-events-none",
@@ -168,7 +166,7 @@ export function PublicNavbar() {
               key={link.name}
               href={link.href}
               onClick={(e) => scrollToSection(e, link.href)}
-              className="text-2xl font-black text-slate-900 hover:text-primary-green transition-colors"
+              className="text-2xl font-black text-white hover:text-[#C49228] transition-colors"
             >
               {link.name}
             </a>
@@ -180,7 +178,7 @@ export function PublicNavbar() {
                 ?.scrollIntoView({ behavior: "smooth" });
               setIsOpen(false);
             }}
-            className="w-full bg-primary-green text-white py-5 rounded-2xl font-black text-lg shadow-xl shadow-primary-green/20"
+            className="w-full btn-premium-primary"
           >
             Book Appointment
           </button>

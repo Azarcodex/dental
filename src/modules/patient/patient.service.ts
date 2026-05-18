@@ -17,8 +17,6 @@ export class PatientService {
         fullName: data.fullName,
         gender: data.gender,
         age: data.age,
-        ...(data.email && { email: data.email }),
-        ...(data.bloodGroup && { bloodGroup: data.bloodGroup }),
       });
       return updated;
     }

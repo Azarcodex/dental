@@ -16,7 +16,8 @@ import {
   Calendar, 
   Clock,
   Stethoscope,
-  ArrowRight
+  ArrowRight,
+  RefreshCw
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-hot-toast";
@@ -42,14 +43,15 @@ export function PublicBookingForm() {
     setValue,
     watch,
     trigger,
+    reset,
     formState: { errors },
   } = useForm<PublicBookingInput>({
     resolver: zodResolver(publicBookingSchema),
     mode: "onChange",
     defaultValues: {
       gender: "MALE",
-      age: 30, // Default for now as it's required by backend but not in the prompt's UI
-    } as any
+      age: 30,
+    }
   });
 
   const watchSpec = watch("specialization");
@@ -58,6 +60,25 @@ export function PublicBookingForm() {
   const watchSlot = watch("slot");
   const watchFullName = watch("fullName");
   const watchPhone = watch("phone");
+
+  // Autofill Logic
+  useEffect(() => {
+    const handleAutofill = (e: any) => {
+      const { doctorId, specialization } = e.detail;
+      if (specialization) setValue("specialization", specialization);
+      if (doctorId) setValue("doctorId", doctorId);
+    };
+
+    window.addEventListener("autofill-booking", handleAutofill);
+    
+    const params = new URLSearchParams(window.location.search);
+    const docId = params.get("doctorId");
+    const spec = params.get("specialization");
+    if (spec) setValue("specialization", spec);
+    if (docId) setValue("doctorId", docId);
+
+    return () => window.removeEventListener("autofill-booking", handleAutofill);
+  }, [setValue]);
 
   // Queries
   const { data: doctorsData } = useQuery({
@@ -78,7 +99,7 @@ export function PublicBookingForm() {
     return doctorsData.filter((d: any) => d.specialization === watchSpec && d.status === "ACTIVE");
   }, [doctorsData, watchSpec]);
 
-  const { data: slots, isLoading: slotsLoading } = useQuery({
+  const { data: slots, isLoading: slotsLoading, refetch: refetchSlots } = useQuery({
     queryKey: ["booking-slots", watchDoctorId, watchDate],
     queryFn: async () => {
       const { data } = await axiosInstance.get(`/doctors/${watchDoctorId}/slots`, { params: { date: watchDate } });
@@ -133,7 +154,7 @@ export function PublicBookingForm() {
         phone: data.phone,
         gender: data.gender,
         email: data.email,
-        age: 30, // Consistent with default
+        age: data.age,
       },
       doctorId: data.doctorId,
       date: data.date,
@@ -144,39 +165,46 @@ export function PublicBookingForm() {
 
   if (view === "SUCCESS" && successData) {
     return (
-      <section id="booking" className="pt-32 pb-28 bg-[#f8fafc]">
+      <section id="booking" className="pt-32 pb-28 bg-transparent">
         <div className="container-custom">
           <motion.div 
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="max-w-2xl mx-auto glass p-12 rounded-[50px] text-center space-y-8"
+            className="max-w-2xl mx-auto glass-card p-12 rounded-[50px] text-center space-y-8"
           >
-            <div className="w-20 h-20 bg-primary-green text-white rounded-full flex items-center justify-center mx-auto shadow-2xl shadow-primary-green/30">
+            <div className="w-20 h-20 bg-primary-green text-black rounded-full flex items-center justify-center mx-auto shadow-[0_0_30px_rgba(196,146,40,0.5)]">
               <CheckCircle2 size={40} />
             </div>
             <div className="space-y-4">
-              <h2 className="text-4xl font-black text-navy-950">Appointment Confirmed</h2>
-              <p className="text-slate-500 font-medium">Please save your digital token for your visit.</p>
+              <h2 className="text-4xl font-black text-white">Appointment Confirmed</h2>
+              <p className="text-slate-400 font-medium">Please save your digital token for your visit.</p>
             </div>
-            <div className="bg-navy-950 p-10 rounded-[40px] text-white space-y-4">
+            <div className="glass-card border border-primary-green/20 p-10 rounded-[40px] space-y-4">
               <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40">Digital Token</span>
               <p className="text-6xl font-black text-gradient">{successData.token}</p>
             </div>
             <div className="grid grid-cols-2 gap-4 text-left">
-              <div className="p-6 bg-slate-50 rounded-3xl">
+              <div className="p-6 bg-white/5 rounded-3xl">
                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Patient</p>
-                <p className="font-bold text-navy-950">{successData.patient.fullName}</p>
+                <p className="font-bold text-white">{successData.patient.fullName}</p>
               </div>
-              <div className="p-6 bg-slate-50 rounded-3xl">
+              <div className="p-6 bg-white/5 rounded-3xl">
                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Time</p>
-                <p className="font-bold text-navy-950">{formatTimeTo12h(successData.startTime)}</p>
+                <p className="font-bold text-white">{formatTimeTo12h(successData.startTime)}</p>
               </div>
             </div>
             <button 
-              onClick={() => window.location.reload()}
-              className="btn-premium-outline w-full"
+              onClick={() => {
+                reset();
+                setStep(1);
+                setView("FORM");
+                setSuccessData(null);
+                document.getElementById("booking")?.scrollIntoView({ behavior: "smooth" });
+              }}
+              className="btn-premium-primary w-full flex items-center justify-center gap-2 group"
             >
-              Book Another Appointment
+              <span>Book Another Appointment</span>
+              <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
             </button>
           </motion.div>
         </div>
@@ -185,7 +213,7 @@ export function PublicBookingForm() {
   }
 
   return (
-    <section id="booking" className="pt-32 pb-28 bg-[#f8fafc] overflow-hidden relative">
+    <section id="booking" className="pt-32 pb-28 bg-transparent overflow-hidden relative">
       <div className="absolute inset-0 bg-mesh opacity-10 pointer-events-none" />
       
       <div className="container-custom relative z-10">
@@ -193,23 +221,23 @@ export function PublicBookingForm() {
           <div className="text-center mb-16">
             <span className="section-subtitle">Secure Booking</span>
             <h2 className="section-title">Schedule Your Visit</h2>
-            <p className="text-slate-500 font-medium">Please fill in your details to reserve your preferred consultation time.</p>
+            <p className="text-slate-400 font-medium">Please fill in your details to reserve your preferred consultation time.</p>
           </div>
 
           {/* Progress Indicator */}
           <div className="flex justify-between mb-16 relative">
-            <div className="absolute top-1/2 left-0 right-0 h-[2px] bg-slate-200 -translate-y-1/2 z-0" />
+            <div className="absolute top-1/2 left-0 right-0 h-[2px] bg-white/10 -translate-y-1/2 z-0" />
             {STEPS.map((s) => (
               <div key={s.id} className="relative z-10 flex flex-col items-center gap-3">
                 <div className={cn(
                   "w-10 h-10 rounded-full flex items-center justify-center font-black text-xs transition-all duration-500",
-                  step >= s.id ? "bg-primary-green text-white shadow-lg shadow-primary-green/30 scale-110" : "bg-white text-slate-400 border-2 border-slate-100"
+                  step >= s.id ? "bg-primary-green text-black shadow-[0_0_15px_rgba(196,146,40,0.5)] scale-110" : "bg-black text-slate-500 border border-white/10"
                 )}>
                   {s.id}
                 </div>
                 <span className={cn(
                   "text-[10px] font-black uppercase tracking-widest",
-                  step >= s.id ? "text-navy-950" : "text-slate-400"
+                  step >= s.id ? "text-white" : "text-slate-500"
                 )}>
                   {s.title}
                 </span>
@@ -218,11 +246,11 @@ export function PublicBookingForm() {
           </div>
 
           {/* Form Card */}
-          <div className="glass rounded-[50px] overflow-hidden shadow-2xl shadow-navy-950/5">
-            <div className="bg-navy-950 p-12 text-white flex justify-between items-center">
+          <div className="glass-card rounded-[50px] overflow-hidden">
+            <div className="bg-black/40 border-b border-white/5 p-12 text-white flex justify-between items-center">
               <div>
                 <h3 className="text-3xl font-black">Book Appointment</h3>
-                <p className="text-white/40 font-medium mt-2">Complete the steps for your premium consultation.</p>
+                <p className="text-slate-400 font-medium mt-2">Complete the steps for your premium consultation.</p>
               </div>
               <div className="hidden md:block">
                 <Stethoscope size={48} className="text-primary-green opacity-50" />
@@ -247,7 +275,7 @@ export function PublicBookingForm() {
                           <input 
                             {...register("fullName")}
                             placeholder="e.g. John Doe"
-                            className="w-full pl-14 pr-5 py-5 bg-slate-50 border-2 border-slate-100 rounded-[24px] outline-none focus:border-primary-green focus:bg-white transition-all font-bold text-navy-950"
+                            className="w-full pl-14 pr-5 py-5 bg-black/50 border border-white/10 rounded-[24px] outline-none focus:border-primary-green focus:bg-white/5 transition-all font-bold text-white"
                           />
                         </div>
                         {errors.fullName && <p className="text-[10px] font-bold text-red-500 ml-2">{errors.fullName.message}</p>}
@@ -260,22 +288,36 @@ export function PublicBookingForm() {
                           <input 
                             {...register("phone")}
                             placeholder="10 digit mobile"
-                            className="w-full pl-14 pr-5 py-5 bg-slate-50 border-2 border-slate-100 rounded-[24px] outline-none focus:border-primary-green focus:bg-white transition-all font-bold text-navy-950"
+                            className="w-full pl-14 pr-5 py-5 bg-black/50 border border-white/10 rounded-[24px] outline-none focus:border-primary-green focus:bg-white/5 transition-all font-bold text-white"
                           />
                         </div>
                         {errors.phone && <p className="text-[10px] font-bold text-red-500 ml-2">{errors.phone.message}</p>}
                       </div>
 
-                      <div className="space-y-2">
-                        <label className="text-[11px] font-black uppercase tracking-widest text-slate-500 ml-2">Gender</label>
-                        <select 
-                          {...register("gender")}
-                          className="w-full px-6 py-5 bg-slate-50 border-2 border-slate-100 rounded-[24px] outline-none focus:border-primary-green focus:bg-white transition-all font-bold text-navy-950 appearance-none cursor-pointer"
-                        >
-                          <option value="MALE">Male</option>
-                          <option value="FEMALE">Female</option>
-                          <option value="OTHER">Other</option>
-                        </select>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="space-y-2">
+                          <label className="text-[11px] font-black uppercase tracking-widest text-slate-500 ml-2">Gender</label>
+                          <select 
+                            {...register("gender")}
+                            className="w-full px-6 py-5 bg-black/50 border border-white/10 rounded-[24px] outline-none focus:border-primary-green focus:bg-white/5 transition-all font-bold text-white appearance-none cursor-pointer"
+                          >
+                            <option value="MALE" className="bg-black text-white">Male</option>
+                            <option value="FEMALE" className="bg-black text-white">Female</option>
+                            <option value="OTHER" className="bg-black text-white">Other</option>
+                          </select>
+                          {errors.gender && <p className="text-[10px] font-bold text-red-500 ml-2">{errors.gender.message}</p>}
+                        </div>
+
+                        <div className="space-y-2">
+                          <label className="text-[11px] font-black uppercase tracking-widest text-slate-500 ml-2">Age</label>
+                          <input 
+                            type="number"
+                            {...register("age", { valueAsNumber: true })}
+                            placeholder="e.g. 25"
+                            className="w-full px-8 py-5 bg-black/50 border border-white/10 rounded-[24px] outline-none focus:border-primary-green focus:bg-white/5 transition-all font-bold text-white"
+                          />
+                          {errors.age && <p className="text-[10px] font-bold text-red-500 ml-2">{errors.age.message}</p>}
+                        </div>
                       </div>
 
                       <div className="space-y-2">
@@ -285,7 +327,7 @@ export function PublicBookingForm() {
                           <input 
                             {...register("email")}
                             placeholder="john@example.com"
-                            className="w-full pl-14 pr-5 py-5 bg-slate-50 border-2 border-slate-100 rounded-[24px] outline-none focus:border-primary-green focus:bg-white transition-all font-bold text-navy-950"
+                            className="w-full pl-14 pr-5 py-5 bg-black/50 border border-white/10 rounded-[24px] outline-none focus:border-primary-green focus:bg-white/5 transition-all font-bold text-white"
                           />
                         </div>
                       </div>
@@ -306,10 +348,10 @@ export function PublicBookingForm() {
                         <label className="text-[11px] font-black uppercase tracking-widest text-slate-500 ml-2">Specialization</label>
                         <select 
                           {...register("specialization")}
-                          className="w-full px-6 py-5 bg-slate-50 border-2 border-slate-100 rounded-[24px] outline-none focus:border-primary-green focus:bg-white transition-all font-bold text-navy-950 appearance-none cursor-pointer"
+                          className="w-full px-6 py-5 bg-black/50 border border-white/10 rounded-[24px] outline-none focus:border-primary-green focus:bg-white/5 transition-all font-bold text-white appearance-none cursor-pointer"
                         >
-                          <option value="">Select Treatment...</option>
-                          {specializations.map(s => <option key={s} value={s}>{s}</option>)}
+                          <option value="" className="bg-black text-white">Select Treatment...</option>
+                          {specializations.map(s => <option key={s} value={s} className="bg-black text-white">{s}</option>)}
                         </select>
                       </div>
 
@@ -318,10 +360,10 @@ export function PublicBookingForm() {
                         <select 
                           {...register("doctorId")}
                           disabled={!watchSpec}
-                          className="w-full px-6 py-5 bg-slate-50 border-2 border-slate-100 rounded-[24px] outline-none focus:border-primary-green focus:bg-white transition-all font-bold text-navy-950 appearance-none cursor-pointer disabled:opacity-40"
+                          className="w-full px-6 py-5 bg-black/50 border border-white/10 rounded-[24px] outline-none focus:border-primary-green focus:bg-white/5 transition-all font-bold text-white appearance-none cursor-pointer disabled:opacity-40"
                         >
-                          <option value="">Select Specialist...</option>
-                          {filteredDoctors?.map((d: any) => <option key={d.id} value={d.id}>Dr. {d.firstName} {d.lastName}</option>)}
+                          <option value="" className="bg-black text-white">Select Specialist...</option>
+                          {filteredDoctors?.map((d: any) => <option key={d.id} value={d.id} className="bg-black text-white">Dr. {d.firstName} {d.lastName}</option>)}
                         </select>
                       </div>
                     </div>
@@ -342,12 +384,23 @@ export function PublicBookingForm() {
                         {...register("date")}
                         type="date"
                         min={getLocalDateString()}
-                        className="w-full px-6 py-5 bg-slate-50 border-2 border-slate-100 rounded-[24px] outline-none focus:border-primary-green focus:bg-white transition-all font-bold text-navy-950"
+                        className="w-full px-6 py-5 bg-black/50 border border-white/10 rounded-[24px] outline-none focus:border-primary-green focus:bg-white/5 transition-all font-bold text-white cursor-pointer color-scheme-dark"
+                        style={{ colorScheme: "dark" }}
                       />
                     </div>
 
                     <div className="space-y-4">
-                      <label className="text-[11px] font-black uppercase tracking-widest text-slate-500 ml-2">Available Time Slots</label>
+                      <div className="flex items-center justify-between">
+                        <label className="text-[11px] font-black uppercase tracking-widest text-slate-500 ml-2">Available Time Slots</label>
+                        <button 
+                          type="button"
+                          onClick={() => refetchSlots()}
+                          className="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-400 hover:text-primary-green active:scale-90"
+                          title="Refresh Slots"
+                        >
+                          <RefreshCw size={14} className={cn(slotsLoading && "animate-spin")} />
+                        </button>
+                      </div>
                       <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4">
                         {slotsLoading ? (
                           <div className="col-span-full py-10 flex items-center justify-center">
@@ -365,10 +418,10 @@ export function PublicBookingForm() {
                               disabled={!s.available}
                               onClick={() => setValue("slot", s.time, { shouldValidate: true })}
                               className={cn(
-                                "py-4 rounded-2xl font-bold text-xs transition-all border-2",
+                                "py-4 rounded-2xl font-bold text-xs transition-all border",
                                 watchSlot === s.time 
-                                  ? "bg-primary-green border-primary-green text-white shadow-lg" 
-                                  : "bg-white border-slate-100 text-navy-950 hover:border-primary-green disabled:opacity-30 disabled:cursor-not-allowed"
+                                  ? "bg-primary-green border-primary-green text-black shadow-[0_0_15px_rgba(196,146,40,0.4)]" 
+                                  : "bg-black/50 border-white/10 text-white hover:border-primary-green disabled:opacity-30 disabled:cursor-not-allowed"
                               )}
                             >
                               {formatTimeTo12h(s.time)}
@@ -388,23 +441,19 @@ export function PublicBookingForm() {
                     className="space-y-8"
                   >
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="p-8 bg-slate-50 rounded-[30px] space-y-2">
+                      <div className="p-8 bg-white/5 rounded-[30px] space-y-2">
                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Patient Name</p>
-                        <p className="text-xl font-black text-navy-950">{watchFullName}</p>
+                        <p className="text-xl font-black text-white">{watchFullName}</p>
                       </div>
-                      <div className="p-8 bg-slate-50 rounded-[30px] space-y-2">
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Phone Number</p>
-                        <p className="text-xl font-black text-navy-950">{watchPhone}</p>
-                      </div>
-                      <div className="p-8 bg-slate-50 rounded-[30px] space-y-2">
+                      <div className="p-8 bg-white/5 rounded-[30px] space-y-2">
                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Specialist</p>
-                        <p className="text-xl font-black text-navy-950">
+                        <p className="text-xl font-black text-white">
                           {filteredDoctors?.find((d: any) => d.id === watchDoctorId)?.firstName}
                         </p>
                       </div>
-                      <div className="p-8 bg-slate-50 rounded-[30px] space-y-2">
+                      <div className="p-8 bg-white/5 rounded-[30px] space-y-2">
                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Schedule</p>
-                        <p className="text-xl font-black text-navy-950">{watchDate} at {formatTimeTo12h(watchSlot)}</p>
+                        <p className="text-xl font-black text-white">{watchDate} at {formatTimeTo12h(watchSlot)}</p>
                       </div>
                     </div>
                   </motion.div>
@@ -417,7 +466,7 @@ export function PublicBookingForm() {
                   <button
                     type="button"
                     onClick={prevStep}
-                    className="flex items-center gap-2 text-sm font-black text-slate-400 hover:text-navy-950 transition-colors px-6 py-4"
+                    className="flex items-center gap-2 text-sm font-black text-slate-400 hover:text-white transition-colors px-6 py-4"
                   >
                     <ChevronLeft size={20} />
                     Back

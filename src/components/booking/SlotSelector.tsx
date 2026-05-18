@@ -76,7 +76,6 @@ export default function SlotSelector({ doctorId, date, selectedSlot, onSelect }:
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Available Windows</p>
         <button 
           onClick={() => refetch()}
           disabled={isRefetching}
@@ -106,8 +105,6 @@ export default function SlotSelector({ doctorId, date, selectedSlot, onSelect }:
                 "py-3 px-2 rounded-xl text-sm font-bold transition-all border flex flex-col items-center gap-1",
                 isSelected
                   ? "bg-primary-green border-primary-green text-white shadow-lg shadow-primary-green/20 scale-105"
-                  : isDisabled 
-                    ? "bg-gray-50 border-gray-100 text-gray-300 cursor-not-allowed"
                     : "bg-white border-gray-100 text-gray-900 hover:border-primary-green hover:text-primary-green hover:shadow-sm"
               )}
             >

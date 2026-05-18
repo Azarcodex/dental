@@ -62,7 +62,7 @@ export function WhyChooseUs() {
               </span>
            </h2>
            <p className="text-base text-slate-600 font-medium leading-relaxed">
-             ADAMS Poly Clinic combines compassionate medical attention with cutting-edge 
+             Dental Clinic combines compassionate medical attention with cutting-edge 
              technology to ensure the best possible health outcomes for our community.
            </p>
         </div>

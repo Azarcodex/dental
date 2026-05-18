@@ -94,8 +94,8 @@ export class DoctorRepository {
         }
       },
       {
-        timeout: 15000, // 15 seconds to handle Neon latency
-        maxWait: 5000,
+        timeout: 20000,
+        maxWait: 10000,
       }
     );
   }

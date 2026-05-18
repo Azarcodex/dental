@@ -55,8 +55,7 @@ export default function DoctorsPage() {
     if (!doctors) return [];
     return doctors.filter((d: any) => 
       `${d.firstName} ${d.lastName || ''}`.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
-      d.specialization.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
-      d.department.toLowerCase().includes(debouncedSearch.toLowerCase())
+      d.specialization.toLowerCase().includes(debouncedSearch.toLowerCase())
     );
   }, [doctors, debouncedSearch]);
 
@@ -83,7 +82,7 @@ export default function DoctorsPage() {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary-green transition-colors" size={18} />
             <input 
               type="text"
-              placeholder="Search by name, dept..."
+              placeholder="Search by name, spec..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-12 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:ring-4 focus:ring-primary-green/5 focus:border-primary-green focus:bg-white transition-all w-full md:w-72 font-bold text-black shadow-inner placeholder:text-gray-400"
@@ -114,7 +113,7 @@ export default function DoctorsPage() {
           <h3 className="text-xl font-bold text-slate-900 mb-2">No matching doctors found</h3>
           <p className="text-slate-500 max-w-sm mx-auto font-medium leading-relaxed">
             We couldn't find any doctors matching <span className="text-slate-900 font-bold">"{searchQuery}"</span>. 
-            Try refining your keywords or checking another department.
+            Try refining your keywords or specialization.
           </p>
           <button 
             onClick={() => setSearchQuery("")}
@@ -124,7 +123,7 @@ export default function DoctorsPage() {
           </button>
         </div>
       ) : (
-        <Table headers={["Name", "Gender", "Specialization", "Department", "Fee", "Status", "Actions"]}>
+        <Table headers={["Name", "Gender", "Specialization", "Fee", "Status", "Actions"]}>
           {filteredDoctors?.map((doctor: any) => (
             <tr key={doctor.id} className="group hover:bg-slate-50/50 transition-colors">
               <td className="px-6 py-5">
@@ -150,11 +149,6 @@ export default function DoctorsPage() {
                 {doctor.gender === 'MALE' ? 'Male' : doctor.gender === 'FEMALE' ? 'Female' : 'Other'}
               </td>
               <td className="px-6 py-5 text-[13px] text-slate-600 font-bold">{doctor.specialization}</td>
-              <td className="px-6 py-5">
-                <span className="text-[10px] font-bold text-primary-blue bg-primary-blue/5 border border-primary-blue/10 px-3 py-1.5 rounded-full uppercase tracking-widest">
-                  {doctor.department}
-                </span>
-              </td>
               <td className="px-6 py-5 text-sm font-bold text-slate-900 font-mono">₹ {doctor.consultationFee.toLocaleString()}</td>
               <td className="px-6 py-5">
                 <button 

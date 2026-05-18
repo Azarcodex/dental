@@ -4,6 +4,7 @@ export const PatientSchema = z.object({
   fullName: z.string().min(2, "Full name is required"),
   gender: z.string(),
   phone: z.string().min(10, "Valid phone number is required"),
+  age: z.number().min(0).optional(),
 });
 
 export const CreatePatientSchema = PatientSchema;

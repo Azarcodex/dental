@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { ArrowRight, Users, Award, CalendarCheck } from "lucide-react";
 
 export function HeroSection() {
-  const words = ["Smile", "Confidence", "Health", "Comfort", "Brilliance"];
+  const words = ["Smile", "Health", "Comfort", "Brilliance"];
   const [index, setIndex] = useState(0);
   const [isExiting, setIsExiting] = useState(false);
 
@@ -164,10 +164,10 @@ export function HeroSection() {
     <>
       <style>{`
         .bg-mobile-gradient {
-          background: linear-gradient(160deg, #f0fdf8 0%, #ffffff 50%, #f0f9ff 100%);
+          background: transparent;
         }
         @media (min-width: 768px) {
-          .bg-mobile-gradient { background: #ffffff; }
+          .bg-mobile-gradient { background: transparent; }
         }
 
         /* Rotating Headline Word */
@@ -184,7 +184,7 @@ export function HeroSection() {
 
         .word-item {
           display: block;
-          color: #10B981;
+          color: #C49228;
           font-style: italic;
           position: absolute;
           left: 0;
@@ -198,7 +198,7 @@ export function HeroSection() {
           bottom: 4px;
           left: 0;
           height: 3px;
-          background: #10B981;
+          background: #C49228;
           border-radius: 2px;
           width: 0%;
         }
@@ -306,38 +306,35 @@ export function HeroSection() {
 
         .pulse-btn { animation: pulseBtn 2.5s infinite; }
         @keyframes pulseBtn {
-          0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
-          50% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+          0%, 100% { box-shadow: 0 0 0 0 rgba(196, 146, 40, 0.3); }
+          50% { box-shadow: 0 0 0 10px rgba(196, 146, 40, 0); }
         }
         .is-scrolling { animation: none !important; }
       `}</style>
 
-      <section id="hero-section" className="relative min-h-[100vh] w-full overflow-x-hidden pt-20 bg-mobile-gradient">
-        <div className="container-custom mx-auto px-[24px] md:px-8 py-12 relative z-10 flex flex-col md:flex-row items-center justify-between min-h-[calc(100vh-80px)]">
-          {/* Mobile Image (Normal flow) */}
-          <div className="w-full md:hidden order-1 flex justify-center relative pt-4" style={{ paddingBottom: '32px' }}>
-            <div className="relative">
-              <div 
-                className="absolute z-0 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none rounded-full"
-                style={{ width: '110%', height: '110%', background: 'radial-gradient(circle, rgba(16, 185, 129, 0.18) 0%, transparent 70%)' }}
-              />
-              <div className="dental-shape shape-circle" />
-              <div className="dental-shape shape-rect" />
-              <div className="dental-shape shape-diamond" />
-              <img id="hero-tooth-mobile" src="/home.jpg" alt="Dental care"
-                className="w-full max-w-[320px] relative z-10 animate-image-entrance mix-blend-multiply"
-                style={{ background: 'transparent', border: 'none', boxShadow: 'none' }}
-              />
-            </div>
-          </div>
+      <section id="hero-section" className="relative min-h-[100vh] w-full overflow-x-hidden pt-20 flex items-center justify-center">
+        {/* Cinematic Background Image for Hero Only */}
+        <div 
+          className="absolute inset-0 z-0 opacity-60 pointer-events-none"
+          style={{
+            backgroundImage: 'url(/bg.jpg)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundAttachment: 'fixed'
+          }}
+        />
+        {/* Subtle depth gradient overlay to blend into the pure black theme below */}
+        <div className="absolute inset-0 z-0 bg-gradient-to-b from-black/40 via-black/20 to-black pointer-events-none" />
+
+        <div className="container-custom mx-auto px-[24px] md:px-8 py-12 relative z-10 flex flex-col items-center justify-center text-center min-h-[calc(100vh-80px)]">
           
-          <div className="w-full md:w-1/2 order-2 md:order-1 flex flex-col items-start text-left max-w-2xl">
-            <span className="animate-text-up delay-label text-primary-green font-bold uppercase block border-l-2 border-primary-green"
-              style={{ letterSpacing: '0.12em', paddingLeft: '8px', fontSize: '0.7rem', marginBottom: '12px' }}>
+          <div className="w-full flex flex-col items-center max-w-4xl mt-12 md:mt-0">
+            <span className="animate-text-up delay-label text-[#C49228] font-bold uppercase block border-b-2 border-[#C49228]"
+              style={{ letterSpacing: '0.2em', paddingBottom: '8px', fontSize: '0.75rem', marginBottom: '24px' }}>
               Trusted Dental Care
             </span>
-            <h1 className="animate-text-up delay-headline text-[#0f172a] font-bold tracking-tight w-full max-w-[350px] md:max-w-full text-[2rem] md:text-[2.8rem] lg:text-[4.5rem]"
-              style={{ lineHeight: '1.2', marginBottom: '12px' }}>
+            <h1 className="animate-text-up delay-headline text-white font-bold tracking-tight w-full text-[2.5rem] md:text-[4rem] lg:text-[5.5rem]"
+              style={{ lineHeight: '1.1', marginBottom: '24px' }}>
               Your{' '}
               <span className="word-container">
                 <span className={`word-item ${isExiting ? 'word-exit' : 'word-enter active'}`}>
@@ -347,44 +344,27 @@ export function HeroSection() {
               </span>
               <br /> Starts Here
             </h1>
-            <p className="animate-text-up delay-subline text-slate-500 font-medium leading-relaxed text-base md:text-lg lg:text-[1.05rem]"
-              style={{ marginBottom: '24px' }}>
+            <p className="animate-text-up delay-subline text-slate-300 font-light leading-relaxed text-base md:text-xl lg:text-[1.25rem] max-w-2xl"
+              style={{ marginBottom: '40px' }}>
               Experience world-class clinical excellence in a luxury environment tailored for your comfort.
             </p>
-            <div className="animate-text-up delay-btn w-full md:w-auto" style={{ marginBottom: '32px' }}>
+            <div className="animate-text-up delay-btn w-full md:w-auto" style={{ marginBottom: '48px' }}>
               <button onClick={scrollToBooking}
-                className="w-full md:w-auto bg-primary-green text-white rounded-[100px] font-bold text-lg transition-all duration-200 hover:-translate-y-[2px] active:translate-y-0 active:shadow-md flex items-center justify-center gap-3 pulse-btn"
-                style={{ minHeight: '52px', padding: '14px 32px' }}>
+                className="btn-premium-primary pulse-btn flex items-center justify-center gap-3 w-full md:w-auto px-8"
+                style={{ minHeight: '56px', fontSize: '1.1rem' }}>
                 Book Appointment <ArrowRight size={20} />
               </button>
             </div>
-            <div className="animate-text-up delay-btn flex flex-col md:flex-row items-start gap-4 md:gap-6 pt-6 border-t border-slate-100 w-full">
+            <div className="animate-text-up delay-btn flex flex-wrap justify-center items-center gap-6 md:gap-12 pt-8 border-t border-white/10 w-full max-w-3xl">
               <div className="flex items-center gap-2 text-slate-400">
-                <Users size={18} className="text-primary-green" /><span className="text-xs font-bold uppercase tracking-wider">500+ Patients</span>
+                <Users size={20} className="text-[#C49228]" /><span className="text-xs md:text-sm font-bold uppercase tracking-wider">500+ Patients</span>
               </div>
               <div className="flex items-center gap-2 text-slate-400">
-                <Award size={18} className="text-primary-green" /><span className="text-xs font-bold uppercase tracking-wider">Expert Dentists</span>
+                <Award size={20} className="text-[#C49228]" /><span className="text-xs md:text-sm font-bold uppercase tracking-wider">Expert Dentists</span>
               </div>
               <div className="flex items-center gap-2 text-slate-400">
-                <CalendarCheck size={18} className="text-primary-green" /><span className="text-xs font-bold uppercase tracking-wider">Easy Booking</span>
+                <CalendarCheck size={20} className="text-[#C49228]" /><span className="text-xs md:text-sm font-bold uppercase tracking-wider">Easy Booking</span>
               </div>
-            </div>
-          </div>
-          <div className="hidden md:block w-[320px] lg:w-[420px] order-2 shrink-0" />
-        </div>
-
-        <div id="fixed-image-wrapper" className="hidden md:flex fixed top-0 left-0 w-full h-full z-0 pointer-events-none justify-center transition-opacity duration-300">
-          <div className="container-custom mx-auto px-[24px] md:px-8 w-full h-full flex items-center justify-between">
-            <div className="w-1/2 shrink-0" />
-            <div className="w-[320px] lg:w-[420px] flex justify-end items-center h-full relative shrink-0">
-              <div className="absolute z-0 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none rounded-full glow-desktop-sync"
-                style={{ width: '110%', height: '110%', background: 'radial-gradient(circle, rgba(16, 185, 129, 0.18) 0%, transparent 70%)' }} />
-              <div className="dental-shape shape-circle" />
-              <div className="dental-shape shape-rect" />
-              <div className="dental-shape shape-diamond" />
-              <img id="hero-tooth-desktop" src="/home.jpg" alt="Dental care"
-                className="pointer-events-auto relative z-10 float-desktop-idle mix-blend-multiply"
-                style={{ width: '100%', willChange: 'transform, opacity', background: 'transparent', border: 'none', boxShadow: 'none' }} />
             </div>
           </div>
         </div>

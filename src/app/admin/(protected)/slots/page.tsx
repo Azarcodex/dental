@@ -296,7 +296,7 @@ export default function SlotManagementPage() {
               <div className="w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center text-slate-300 mb-3">
                 <Search size={20} />
               </div>
-              <p className="text-sm font-bold text-slate-400">No doctors found</p>
+              <p className="text-sm font-bold text-slate-500">No doctors found</p>
             </div>
           ) : filteredDoctors?.map((doctor: any) => (
             <div 
@@ -324,7 +324,7 @@ export default function SlotManagementPage() {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-bold text-slate-900 truncate">Dr. {doctor.firstName} {doctor.lastName || ''}</p>
-                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest truncate mt-0.5">{doctor.specialization}</p>
+                <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest truncate mt-0.5">{doctor.specialization}</p>
               </div>
             </div>
           ))}
@@ -355,7 +355,7 @@ export default function SlotManagementPage() {
                   <h2 className="text-2xl font-black text-slate-900 tracking-tight">Dr. {selectedDoctor?.firstName} {selectedDoctor?.lastName || ''}</h2>
                   <div className="flex items-center gap-2 mt-0.5">
                     <span className="text-[10px] font-black text-primary-blue bg-primary-blue/5 border border-primary-blue/10 px-2 py-0.5 rounded-md uppercase tracking-[0.1em]">{selectedDoctor?.specialization}</span>
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">• Availability Manager</span>
+                    <span className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">• Availability Manager</span>
                   </div>
                 </div>
               </div>
@@ -378,7 +378,7 @@ export default function SlotManagementPage() {
                     <CalendarDays size={18} className="text-primary-blue" />
                     <h3 className="text-xs font-black text-slate-700 uppercase tracking-[0.15em]">Weekly Clinical Cycle</h3>
                   </div>
-                  <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest bg-slate-100 px-2 py-1 rounded-lg">
+                  <div className="text-[10px] font-bold text-slate-600 uppercase tracking-widest bg-slate-200/50 px-2 py-1 rounded-lg">
                     {activeDays.length} Days Selected
                   </div>
                 </div>
@@ -392,7 +392,7 @@ export default function SlotManagementPage() {
                           "py-4 rounded-2xl text-[12px] font-black transition-all border flex flex-col items-center gap-1",
                           activeDays.includes(index)
                             ? "bg-primary-blue border-primary-blue text-white shadow-lg shadow-primary-blue/20 scale-[1.02]"
-                            : "bg-white border-gray-100 text-slate-400 hover:border-primary-blue/30 hover:text-slate-600"
+                            : "bg-white border-gray-200 text-slate-600 hover:border-primary-blue/30 hover:text-slate-900"
                         )}
                       >
                         <span className="opacity-50">{day.substring(0, 3)}</span>

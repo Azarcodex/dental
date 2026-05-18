@@ -11,14 +11,18 @@ import { PublicBookingForm } from "@/components/public/PublicBookingForm";
 import { BookingBanner } from "@/components/public/BookingBanner";
 import { ContactSection } from "@/components/public/ContactSection";
 import { PublicFooter } from "@/components/public/PublicFooter";
+import { ThreeBackground } from "@/components/public/ThreeBackground";
 
 export default function RootPage() {
   return (
-    <main className="min-h-screen bg-white selection:bg-primary-green selection:text-white overflow-clip">
+    <main className="min-h-screen bg-black selection:bg-[#C49228] selection:text-black overflow-clip relative">
       <Toaster position="top-right" />
 
-      <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-navy-950"><div className="w-10 h-10 border-4 border-primary-green border-t-transparent rounded-full animate-spin" /></div>}>
-        <PublicNavbar />
+      <ThreeBackground />
+
+      <div className="relative z-10">
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-transparent"><div className="w-10 h-10 border-4 border-primary-green border-t-transparent rounded-full animate-spin" /></div>}>
+          <PublicNavbar />
 
         {/* Hero Section */}
         <div id="home">
@@ -52,7 +56,8 @@ export default function RootPage() {
         </div>
 
         <PublicFooter />
-      </Suspense>
+        </Suspense>
+      </div>
     </main>
   );
 }

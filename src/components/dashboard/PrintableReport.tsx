@@ -28,7 +28,7 @@ export function PrintableReport({
       {/* Header */}
       <div className="flex justify-between items-start border-b-2 border-gray-900 pb-6 mb-6">
         <div>
-          <h1 className="text-3xl font-black tracking-tight text-gray-900">ADAMS Clinic</h1>
+          <h1 className="text-3xl font-black tracking-tight text-gray-900">Dental Clinic</h1>
           <p className="text-gray-500 font-medium text-sm mt-1">Filtered Bookings Report</p>
         </div>
         <div className="text-right">

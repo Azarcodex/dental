@@ -153,6 +153,7 @@ exports.Prisma.PatientScalarFieldEnum = {
   fullName: 'fullName',
   gender: 'gender',
   phone: 'phone',
+  age: 'age',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   displayId: 'displayId'
@@ -194,7 +195,6 @@ exports.Prisma.AppointmentScalarFieldEnum = {
   endTime: 'endTime',
   status: 'status',
   createdAt: 'createdAt',
-  department: 'department',
   specialization: 'specialization',
   token: 'token',
   bookingType: 'bookingType'

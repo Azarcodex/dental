@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import { useMutation } from "@tanstack/react-query";
 import axiosInstance from "@/lib/axios";
 import { useAuth } from "@/context/AuthContext";
@@ -54,17 +53,12 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#f8fafc] p-4">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden">
-        {/* Top-left image positioning as requested */}
-        <div className="relative h-24 w-full">
-          <div className="absolute top-4 left-6">
-            <Image
-              src="/Main.jpeg"
-              alt="Clinic Logo"
-              width={100}
-              height={40}
-              className="object-contain"
-              priority
-            />
+        {/* Top-left branding as requested */}
+        <div className="relative h-20 w-full">
+          <div className="absolute top-6 left-8">
+            <span className="text-xl font-black tracking-tighter text-gray-900">
+              DENTAL<span className="text-primary-green ml-1">CLINIC</span>
+            </span>
           </div>
         </div>
 

@@ -16,7 +16,7 @@ export async function GET() {
       success: true,
       data: admin || {
         phone: "+91 98765 43210",
-        email: "care@adamsclinic.com",
+        email: "care@dentalclinic.com",
         address: "123 Medical Avenue, Health City, Sector 45, India."
       }
     });

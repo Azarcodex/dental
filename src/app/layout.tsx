@@ -1,4 +1,4 @@
-import { Plus_Jakarta_Sans, Inter } from "next/font/google";
+import { Plus_Jakarta_Sans, Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import Providers from "@/components/Providers";
 import { AuthProvider } from "@/context/AuthContext";
@@ -14,9 +14,14 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
+  subsets: ["latin"],
+});
+
 export const metadata: Metadata = {
-  title: "ADAMS Poly Clinic | Excellence in Holistic Healthcare",
-  description: "Modern clinical facilities and specialized medical care. Book your appointment online with ADAMS Poly Clinic.",
+  title: "Dental Clinic | Excellence in Holistic Healthcare",
+  description: "Modern clinical facilities and specialized medical care. Book your appointment online with Dental Clinic.",
 };
 
 export default function RootLayout({
@@ -26,7 +31,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" data-scroll-behavior="smooth">
-      <body className={`${plusJakarta.variable} ${inter.variable} font-sans antialiased`}>
+      <body className={`${plusJakarta.variable} ${inter.variable} ${playfair.variable} font-sans antialiased`}>
         <Providers>
           <AuthProvider>
             {children}

@@ -57,7 +57,6 @@ export default function DoctorForm({ onSuccess, initialData }: DoctorFormProps) 
         phone: "",
         gender: "MALE",
         specialization: "",
-        department: "",
         consultationFee: 1000,
         status: "ACTIVE",
         profilePhoto: "",
@@ -249,14 +248,6 @@ export default function DoctorForm({ onSuccess, initialData }: DoctorFormProps) 
               {...register("specialization")}
               className="w-full px-3 py-2 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:ring-4 focus:ring-primary-green/5 focus:border-primary-green transition-all font-medium text-[13px] text-black placeholder:text-gray-400"
               placeholder="e.g. Cardiology"
-            />
-          </div>
-          <div className="space-y-1.5">
-            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Department</label>
-            <input
-              {...register("department")}
-              className="w-full px-3 py-2 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:ring-4 focus:ring-primary-green/5 focus:border-primary-green transition-all font-medium text-[13px] text-black placeholder:text-gray-400"
-              placeholder="e.g. Heart & Vascular"
             />
           </div>
           <div className="space-y-1.5">

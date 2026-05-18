@@ -63,12 +63,6 @@ export const PatientDrawer: React.FC<PatientDrawerProps> = ({ isOpen, onClose, p
                   {patient.age}y • {patient.gender}
                 </p>
               </div>
-              <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100 col-span-2">
-                <p className="text-xs text-gray-500 mb-1">Blood Group</p>
-                <p className="text-sm font-bold text-red-600">
-                  {patient.bloodGroup || "Not specified"}
-                </p>
-              </div>
             </div>
           </section>
 
@@ -108,13 +102,6 @@ export const PatientDrawer: React.FC<PatientDrawerProps> = ({ isOpen, onClose, p
                   </div>
                 </div>
                 
-                <div className="flex items-start gap-3">
-                  <Calendar size={16} className="text-gray-400 mt-1" />
-                  <div>
-                    <p className="text-xs text-gray-500">Reason / Department</p>
-                    <p className="text-sm font-semibold text-gray-900">{appointment?.department}</p>
-                  </div>
-                </div>
               </div>
             </div>
           </section>

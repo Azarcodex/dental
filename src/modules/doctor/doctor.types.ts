@@ -8,7 +8,6 @@ export const CreateDoctorSchema = z.object({
   gender: z.string(),
   profilePhoto: z.string().nullable().optional(),
   specialization: z.string().min(2, "Specialization is required"),
-  department: z.string().min(2, "Department is required"),
   consultationFee: z.number().positive(),
   status: z.enum(["ACTIVE", "INACTIVE"]).default("ACTIVE"),
 });
@@ -25,7 +24,6 @@ export const DoctorFormSchema = z.object({
   gender: z.string(),
   profilePhoto: z.string().nullable().optional(),
   specialization: z.string().min(2, "Specialization is required"),
-  department: z.string().min(2, "Department is required"),
   consultationFee: z.number().positive(),
   status: z.enum(["ACTIVE", "INACTIVE"]).default("ACTIVE"),
 });

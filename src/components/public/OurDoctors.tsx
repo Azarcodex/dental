@@ -26,11 +26,11 @@ function DoctorCard({ doctor, idx }: { doctor: any, idx: number }) {
       ref={cardRef}
       style={{ transitionDelay: `${idx * 100}ms` }}
       className={cn(
-        "bg-white group p-4 rounded-[32px] flex flex-col h-full shadow-sm hover:shadow-xl transition-all duration-700",
+        "glass-card group p-4 rounded-[32px] flex flex-col h-full hover:border-primary-green/50 hover:bg-white/[0.04] transition-all duration-700",
         isVisible ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-6 scale-95"
       )}
     >
-      <div className="relative h-64 w-full rounded-[24px] overflow-hidden mb-6">
+      <div className="relative h-64 w-full rounded-[24px] overflow-hidden mb-6 border border-white/5 group-hover:border-primary-green/30 transition-colors duration-500">
         {doctor.profilePhoto ? (
           <img
             src={doctor.profilePhoto}
@@ -38,7 +38,7 @@ function DoctorCard({ doctor, idx }: { doctor: any, idx: number }) {
             className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
           />
         ) : (
-          <div className="absolute inset-0 bg-slate-50 flex items-center justify-center text-slate-200">
+          <div className="absolute inset-0 bg-black/50 flex items-center justify-center text-slate-700">
             <User size={60} />
           </div>
         )}
@@ -51,15 +51,25 @@ function DoctorCard({ doctor, idx }: { doctor: any, idx: number }) {
 
       <div className="px-2 pb-4 space-y-6">
         <div>
-          <h3 className="text-xl font-bold text-navy-950 group-hover:text-primary-green transition-colors">
+          <h3 className="text-xl font-bold text-white group-hover:text-primary-green transition-colors">
             Dr. {doctor.firstName} {doctor.lastName}
           </h3>
-          <p className="text-sm text-slate-400 mt-1">{doctor.department || "Medical"} Specialist</p>
         </div>
         
         <button 
-          onClick={() => document.getElementById("booking")?.scrollIntoView({ behavior: "smooth" })}
-          className="w-full py-4 rounded-2xl bg-slate-50 text-navy-950 text-xs font-bold uppercase tracking-widest transition-all duration-300 hover:bg-primary-green hover:text-white flex items-center justify-center gap-2"
+          onClick={() => {
+            const url = new URL(window.location.href);
+            url.searchParams.set("doctorId", doctor.id);
+            url.searchParams.set("specialization", doctor.specialization);
+            window.history.pushState({}, "", url);
+            
+            window.dispatchEvent(new CustomEvent("autofill-booking", { 
+              detail: { doctorId: doctor.id, specialization: doctor.specialization } 
+            }));
+
+            document.getElementById("booking")?.scrollIntoView({ behavior: "smooth" });
+          }}
+          className="w-full py-4 rounded-2xl bg-white/5 border border-white/10 text-white text-xs font-bold uppercase tracking-widest transition-all duration-500 group-hover:bg-primary-green group-hover:text-black group-hover:border-primary-green flex items-center justify-center gap-2 hover:shadow-[0_0_20px_rgba(196,146,40,0.4)]"
         >
           <Calendar size={16} />
           Book Visit
@@ -95,7 +105,7 @@ export function OurDoctors() {
   }, []);
 
   return (
-    <section id="doctors" className="py-24 bg-[#f1f5f9] overflow-hidden">
+    <section id="doctors" className="py-24 bg-transparent overflow-hidden">
       <div className="container-custom">
         <div 
           ref={headerRef}
@@ -107,7 +117,7 @@ export function OurDoctors() {
           <span className="text-primary-green text-xs font-bold uppercase tracking-[0.2em] mb-4 block">
             Expert Team
           </span>
-          <h2 className="text-4xl md:text-5xl font-bold text-navy-950 mb-6">
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
             Meet Our Specialists
           </h2>
           <div className="w-16 h-1 bg-primary-green mx-auto rounded-full" />
@@ -116,7 +126,7 @@ export function OurDoctors() {
         {isLoading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="h-96 bg-white rounded-[32px] animate-pulse" />
+              <div key={i} className="h-96 glass-card rounded-[32px] animate-pulse" />
             ))}
           </div>
         ) : (

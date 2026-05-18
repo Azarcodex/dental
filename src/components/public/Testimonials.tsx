@@ -6,7 +6,7 @@ const testimonials = [
   {
     name: "Aisha Khan",
     role: "Regular Patient",
-    text: "The clinical standards at ADAMS Poly Clinic are unmatched. The digital booking was effortless and the staff was extremely professional.",
+    text: "The clinical standards at Dental Clinic are unmatched. The digital booking was effortless and the staff was extremely professional.",
     avatar: "https://i.pravatar.cc/150?u=12"
   },
   {

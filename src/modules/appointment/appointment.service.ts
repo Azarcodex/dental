@@ -125,7 +125,6 @@ export class AppointmentService {
             doctorId: data.doctorId,
             patientId: patient.id,
             specialization: doctor.specialization,
-            department: doctor.department,
             date: startOfDay,
             startTime: data.startTime,
             endTime,
@@ -164,7 +163,8 @@ export class AppointmentService {
 
         return appointment;
       }, {
-        timeout: 20000,
+        timeout: 30000,
+        maxWait: 15000,
       });
     } catch (error: any) {
       console.error("CREATE_APPOINTMENT_ERROR_DETAIL", {

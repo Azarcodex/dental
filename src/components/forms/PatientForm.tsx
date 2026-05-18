@@ -6,7 +6,7 @@ import { CreatePatientSchema } from "@/modules/patient/patient.types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axiosInstance from "@/lib/axios";
 import { toast } from "react-hot-toast";
-import { Loader2, User, Phone, Mail } from "lucide-react";
+import { Loader2, User, Phone } from "lucide-react";
 
 interface PatientFormProps {
   onSuccess: (patient?: any) => void;
@@ -30,7 +30,6 @@ export default function PatientForm({
       gender: "OTHER",
       age: 0,
       phone: initialPhone || "",
-      email: "",
     },
   });
 
@@ -134,24 +133,6 @@ export default function PatientForm({
             {errors.phone && (
               <p className="text-xs text-red-500">
                 {errors.phone.message as string}
-              </p>
-            )}
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-            <Mail size={16} className="text-gray-400" /> Email (optional)
-          </label>
-          <input
-            {...register("email")}
-            className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-green/20 focus:border-primary-green outline-none transition-all placeholder:text-gray-400 text-black font-semibold"
-            placeholder="john@example.com"
-          />
-          <div className="min-h-[20px]">
-            {errors.email && (
-              <p className="text-xs text-red-500">
-                {errors.email.message as string}
               </p>
             )}
           </div>

@@ -45,6 +45,7 @@ model Patient {
   fullName     String
   gender       String
   phone        String        @unique
+  age          Int?
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   displayId    String?       @unique
@@ -90,7 +91,6 @@ model Appointment {
   endTime        String
   status         String
   createdAt      DateTime @default(now())
-  department     String
   specialization String
   token          String?
   bookingType    String   @default("Online")
