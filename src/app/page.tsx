@@ -1,7 +1,6 @@
 "use client";
 
 import { Suspense } from "react";
-import { Toaster } from "react-hot-toast";
 import { PublicNavbar } from "@/components/public/PublicNavbar";
 import { HeroSection } from "@/components/public/HeroSection";
 import { OurServices } from "@/components/public/OurServices";
@@ -12,15 +11,17 @@ import { BookingBanner } from "@/components/public/BookingBanner";
 import { ContactSection } from "@/components/public/ContactSection";
 import { PublicFooter } from "@/components/public/PublicFooter";
 import { ThreeBackground } from "@/components/public/ThreeBackground";
+import { ReviewsSection } from "@/components/public/ReviewsSection";
+import GallerySection from "@/components/public/GallerySection";
+
 
 export default function RootPage() {
   return (
     <main className="min-h-screen bg-black selection:bg-[#C49228] selection:text-black overflow-clip relative">
-      <Toaster position="top-right" />
-
       <ThreeBackground />
 
       <div className="relative z-10">
+
         <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-transparent"><div className="w-10 h-10 border-4 border-primary-green border-t-transparent rounded-full animate-spin" /></div>}>
           <PublicNavbar />
 
@@ -50,6 +51,13 @@ export default function RootPage() {
           <PublicBookingForm />
         </div>
 
+        {/* Gallery Section */}
+        <GallerySection />
+
+        {/* Reviews Section */}
+        <ReviewsSection />
+
+
         {/* Contact Section */}
         <div id="contact">
           <ContactSection />
@@ -61,3 +69,4 @@ export default function RootPage() {
     </main>
   );
 }
+

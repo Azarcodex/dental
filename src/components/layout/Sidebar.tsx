@@ -12,7 +12,9 @@ import {
   ChevronLeft,
   Clock,
   ShieldCheck,
-  LogOut
+  LogOut,
+  Star,
+  Image as ImageIcon
 } from "lucide-react";
 import { useState, useMemo } from "react";
 import { cn } from "@/lib/utils";
@@ -24,7 +26,11 @@ const menuItems = [
   { name: "New Appointment", href: "/admin/booking", icon: CalendarPlus },
   { name: "Doctors", href: "/admin/doctors", icon: UserSquare2 },
   { name: "Slots", href: "/admin/slots", icon: Clock },
+  { name: "Reviews", href: "/admin/reviews", icon: Star },
+  { name: "Gallery", href: "/admin/gallery", icon: ImageIcon },
 ];
+
+
 
 export default function Sidebar() {
   const { user, logout } = useAuth();

@@ -200,6 +200,24 @@ exports.Prisma.AppointmentScalarFieldEnum = {
   bookingType: 'bookingType'
 };
 
+exports.Prisma.ReviewScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  rating: 'rating',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.GalleryScalarFieldEnum = {
+  id: 'id',
+  imageUrl: 'imageUrl',
+  publicId: 'publicId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -226,7 +244,9 @@ exports.Prisma.ModelName = {
   DoctorSchedule: 'DoctorSchedule',
   DoctorAvailabilityBlock: 'DoctorAvailabilityBlock',
   DoctorException: 'DoctorException',
-  Appointment: 'Appointment'
+  Appointment: 'Appointment',
+  Review: 'Review',
+  Gallery: 'Gallery'
 };
 
 /**
