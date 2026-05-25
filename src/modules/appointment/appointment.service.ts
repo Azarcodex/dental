@@ -46,6 +46,7 @@ export class AppointmentService {
             data: {
               fullName: data.patientData.fullName,
               gender: data.patientData.gender,
+              age: data.patientData.age,
             },
           });
         } else {
@@ -66,6 +67,7 @@ export class AppointmentService {
               fullName: data.patientData.fullName,
               phone: data.patientData.phone,
               gender: data.patientData.gender,
+              age: data.patientData.age,
               displayId: nextId,
             },
           });
@@ -74,6 +76,10 @@ export class AppointmentService {
         // 3. Validate Doctor exists and is active
         const doctor = await tx.doctor.findUnique({
           where: { id: data.doctorId },
+          include: {
+            schedules: true,
+            weeklyDefault: true,
+          },
         });
 
         if (!doctor || doctor.status !== "ACTIVE") {
@@ -97,18 +103,27 @@ export class AppointmentService {
           throw new AppError("This time slot has already been booked. Please pick another time.", 409);
         }
 
-        // 5. Fetch schedule for endTime calculation
-        const dateObj = new Date(data.date);
+        // 5. Get active schedule for endTime calculation
+        const dateObj = new Date(`${data.date}T00:00:00.000Z`);
         const dayOfWeek = dateObj.getUTCDay();
-        const schedule = await tx.doctorSchedule.findFirst({
-          where: { doctorId: data.doctorId, dayOfWeek },
-        });
 
-        if (!schedule) {
+        const customSchedule = doctor.schedules.find(
+          (s) => s.dayOfWeek === dayOfWeek && s.isCustom
+        );
+
+        let slotDuration: number;
+        if (customSchedule) {
+          slotDuration = customSchedule.slotDuration;
+        } else if (
+          doctor.weeklyDefault &&
+          doctor.weeklyDefault.activeDays.split(",").map(Number).includes(dayOfWeek)
+        ) {
+          slotDuration = doctor.weeklyDefault.slotDuration;
+        } else {
           throw new AppError(`Doctor does not have a schedule configured for ${data.date}`, 400);
         }
 
-        const endTime = this.calculateEndTime(data.startTime, schedule.slotDuration);
+        const endTime = this.calculateEndTime(data.startTime, slotDuration);
 
         // 6. Generate Token (scoped by doctor and date)
         const currentCount = await tx.appointment.count({
@@ -198,10 +213,7 @@ export class AppointmentService {
   }
 
   async cancelAppointment(id: string) {
-    const appointment = await this.appointmentRepo.findById(id);
-    if (!appointment) throw new AppError("Appointment not found", 404);
-    
-    return this.appointmentRepo.updateStatus(id, "CANCELLED");
+    return this.updateStatus(id, "CANCELLED");
   }
 
   async getAppointmentsByPatient(patientId: string) {
@@ -223,10 +235,26 @@ export class AppointmentService {
   }
 
   async updateStatus(id: string, status: string) {
-    const appointment = await this.appointmentRepo.findById(id);
-    if (!appointment) throw new AppError("Appointment not found", 404);
+    return await prisma.$transaction(async (tx) => {
+      const appointment = await tx.appointment.findUnique({
+        where: { id },
+      });
+      if (!appointment) {
+        throw new AppError("Appointment not found", 404);
+      }
 
-    return this.appointmentRepo.updateStatus(id, status);
+      if (appointment.status === "DONE") {
+        throw new AppError("Cannot change status of a completed appointment", 400);
+      }
+      if (appointment.status === "CANCELLED") {
+        throw new AppError("Cannot change status of a cancelled appointment", 400);
+      }
+
+      return tx.appointment.update({
+        where: { id },
+        data: { status },
+      });
+    });
   }
 
   private calculateEndTime(start: string, duration: number): string {

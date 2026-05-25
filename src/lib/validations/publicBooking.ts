@@ -17,9 +17,10 @@ export const publicBookingSchema = z.object({
     
   gender: z.string().nonempty("Please select your gender"),
   
-  age: z.number()
-    .min(1, "Age must be at least 1")
-    .max(120, "Please enter a valid age"),
+  age: z.union([
+    z.number().min(1, "Age must be at least 1").max(120, "Please enter a valid age"),
+    z.nan()
+  ]).transform((val) => isNaN(val) ? undefined : val).optional(),
     
   specialization: z.string().nonempty("Please select a specialization"),
   

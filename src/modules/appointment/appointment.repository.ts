@@ -9,9 +9,9 @@ export class AppointmentRepository {
 
   async findDashboardAppointments(filters: { date: Date; doctorId?: string; status?: string }) {
     const startOfDay = new Date(filters.date);
-    startOfDay.setHours(0, 0, 0, 0);
+    startOfDay.setUTCHours(0, 0, 0, 0);
     const endOfDay = new Date(filters.date);
-    endOfDay.setHours(23, 59, 59, 999);
+    endOfDay.setUTCHours(23, 59, 59, 999);
 
     return prisma.appointment.findMany({
       where: {
@@ -36,6 +36,7 @@ export class AppointmentRepository {
             phone: true,
             displayId: true,
             gender: true,
+            age: true,
           },
         },
       },
@@ -76,6 +77,7 @@ export class AppointmentRepository {
             phone: true,
             displayId: true,
             gender: true,
+            age: true,
           },
         },
       },
@@ -91,9 +93,9 @@ export class AppointmentRepository {
 
   async getDashboardCounts(date: Date, doctorId?: string) {
     const startOfDay = new Date(date);
-    startOfDay.setHours(0, 0, 0, 0);
+    startOfDay.setUTCHours(0, 0, 0, 0);
     const endOfDay = new Date(date);
-    endOfDay.setHours(23, 59, 59, 999);
+    endOfDay.setUTCHours(23, 59, 59, 999);
 
     const where = {
       date: { gte: startOfDay, lte: endOfDay },
@@ -112,9 +114,9 @@ export class AppointmentRepository {
 
   async getAppointmentsByDate(doctorId: string, date: Date) {
     const startOfDay = new Date(date);
-    startOfDay.setHours(0, 0, 0, 0);
+    startOfDay.setUTCHours(0, 0, 0, 0);
     const endOfDay = new Date(date);
-    endOfDay.setHours(23, 59, 59, 999);
+    endOfDay.setUTCHours(23, 59, 59, 999);
 
     return prisma.appointment.findMany({
       where: {

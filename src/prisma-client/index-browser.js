@@ -165,7 +165,18 @@ exports.Prisma.DoctorScheduleScalarFieldEnum = {
   dayOfWeek: 'dayOfWeek',
   startTime: 'startTime',
   endTime: 'endTime',
-  slotDuration: 'slotDuration'
+  slotDuration: 'slotDuration',
+  isCustom: 'isCustom'
+};
+
+exports.Prisma.DoctorWeeklyDefaultScalarFieldEnum = {
+  id: 'id',
+  doctorId: 'doctorId',
+  activeDays: 'activeDays',
+  startTime: 'startTime',
+  endTime: 'endTime',
+  slotDuration: 'slotDuration',
+  breaks: 'breaks'
 };
 
 exports.Prisma.DoctorAvailabilityBlockScalarFieldEnum = {
@@ -242,6 +253,7 @@ exports.Prisma.ModelName = {
   Doctor: 'Doctor',
   Patient: 'Patient',
   DoctorSchedule: 'DoctorSchedule',
+  DoctorWeeklyDefault: 'DoctorWeeklyDefault',
   DoctorAvailabilityBlock: 'DoctorAvailabilityBlock',
   DoctorException: 'DoctorException',
   Appointment: 'Appointment',

@@ -37,7 +37,7 @@ export default function AdminForm({ initialData, onSubmit, isLoading, isEdit }: 
               {...register("name")}
               placeholder="e.g. John Doe"
               className={cn(
-                "w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary-green/20 focus:bg-white transition-all",
+                "w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-medium text-black focus:outline-none focus:ring-2 focus:ring-primary-green/20 focus:bg-white transition-all",
                 errors.name && "border-red-200 ring-2 ring-red-50"
               )}
             />
@@ -55,7 +55,7 @@ export default function AdminForm({ initialData, onSubmit, isLoading, isEdit }: 
               placeholder="e.g. johndoe"
               disabled={isEdit}
               className={cn(
-                "w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary-green/20 focus:bg-white transition-all disabled:opacity-50 disabled:cursor-not-allowed",
+                "w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-medium text-black focus:outline-none focus:ring-2 focus:ring-primary-green/20 focus:bg-white transition-all disabled:opacity-50 disabled:cursor-not-allowed",
                 errors.username && "border-red-200 ring-2 ring-red-50"
               )}
             />
@@ -73,7 +73,7 @@ export default function AdminForm({ initialData, onSubmit, isLoading, isEdit }: 
               type="email"
               placeholder="e.g. john@example.com"
               className={cn(
-                "w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary-green/20 focus:bg-white transition-all",
+                "w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-medium text-black focus:outline-none focus:ring-2 focus:ring-primary-green/20 focus:bg-white transition-all",
                 errors.email && "border-red-200 ring-2 ring-red-50"
               )}
             />
@@ -90,7 +90,7 @@ export default function AdminForm({ initialData, onSubmit, isLoading, isEdit }: 
               {...register("phone")}
               placeholder="e.g. +91 98765 43210"
               className={cn(
-                "w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary-green/20 focus:bg-white transition-all",
+                "w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-medium text-black focus:outline-none focus:ring-2 focus:ring-primary-green/20 focus:bg-white transition-all",
                 errors.phone && "border-red-200 ring-2 ring-red-50"
               )}
             />
@@ -109,7 +109,7 @@ export default function AdminForm({ initialData, onSubmit, isLoading, isEdit }: 
             placeholder="e.g. 123 Street, City, Country"
             rows={3}
             className={cn(
-              "w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary-green/20 focus:bg-white transition-all",
+              "w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-medium text-black focus:outline-none focus:ring-2 focus:ring-primary-green/20 focus:bg-white transition-all",
               errors.address && "border-red-200 ring-2 ring-red-50"
             )}
           />
@@ -126,7 +126,7 @@ export default function AdminForm({ initialData, onSubmit, isLoading, isEdit }: 
             <select
               {...register("role")}
               className={cn(
-                "w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary-green/20 focus:bg-white transition-all appearance-none",
+                "w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-medium text-black focus:outline-none focus:ring-2 focus:ring-primary-green/20 focus:bg-white transition-all appearance-none",
                 errors.role && "border-red-200 ring-2 ring-red-50"
               )}
             >
@@ -150,7 +150,7 @@ export default function AdminForm({ initialData, onSubmit, isLoading, isEdit }: 
               placeholder={isEdit ? "Leave blank to keep same" : "••••••••"}
               required={!isEdit}
               className={cn(
-                "w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary-green/20 focus:bg-white transition-all",
+                "w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-medium text-black focus:outline-none focus:ring-2 focus:ring-primary-green/20 focus:bg-white transition-all",
                 errors.password && "border-red-200 ring-2 ring-red-50"
               )}
             />

@@ -2,674 +2,417 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axiosInstance from "@/lib/axios";
-import { 
-  UserSquare2, 
-  Search, 
-  Plus, 
-  Save, 
-  Trash2, 
-  Clock, 
-  CalendarDays,
-  ShieldAlert,
-  Loader2,
-  CheckCircle2,
-  Sunrise,
-  Sun,
-  Sunset,
-  Info
-} from "lucide-react";
+import { UserSquare2, Search, Plus, Save, Trash2, Clock, CalendarDays, Loader2, RefreshCw, Info, Sunrise, Sun, Sunset } from "lucide-react";
 import { useState, useMemo, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import { cn, formatTimeTo12h } from "@/lib/utils";
 
-// --- Types ---
-interface Break {
-  startTime: string;
-  endTime: string;
-}
+interface Break { startTime: string; endTime: string; }
 
-interface Doctor {
-  id: string;
-  firstName: string;
-  lastName?: string | null;
-  specialization: string;
-  status: string;
-  profilePhoto?: string;
-  schedules?: any[];
-  blocks?: any[];
-}
+const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const FULL_DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-// --- Helpers ---
-const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-
-const timeToMinutes = (time: string) => {
-  const [h, m] = time.split(":").map(Number);
-  return h * 60 + m;
-};
-
-const minutesToTime = (minutes: number) => {
-  const h = Math.floor(minutes / 60);
-  const m = minutes % 60;
-  return `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}`;
-};
-
-const isInsideRange = (time: string, start: string, end: string) => {
-  const t = timeToMinutes(time);
-  const s = timeToMinutes(start);
-  const e = timeToMinutes(end);
-  return t >= s && t < e;
-};
+const toMin = (t: string) => { const [h, m] = t.split(":").map(Number); return h * 60 + m; };
+const toTime = (m: number) => `${Math.floor(m / 60).toString().padStart(2, "0")}:${(m % 60).toString().padStart(2, "0")}`;
+const inRange = (t: string, s: string, e: string) => toMin(t) >= toMin(s) && toMin(t) < toMin(e);
 
 export default function SlotManagementPage() {
   const queryClient = useQueryClient();
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedDoctorId, setSelectedDoctorId] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
+  const [doctorId, setDoctorId] = useState<string | null>(null);
 
-  // --- Configuration State ---
-  const [activeDays, setActiveDays] = useState<number[]>([]);
-  const [startTime, setStartTime] = useState("09:00");
-  const [endTime, setEndTime] = useState("17:00");
-  const [slotDuration, setSlotDuration] = useState(30);
-  const [breaks, setBreaks] = useState<Break[]>([]);
-  const [manualBlocks, setManualBlocks] = useState<string[]>([]); // Array of startTimes
+  // "global" = editing weekly defaults; number = editing that specific day
+  const [editingDay, setEditingDay] = useState<"global" | number>("global");
+
+  // Global defaults
+  const [activeDays, setActiveDays] = useState<number[]>([1,2,3,4,5]);
+  const [gStart, setGStart] = useState("09:00");
+  const [gEnd, setGEnd] = useState("17:00");
+  const [gDuration, setGDuration] = useState(30);
+  const [gBreaks, setGBreaks] = useState<Break[]>([]);
+  const [gBlocks, setGBlocks] = useState<string[]>([]);
+
+  // Day-specific overrides
+  const [isCustom, setIsCustom] = useState(false);
+  const [dStart, setDStart] = useState("09:00");
+  const [dEnd, setDEnd] = useState("17:00");
+  const [dDuration, setDDuration] = useState(30);
+  const [dBreaks, setDBreaks] = useState<Break[]>([]);
+  const [dBlocks, setDBlocks] = useState<string[]>([]);
+
   const [loadingSlot, setLoadingSlot] = useState<string | null>(null);
 
-  // --- Queries ---
   const { data: doctors, isLoading: loadingDoctors } = useQuery({
     queryKey: ["doctors"],
-    queryFn: async () => {
-      const { data } = await axiosInstance.get("/doctors");
-      return data.data;
-    },
+    queryFn: async () => (await axiosInstance.get("/doctors")).data.data,
   });
 
-  const { data: doctorDetails, isLoading: loadingDetails } = useQuery({
-    queryKey: ["doctor-schedule", selectedDoctorId],
-    queryFn: async () => {
-      if (!selectedDoctorId) return null;
-      const { data } = await axiosInstance.get(`/doctors/${selectedDoctorId}/schedule`);
-      return data.data;
-    },
-    enabled: !!selectedDoctorId,
+  const { data: details } = useQuery({
+    queryKey: ["doctor-schedule", doctorId],
+    queryFn: async () => (await axiosInstance.get(`/doctors/${doctorId}/schedule`)).data.data,
+    enabled: !!doctorId,
   });
 
-  // --- Load Existing Config ---
+  // Load data when doctor or selected day changes
   useEffect(() => {
-    if (doctorDetails) {
-      const schedules = doctorDetails.schedules || [];
-      const blocksArr = doctorDetails.blocks || [];
+    if (!details) return;
+    const wd = details.weeklyDefault;
+    if (wd) {
+      setGStart(wd.startTime); setGEnd(wd.endTime); setGDuration(wd.slotDuration);
+      setActiveDays(wd.activeDays ? wd.activeDays.split(",").map(Number) : [1,2,3,4,5]);
+      try { setGBreaks(JSON.parse(wd.breaks || "[]")); } catch { setGBreaks([]); }
+    }
 
-      if (schedules.length > 0) {
-        setActiveDays(schedules.map((s: any) => s.dayOfWeek));
-        setStartTime(schedules[0].startTime);
-        setEndTime(schedules[0].endTime);
-        setSlotDuration(schedules[0].slotDuration);
-      } else {
-        setActiveDays([]);
-        setStartTime("09:00");
-        setEndTime("17:00");
-        setSlotDuration(30);
-      }
-
-      // In this uniform system, blocks might be duplicated across days. 
-      // We extract unique time-based blocks as if they are the template.
-      const uniqueBlocks = Array.from(new Set(blocksArr.map((b: any) => `${b.startTime}-${b.endTime}`)));
-      
-      const loadedBreaks: Break[] = [];
-      const loadedManualBlocks: string[] = [];
-
-      uniqueBlocks.forEach(bRange => {
-        const [s, e] = (bRange as string).split("-");
-        // We guess: if range is exactly one slot duration, it was likely a manual block
-        // In a real system, we'd have a 'type' field, but we'll use duration as a heuristic here
-        const startMin = timeToMinutes(s);
-        const endMin = timeToMinutes(e);
-        if (endMin - startMin === (schedules[0]?.slotDuration || 30)) {
-          loadedManualBlocks.push(s);
-        } else {
-          loadedBreaks.push({ startTime: s, endTime: e });
-        }
+    if (editingDay !== "global") {
+      const sched = details.schedules?.find((s: any) => s.dayOfWeek === editingDay);
+      const dayBlocks = details.blocks?.filter((b: any) => b.dayOfWeek === editingDay) || [];
+      setIsCustom(sched?.isCustom ?? false);
+      setDStart(sched?.startTime ?? wd?.startTime ?? "09:00");
+      setDEnd(sched?.endTime ?? wd?.endTime ?? "17:00");
+      setDDuration(sched?.slotDuration ?? wd?.slotDuration ?? 30);
+      const breaks: Break[] = [], blocks: string[] = [];
+      dayBlocks.forEach((b: any) => {
+        if (toMin(b.endTime) - toMin(b.startTime) === (sched?.slotDuration ?? 30)) blocks.push(b.startTime);
+        else breaks.push({ startTime: b.startTime, endTime: b.endTime });
       });
-
-      setBreaks(loadedBreaks);
-      setManualBlocks(loadedManualBlocks);
+      setDBreaks(breaks); setDBlocks(blocks);
     }
-  }, [doctorDetails]);
+  }, [details, editingDay]);
 
-  // --- Calculations ---
-  const generatedSlots = useMemo(() => {
-    const slots: string[] = [];
-    let current = timeToMinutes(startTime);
-    const end = timeToMinutes(endTime);
+  const isGlobal = editingDay === "global";
+  const curStart = isGlobal ? gStart : dStart;
+  const curEnd = isGlobal ? gEnd : dEnd;
+  const curDuration = isGlobal ? gDuration : dDuration;
+  const curBreaks = isGlobal ? gBreaks : dBreaks;
+  const curBlocks = isGlobal ? gBlocks : dBlocks;
+  const canEdit = isGlobal || isCustom;
 
-    if (current >= end) return [];
+  const slots = useMemo(() => {
+    const result: string[] = [];
+    let cur = toMin(curStart);
+    const end = toMin(curEnd);
+    while (cur + curDuration <= end) { result.push(toTime(cur)); cur += curDuration; }
+    return result;
+  }, [curStart, curEnd, curDuration]);
 
-    while (current + slotDuration <= end) {
-      slots.push(minutesToTime(current));
-      current += slotDuration;
-    }
-    return slots;
-  }, [startTime, endTime, slotDuration]);
-  
-  const groupedSlots = useMemo(() => {
-    const groups = {
-      morning: [] as string[],
-      afternoon: [] as string[],
-      evening: [] as string[],
-    };
+  const grouped = useMemo(() => {
+    const g = { morning: [] as string[], afternoon: [] as string[], evening: [] as string[] };
+    slots.forEach(s => { const h = parseInt(s); if (h < 12) g.morning.push(s); else if (h < 17) g.afternoon.push(s); else g.evening.push(s); });
+    return g;
+  }, [slots]);
 
-    generatedSlots.forEach(slot => {
-      const hour = parseInt(slot.split(":")[0]);
-      if (hour < 12) groups.morning.push(slot);
-      else if (hour < 17) groups.afternoon.push(slot);
-      else groups.evening.push(slot);
-    });
-
-    return groups;
-  }, [generatedSlots]);
-
-  const filteredDoctors = doctors?.filter((d: any) => 
-    `${d.firstName} ${d.lastName || ''}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    d.specialization.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredDoctors = doctors?.filter((d: any) =>
+    `${d.firstName} ${d.lastName || ""}`.toLowerCase().includes(search.toLowerCase()) ||
+    d.specialization.toLowerCase().includes(search.toLowerCase())
   );
+  const selectedDoctor = doctors?.find((d: any) => d.id === doctorId);
 
-  const selectedDoctor = doctors?.find((d: any) => d.id === selectedDoctorId);
-
-  // --- Handlers ---
-  const handleToggleDay = (dayIndex: number) => {
-    setActiveDays(prev => 
-      prev.includes(dayIndex) ? prev.filter(d => d !== dayIndex) : [...prev, dayIndex]
-    );
+  const updateBreak = (i: number, key: keyof Break, val: string) => {
+    if (isGlobal) { const b = [...gBreaks]; b[i][key] = val; setGBreaks(b); }
+    else { const b = [...dBreaks]; b[i][key] = val; setDBreaks(b); }
   };
-
-  const handleAddBreak = () => {
-    setBreaks([...breaks, { startTime: "12:00", endTime: "13:00" }]);
+  const removeBreak = (i: number) => {
+    if (isGlobal) setGBreaks(gBreaks.filter((_, j) => j !== i));
+    else setDBreaks(dBreaks.filter((_, j) => j !== i));
   };
-
-  const handleRemoveBreak = (index: number) => {
-    setBreaks(breaks.filter((_, i) => i !== index));
+  const addBreak = () => {
+    if (isGlobal) setGBreaks([...gBreaks, { startTime: "12:00", endTime: "13:00" }]);
+    else setDBreaks([...dBreaks, { startTime: "12:00", endTime: "13:00" }]);
   };
-
-  const handleUpdateBreak = (index: number, key: keyof Break, value: string) => {
-    const newBreaks = [...breaks];
-    newBreaks[index][key] = value;
-    setBreaks(newBreaks);
-  };
-
-  const handleToggleSlot = (slotTime: string) => {
-    if (loadingSlot) return; // Prevent duplicate clicks while a mutation is in progress
-    setLoadingSlot(slotTime);
-    
-    const updatedBlocks = manualBlocks.includes(slotTime)
-      ? manualBlocks.filter(t => t !== slotTime)
-      : [...manualBlocks, slotTime];
-      
-    toggleSlotMutation.mutate(updatedBlocks);
-  };
-
-  const toggleSlotMutation = useMutation({
-    mutationFn: async (updatedBlocks: string[]) => {
-      const allBlocks = [
-        ...breaks,
-        ...updatedBlocks.map(t => ({
-          startTime: t,
-          endTime: minutesToTime(timeToMinutes(t) + slotDuration)
-        }))
-      ];
-
-      return axiosInstance.post(`/doctors/${selectedDoctorId}/schedule`, {
-        days: activeDays,
-        startTime,
-        endTime,
-        slotDuration,
-        blocks: allBlocks
-      });
-    },
-    onMutate: async (updatedBlocks) => {
-      // Optimistic update
-      setManualBlocks(updatedBlocks);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["doctor-schedule", selectedDoctorId] });
-      toast.success("Slot status updated instantly!");
-    },
-    onError: () => {
-      toast.error("Failed to update slot status. Rolling back.");
-      // Rollback by refetching
-      queryClient.invalidateQueries({ queryKey: ["doctor-schedule", selectedDoctorId] });
-    },
-    onSettled: () => {
-      setLoadingSlot(null);
-    }
-  });
 
   const saveMutation = useMutation({
     mutationFn: async () => {
-      const allBlocks = [
-        ...breaks,
-        ...manualBlocks.map(t => ({
-          startTime: t,
-          endTime: minutesToTime(timeToMinutes(t) + slotDuration)
-        }))
-      ];
-
-      return axiosInstance.post(`/doctors/${selectedDoctorId}/schedule`, {
-        days: activeDays,
-        startTime,
-        endTime,
-        slotDuration,
-        blocks: allBlocks
-      });
+      if (isGlobal) {
+        return axiosInstance.post(`/doctors/${doctorId}/schedule`, {
+          type: "global", days: activeDays, startTime: gStart, endTime: gEnd, slotDuration: gDuration,
+          breaks: [...gBreaks, ...gBlocks.map(t => ({ startTime: t, endTime: toTime(toMin(t) + gDuration) }))]
+        });
+      } else {
+        return axiosInstance.post(`/doctors/${doctorId}/schedule`, {
+          type: "day", dayOfWeek: editingDay, startTime: dStart, endTime: dEnd, slotDuration: dDuration, breaks: dBreaks, manualBlocks: dBlocks
+        });
+      }
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["doctor-schedule", selectedDoctorId] });
-      toast.success("Schedule saved successfully!");
-    },
-    onError: () => {
-      toast.error("Failed to save schedule.");
-    }
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["doctor-schedule", doctorId] }); toast.success("Saved!"); },
+    onError: (e: any) => toast.error(e?.response?.data?.message || "Save failed"),
   });
 
+  const resetMutation = useMutation({
+    mutationFn: async () => axiosInstance.post(`/doctors/${doctorId}/schedule`, { type: "reset-day", dayOfWeek: editingDay }),
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["doctor-schedule", doctorId] }); toast.success("Reset to default!"); },
+    onError: (e: any) => toast.error(e?.response?.data?.message || "Reset failed"),
+  });
+
+  const toggleSlot = (slot: string) => {
+    if (loadingSlot) return;
+    if (!canEdit) { toast.error("Click 'Customize' to edit this day"); return; }
+    const updated = curBlocks.includes(slot) ? curBlocks.filter(t => t !== slot) : [...curBlocks, slot];
+    setLoadingSlot(slot);
+    if (isGlobal) setGBlocks(updated); else setDBlocks(updated);
+    axiosInstance.post(`/doctors/${doctorId}/schedule`,
+      isGlobal
+        ? { type: "global", days: activeDays, startTime: gStart, endTime: gEnd, slotDuration: gDuration, breaks: [...gBreaks, ...updated.map(t => ({ startTime: t, endTime: toTime(toMin(t) + gDuration) }))] }
+        : { type: "day", dayOfWeek: editingDay, startTime: dStart, endTime: dEnd, slotDuration: dDuration, breaks: dBreaks, manualBlocks: updated }
+    ).then(() => { queryClient.invalidateQueries({ queryKey: ["doctor-schedule", doctorId] }); toast.success("Updated!"); })
+     .catch((e: any) => { toast.error(e?.response?.data?.message || "Failed"); queryClient.invalidateQueries({ queryKey: ["doctor-schedule", doctorId] }); })
+     .finally(() => setLoadingSlot(null));
+  };
+
+  const getDayStatus = (i: number) => {
+    const s = details?.schedules?.find((s: any) => s.dayOfWeek === i);
+    if (!s) {
+      return activeDays.includes(i) ? "default" : "inactive";
+    }
+    return s.isCustom ? "custom" : "default";
+  };
+
   return (
-    <div className="flex flex-col lg:flex-row h-[calc(100vh-140px)] gap-6 overflow-hidden">
-      
-      {/* LEFT: DOCTOR SELECTION */}
-      <div className="w-full lg:w-[350px] bg-white rounded-[32px] border border-gray-100 shadow-sm flex flex-col overflow-hidden">
-        <div className="p-6 border-b border-gray-50 bg-slate-50/50">
-          <h2 className="text-xl font-bold text-slate-900 mb-4 px-2">Medical Staff</h2>
-          <div className="relative group px-2">
-            <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary-green transition-colors" size={18} />
-            <input 
-              placeholder="Search doctors..." 
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 bg-white border border-gray-100 rounded-2xl outline-none focus:ring-4 focus:ring-primary-green/5 focus:border-primary-green transition-all font-medium text-slate-900"
-            />
+    <div className="flex flex-col lg:flex-row h-[calc(100vh-140px)] gap-5 overflow-hidden text-black">
+
+      {/* LEFT: Doctor List */}
+      <div className="w-full lg:w-[300px] bg-white rounded-3xl border border-gray-100 shadow-sm flex flex-col overflow-hidden shrink-0">
+        <div className="p-5 border-b border-gray-100">
+          <h2 className="text-base font-bold text-black mb-3">Doctors</h2>
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-black" size={16} />
+            <input placeholder="Search..." value={search} onChange={e => setSearch(e.target.value)}
+              className="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-gray-100 rounded-xl outline-none focus:border-primary-green text-sm font-medium text-black placeholder-slate-400" />
           </div>
         </div>
-
-        <div className="flex-1 overflow-y-auto p-4 space-y-2 luxe-scrollbar">
-          {loadingDoctors ? (
-             [1,2,3,4,5].map(i => <div key={i} className="h-20 bg-gray-50 rounded-2xl animate-pulse" />)
-          ) : filteredDoctors?.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-10 text-center px-4">
-              <div className="w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center text-slate-300 mb-3">
-                <Search size={20} />
-              </div>
-              <p className="text-sm font-bold text-slate-500">No doctors found</p>
-            </div>
-          ) : filteredDoctors?.map((doctor: any) => (
-            <div 
-              key={doctor.id}
-              onClick={() => setSelectedDoctorId(doctor.id)}
-              className={cn(
-                "p-4 rounded-2xl border transition-all cursor-pointer group flex items-center gap-4",
-                selectedDoctorId === doctor.id 
-                  ? "bg-primary-green/5 border-primary-green shadow-sm ring-1 ring-primary-green/20" 
-                  : "bg-white border-transparent hover:bg-slate-50/50"
-              )}
-            >
-              <div className="relative shrink-0">
-                <div className="w-12 h-12 rounded-xl border border-gray-100 overflow-hidden bg-slate-100">
-                  {doctor.profilePhoto ? (
-                    <img src={doctor.profilePhoto} className="w-full h-full object-cover" />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-slate-400"><UserSquare2 size={24} /></div>
-                  )}
+        <div className="flex-1 overflow-y-auto p-3 space-y-1.5 luxe-scrollbar">
+          {loadingDoctors ? [1,2,3,4].map(i => <div key={i} className="h-16 bg-slate-50 rounded-2xl animate-pulse" />) :
+            filteredDoctors?.map((d: any) => (
+              <div key={d.id} onClick={() => { setDoctorId(d.id); setEditingDay("global"); }}
+                className={cn("p-3 rounded-2xl border cursor-pointer flex items-center gap-3 transition-all",
+                  doctorId === d.id ? "bg-primary-green/5 border-primary-green ring-1 ring-primary-green/20" : "border-transparent hover:bg-slate-50")}>
+                <div className="relative shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-slate-100 overflow-hidden flex items-center justify-center text-black">
+                    {d.profilePhoto ? <img src={d.profilePhoto} className="w-full h-full object-cover" alt="" /> : <UserSquare2 size={20} />}
+                  </div>
+                  <div className={cn("absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white", d.status === "ACTIVE" ? "bg-green-500" : "bg-slate-300")} />
                 </div>
-                <div className={cn(
-                  "absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full border-2 border-white",
-                  doctor.status === "ACTIVE" ? "bg-green-500" : "bg-slate-300"
-                )} />
+                <div className="min-w-0">
+                  <p className="font-bold text-black text-sm truncate">Dr. {d.firstName} {d.lastName || ""}</p>
+                  <p className="text-[10px] font-semibold text-slate-800 uppercase tracking-wide truncate">{d.specialization}</p>
+                </div>
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="font-bold text-slate-900 truncate">Dr. {doctor.firstName} {doctor.lastName || ''}</p>
-                <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest truncate mt-0.5">{doctor.specialization}</p>
-              </div>
-            </div>
-          ))}
+            ))}
         </div>
       </div>
 
-      {/* RIGHT: SLOT MANAGEMENT */}
-      <div className="flex-1 bg-white rounded-[32px] border border-gray-100 shadow-sm flex flex-col overflow-hidden">
-        {!selectedDoctorId ? (
-          <div className="flex-1 flex flex-col items-center justify-center text-center p-12 space-y-4">
-            <div className="w-20 h-20 bg-slate-50 rounded-[28px] flex items-center justify-center text-slate-300">
-              <CalendarDays size={40} />
-            </div>
-            <div>
-              <h3 className="text-xl font-bold text-slate-900">Select a Doctor</h3>
-              <p className="text-slate-500 max-w-sm mx-auto mt-1 font-medium">Please select a medical professional from the left panel to configure their clinical availability.</p>
-            </div>
+      {/* RIGHT: Schedule Editor */}
+      <div className="flex-1 bg-white rounded-3xl border border-gray-100 shadow-sm flex flex-col overflow-hidden">
+        {!doctorId ? (
+          <div className="flex-1 flex flex-col items-center justify-center text-center p-10 space-y-3">
+            <div className="w-16 h-16 bg-slate-50 rounded-3xl flex items-center justify-center text-black"><CalendarDays size={32} /></div>
+            <div><h3 className="text-lg font-bold text-black">Select a Doctor</h3>
+              <p className="text-sm text-slate-600 mt-1">Choose a doctor to manage their availability</p></div>
           </div>
         ) : (
           <div className="flex-1 flex flex-col overflow-hidden">
-            {/* Panel Header */}
-            <div className="px-8 py-6 bg-slate-50/30 border-b border-gray-100 flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-primary-blue/10 rounded-2xl flex items-center justify-center text-primary-blue">
-                   <Clock size={24} />
-                </div>
-                <div>
-                  <h2 className="text-2xl font-black text-slate-900 tracking-tight">Dr. {selectedDoctor?.firstName} {selectedDoctor?.lastName || ''}</h2>
-                  <div className="flex items-center gap-2 mt-0.5">
-                    <span className="text-[10px] font-black text-primary-blue bg-primary-blue/5 border border-primary-blue/10 px-2 py-0.5 rounded-md uppercase tracking-[0.1em]">{selectedDoctor?.specialization}</span>
-                    <span className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">• Availability Manager</span>
-                  </div>
-                </div>
+
+            {/* Header */}
+            <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between gap-4">
+              <div>
+                <h2 className="text-lg font-black text-black">Dr. {selectedDoctor?.firstName} {selectedDoctor?.lastName || ""}</h2>
+                <p className="text-xs text-slate-700 font-medium mt-0.5">{selectedDoctor?.specialization} · Availability Manager</p>
               </div>
-              <button 
-                onClick={() => saveMutation.mutate()}
-                disabled={saveMutation.isPending || activeDays.length === 0}
-                className="flex items-center gap-2 bg-primary-green hover:bg-primary-green-dark text-white px-8 py-3.5 rounded-2xl font-bold text-sm transition-all shadow-lg shadow-primary-green/20 disabled:opacity-50 active:scale-95"
-              >
-                {saveMutation.isPending ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
-                Save Changes
+              <button onClick={() => saveMutation.mutate()} disabled={saveMutation.isPending || (!isGlobal && !isCustom)}
+                className="flex items-center gap-2 bg-primary-green text-white px-5 py-2.5 rounded-xl font-bold text-sm transition-all shadow-md shadow-primary-green/20 disabled:opacity-40 active:scale-95 shrink-0">
+                {saveMutation.isPending ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />} Save
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-8 space-y-10 luxe-scrollbar">
-              
-              {/* SECTION 1: WORKING DAYS */}
-              <section className="space-y-4">
-                <div className="flex items-center justify-between mb-4 px-1">
-                  <div className="flex items-center gap-2">
-                    <CalendarDays size={18} className="text-primary-blue" />
-                    <h3 className="text-xs font-black text-slate-700 uppercase tracking-[0.15em]">Weekly Clinical Cycle</h3>
-                  </div>
-                  <div className="text-[10px] font-bold text-slate-600 uppercase tracking-widest bg-slate-200/50 px-2 py-1 rounded-lg">
-                    {activeDays.length} Days Selected
-                  </div>
-                </div>
-                <div className="bg-slate-50/50 p-4 rounded-[28px] border border-slate-100">
-                  <div className="grid grid-cols-4 sm:grid-cols-7 gap-3">
-                    {DAYS.map((day, index) => (
-                      <button
-                        key={day}
-                        onClick={() => handleToggleDay(index)}
-                        className={cn(
-                          "py-4 rounded-2xl text-[12px] font-black transition-all border flex flex-col items-center gap-1",
-                          activeDays.includes(index)
-                            ? "bg-primary-blue border-primary-blue text-white shadow-lg shadow-primary-blue/20 scale-[1.02]"
-                            : "bg-white border-gray-200 text-slate-600 hover:border-primary-blue/30 hover:text-slate-900"
-                        )}
-                      >
-                        <span className="opacity-50">{day.substring(0, 3)}</span>
-                        <span>{day.substring(0, 1)}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </section>
+            <div className="flex-1 overflow-y-auto luxe-scrollbar">
+              <div className="p-6 space-y-6">
 
-              {/* SECTION 2: SHIFT TIMINGS */}
-              <section className="space-y-4">
-                <div className="flex items-center gap-2 mb-4 px-1">
-                  <Clock size={18} className="text-primary-blue" />
-                  <h3 className="text-xs font-black text-slate-700 uppercase tracking-[0.15em]">Shift & Session Config</h3>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-white p-6 rounded-[32px] border border-slate-100 shadow-sm relative overflow-hidden group">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-primary-blue/5 rounded-full translate-x-1/2 -translate-y-1/2 -z-10 group-hover:scale-110 transition-transform duration-700" />
-                  
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Daily Start</label>
-                    <div className="relative">
-                      <input 
-                        type="time" 
-                        value={startTime}
-                        onChange={(e) => setStartTime(e.target.value)}
-                        className="w-full pl-4 pr-4 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-primary-blue/5 focus:border-primary-blue outline-none font-black text-slate-900 transition-all"
-                      />
-                    </div>
+                {/* Day Selector Row */}
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <p className="text-xs font-black text-black uppercase tracking-wider">Schedule View</p>
+                    <button onClick={() => setEditingDay("global")}
+                      className={cn("text-[10px] font-black uppercase tracking-wider px-3 py-1.5 rounded-lg transition-all",
+                        editingDay === "global" ? "bg-primary-blue text-white" : "bg-slate-100 text-black hover:bg-slate-200")}>
+                      Weekly Defaults
+                    </button>
                   </div>
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Daily End</label>
-                    <input 
-                      type="time" 
-                      value={endTime}
-                      onChange={(e) => setEndTime(e.target.value)}
-                      className="w-full px-4 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-primary-blue/5 focus:border-primary-blue outline-none font-black text-slate-900 transition-all"
-                    />
+                  <div className="grid grid-cols-7 gap-2">
+                    {[0,1,2,3,4,5,6].map(i => {
+                      const status = getDayStatus(i);
+                      const isSelected = editingDay === i;
+                      return (
+                        <button key={i} onClick={() => setEditingDay(i)}
+                          className={cn("py-3 rounded-2xl text-xs font-black flex flex-col items-center gap-1 transition-all border relative",
+                            isSelected ? "bg-primary-blue border-primary-blue text-white shadow-lg shadow-primary-blue/20" :
+                            activeDays.includes(i) ? "bg-slate-50 border-slate-200 text-black hover:border-primary-blue/40" :
+                            "bg-white border-slate-100 text-slate-400 hover:border-slate-200")}>
+                          <span>{DAYS[i]}</span>
+                          {status === "custom" && <span className="w-1.5 h-1.5 rounded-full bg-amber-400 absolute top-1.5 right-1.5" />}
+                          {status === "default" && activeDays.includes(i) && <span className="w-1.5 h-1.5 rounded-full bg-green-400 absolute top-1.5 right-1.5" />}
+                        </button>
+                      );
+                    })}
                   </div>
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Slot Size (Min)</label>
-                    <select 
-                      value={slotDuration}
-                      onChange={(e) => setSlotDuration(Number(e.target.value))}
-                      className="w-full px-4 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-primary-blue/5 focus:border-primary-blue outline-none font-black text-slate-900 transition-all appearance-none"
-                    >
-                      {[15, 20, 30, 45, 60, 90, 120].map(v => (
-                        <option key={v} value={v}>{v} Minutes</option>
-                      ))}
-                    </select>
+                  <div className="flex items-center gap-4 mt-2">
+                    <span className="flex items-center gap-1.5 text-[10px] text-black font-semibold"><span className="w-2 h-2 rounded-full bg-green-400 inline-block" /> Default</span>
+                    <span className="flex items-center gap-1.5 text-[10px] text-black font-semibold"><span className="w-2 h-2 rounded-full bg-amber-400 inline-block" /> Custom</span>
                   </div>
                 </div>
-                {generatedSlots.length > 0 && (
-                  <div className="flex items-center gap-3 bg-primary-green/5 border border-primary-green/10 p-4 rounded-2xl animate-in fade-in slide-in-from-top-2">
-                    <div className="w-8 h-8 rounded-lg bg-primary-green flex items-center justify-center text-white shadow-sm">
-                      <CheckCircle2 size={16} />
+
+                {/* Context Banner */}
+                {editingDay !== "global" && (
+                  <div className={cn("flex items-center justify-between p-4 rounded-2xl border",
+                    isCustom ? "bg-amber-50 border-amber-200/60" : "bg-blue-50 border-blue-200/60")}>
+                    <div>
+                      <p className="text-sm font-bold text-black">{FULL_DAYS[editingDay as number]}</p>
+                      <p className="text-xs text-black mt-0.5">{isCustom ? "Custom override active for this day" : "Using weekly default settings"}</p>
                     </div>
-                    <p className="text-xs font-medium text-slate-600">
-                      Generating <span className="font-black text-slate-900 bg-white px-2 py-0.5 rounded border border-slate-100 mx-1">{generatedSlots.length} sessions</span> every clinical day from <span className="font-black text-slate-900">{formatTimeTo12h(startTime)}</span> to <span className="font-black text-slate-900">{formatTimeTo12h(endTime)}</span>.
-                    </p>
+                    <div className="flex items-center gap-2">
+                      {isCustom ? (
+                        <button onClick={() => resetMutation.mutate()} disabled={resetMutation.isPending}
+                          className="flex items-center gap-1.5 text-xs font-bold text-black bg-white border border-slate-200 px-3 py-2 rounded-xl hover:text-red-500 hover:border-red-200 transition-all disabled:opacity-50">
+                          {resetMutation.isPending ? <Loader2 size={13} className="animate-spin" /> : <RefreshCw size={13} />} Reset
+                        </button>
+                      ) : (
+                        <button onClick={() => { setIsCustom(true); setDStart(gStart); setDEnd(gEnd); setDDuration(gDuration); setDBreaks([...gBreaks]); setDBlocks([]); }}
+                          className="text-xs font-bold text-primary-blue bg-white border border-primary-blue/30 px-3 py-2 rounded-xl hover:bg-primary-blue hover:text-white transition-all">
+                          Customize This Day
+                        </button>
+                      )}
+                    </div>
                   </div>
                 )}
-              </section>
 
-              {/* SECTION 4: BREAK TIMES */}
-              <section className="space-y-4">
-                <div className="flex items-center justify-between mb-4 px-1">
-                  <div className="flex items-center gap-2">
-                    <ShieldAlert size={18} className="text-primary-blue" />
-                    <h3 className="text-xs font-black text-slate-700 uppercase tracking-[0.15em]">Clinical Session Breaks</h3>
+                {/* Active Days Toggle (only in global mode) */}
+                {editingDay === "global" && (
+                  <div className="space-y-2">
+                    <p className="text-xs font-black text-black uppercase tracking-wider">Active Working Days</p>
+                    <div className="flex gap-2 flex-wrap">
+                      {[0,1,2,3,4,5,6].map(i => (
+                        <button key={i} onClick={() => setActiveDays(p => p.includes(i) ? p.filter(d => d !== i) : [...p, i])}
+                          className={cn("px-3 py-1.5 rounded-xl text-xs font-black border transition-all",
+                            activeDays.includes(i) ? "bg-primary-blue border-primary-blue text-white" : "bg-white border-slate-200 text-black hover:border-slate-300")}>
+                          {DAYS[i]}
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                  <button 
-                    onClick={handleAddBreak}
-                    className="group px-4 py-2 bg-primary-blue/5 hover:bg-primary-blue text-primary-blue hover:text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2"
-                  >
-                    <Plus size={14} className="transition-transform group-hover:rotate-90" /> Add Session Break
-                  </button>
-                </div>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {breaks.map((br, index) => (
-                    <div key={index} className="flex items-center gap-4 bg-white p-5 rounded-[24px] border border-slate-100 group animate-in slide-in-from-left-2 shadow-sm hover:border-primary-blue/20 transition-all">
-                      <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center text-amber-500 shrink-0">
-                         <Clock size={20} />
+                )}
+
+                {/* Timings */}
+                <div className="space-y-2">
+                  <p className="text-xs font-black text-black uppercase tracking-wider">
+                    {editingDay === "global" ? "Default Timings" : `${FULL_DAYS[editingDay as number]} Timings`}
+                  </p>
+                  <div className="grid grid-cols-3 gap-3">
+                    {[
+                      { label: "Start", val: curStart, set: isGlobal ? setGStart : setDStart },
+                      { label: "End", val: curEnd, set: isGlobal ? setGEnd : setDEnd },
+                    ].map(({ label, val, set }) => (
+                      <div key={label} className="space-y-1">
+                        <p className="text-[10px] font-black text-black uppercase">{label}</p>
+                        <input type="time" value={val} disabled={!canEdit} onChange={e => set(e.target.value)}
+                          className="w-full px-3 py-2.5 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:border-primary-blue font-bold text-black text-sm transition-all disabled:opacity-50" />
                       </div>
-                      <div className="flex-1 flex items-center gap-3">
-                        <div className="flex-1">
-                          <p className="text-[9px] font-black text-slate-400 uppercase mb-1 ml-1">From</p>
-                          <input 
-                            type="time" 
-                            value={br.startTime}
-                            onChange={(e) => handleUpdateBreak(index, "startTime", e.target.value)}
-                            className="w-full px-3 py-2 bg-slate-50 border border-transparent rounded-xl focus:bg-white focus:border-primary-blue outline-none text-xs font-black text-slate-900 transition-all"
-                          />
+                    ))}
+                    <div className="space-y-1">
+                      <p className="text-[10px] font-black text-black uppercase">Slot (min)</p>
+                      <select value={curDuration} disabled={!canEdit}
+                        onChange={e => isGlobal ? setGDuration(Number(e.target.value)) : setDDuration(Number(e.target.value))}
+                        className="w-full px-3 py-2.5 bg-slate-50 border border-slate-100 rounded-xl outline-none focus:border-primary-blue font-bold text-black text-sm transition-all appearance-none disabled:opacity-50">
+                        {[15,20,30,45,60,90,120].map(v => <option key={v} value={v}>{v} min</option>)}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Breaks */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <p className="text-xs font-black text-black uppercase tracking-wider">Breaks</p>
+                    <button onClick={addBreak} disabled={!canEdit}
+                      className="flex items-center gap-1 text-[10px] font-black uppercase tracking-wide text-primary-blue bg-primary-blue/5 hover:bg-primary-blue hover:text-white px-3 py-1.5 rounded-lg transition-all disabled:opacity-40">
+                      <Plus size={12} /> Add
+                    </button>
+                  </div>
+                  {curBreaks.length === 0 ? (
+                    <p className="text-xs text-slate-50 font-medium py-2">No breaks configured</p>
+                  ) : (
+                    <div className="space-y-2">
+                      {curBreaks.map((br, i) => (
+                        <div key={i} className="flex items-center gap-2 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                          <Clock size={14} className="text-amber-500 shrink-0" />
+                          <input type="time" value={br.startTime} disabled={!canEdit} onChange={e => updateBreak(i, "startTime", e.target.value)}
+                            className="flex-1 bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-xs font-bold text-black outline-none focus:border-primary-blue disabled:opacity-50" />
+                          <span className="text-slate-300 text-xs">–</span>
+                          <input type="time" value={br.endTime} disabled={!canEdit} onChange={e => updateBreak(i, "endTime", e.target.value)}
+                            className="flex-1 bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-xs font-bold text-black outline-none focus:border-primary-blue disabled:opacity-50" />
+                          <button onClick={() => removeBreak(i)} disabled={!canEdit}
+                            className="p-1 text-slate-300 hover:text-red-400 rounded-lg transition-all disabled:opacity-40">
+                            <Trash2 size={14} />
+                          </button>
                         </div>
-                        <div className="w-4 h-0.5 bg-slate-100 mt-5" />
-                        <div className="flex-1">
-                          <p className="text-[9px] font-black text-slate-400 uppercase mb-1 ml-1">Until</p>
-                          <input 
-                            type="time" 
-                            value={br.endTime}
-                            onChange={(e) => handleUpdateBreak(index, "endTime", e.target.value)}
-                            className="w-full px-3 py-2 bg-slate-50 border border-transparent rounded-xl focus:bg-white focus:border-primary-blue outline-none text-xs font-black text-slate-900 transition-all"
-                          />
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Slot Grid */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <p className="text-xs font-black text-black uppercase tracking-wider">Available Slots</p>
+                    <div className="flex items-center gap-3 text-[10px] font-bold text-black uppercase">
+                      <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-green-500 inline-block" /> Open</span>
+                      <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-red-400 inline-block" /> Blocked</span>
+                      <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-slate-200 inline-block" /> Break</span>
+                    </div>
+                  </div>
+
+                  {slots.length === 0 ? (
+                    <div className="py-10 text-center border-2 border-dashed border-slate-100 rounded-2xl">
+                      <Info size={24} className="text-slate-200 mx-auto mb-2" />
+                      <p className="text-xs font-bold text-slate-500">No slots — adjust the timings above</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {[
+                        { label: "Morning", icon: <Sunrise size={13} className="text-orange-400" />, slots: grouped.morning },
+                        { label: "Afternoon", icon: <Sun size={13} className="text-blue-400" />, slots: grouped.afternoon },
+                        { label: "Evening", icon: <Sunset size={13} className="text-indigo-400" />, slots: grouped.evening },
+                      ].filter(g => g.slots.length > 0).map(group => (
+                        <div key={group.label}>
+                          <div className="flex items-center gap-1.5 mb-2">
+                            {group.icon}
+                            <span className="text-[10px] font-black text-black uppercase tracking-wider">{group.label}</span>
+                          </div>
+                          <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-2">
+                            {group.slots.map(slot => {
+                              const isBreak = curBreaks.some(b => inRange(slot, b.startTime, b.endTime));
+                              const isBlocked = curBlocks.includes(slot);
+                              const isLoading = loadingSlot === slot;
+                              return (
+                                <button key={slot} onClick={() => !isBreak && toggleSlot(slot)} disabled={isBreak || !!loadingSlot}
+                                  className={cn("py-2.5 rounded-xl text-[10px] font-black transition-all border flex items-center justify-center",
+                                    isBreak ? "bg-slate-50 border-slate-100 text-slate-300 cursor-not-allowed" :
+                                    isBlocked ? "bg-red-500 border-red-500 text-white shadow-sm shadow-red-500/20" :
+                                    "bg-white border-slate-200 text-black hover:border-primary-green hover:text-primary-green hover:shadow-sm")}>
+                                  {isLoading ? <Loader2 size={11} className="animate-spin" /> : (isBreak ? "—" : formatTimeTo12h(slot))}
+                                </button>
+                              );
+                            })}
+                          </div>
                         </div>
-                      </div>
-                      <button 
-                        onClick={() => handleRemoveBreak(index)}
-                        className="p-2.5 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all mt-4"
-                      >
-                        <Trash2 size={18} />
-                      </button>
-                    </div>
-                  ))}
-                  {breaks.length === 0 && (
-                    <div className="sm:col-span-2 p-10 border-2 border-dashed border-slate-100 rounded-[32px] text-center bg-slate-50/30">
-                      <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-slate-200 mx-auto mb-4 shadow-sm">
-                        <ShieldAlert size={24} />
-                      </div>
-                      <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">No Active Breaks</p>
-                      <p className="text-[10px] text-slate-400 mt-1">Add breaks to block time for lunch or clinical meetings.</p>
+                      ))}
                     </div>
                   )}
                 </div>
-              </section>
 
-              {/* SECTION 3: GENERATED SLOTS PREVIEW */}
-              <section className="space-y-4">
-                <div className="flex items-center justify-between mb-2 px-1">
-                  <div className="flex items-center gap-2">
-                    <Sunrise size={18} className="text-primary-blue" />
-                    <h3 className="text-xs font-black text-slate-700 uppercase tracking-[0.15em]">Live Session Grid & Blocking</h3>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-1.5">
-                      <div className="w-2.5 h-2.5 rounded-full bg-green-500" />
-                      <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Active</span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <div className="w-2.5 h-2.5 rounded-full bg-red-500" />
-                      <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Blocked</span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <div className="w-2.5 h-2.5 rounded-full bg-slate-200" />
-                      <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Break</span>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="bg-slate-50/50 p-8 rounded-[40px] border border-slate-100 space-y-10">
-                  {/* GROUP: MORNING */}
-                  {groupedSlots.morning.length > 0 && (
-                    <div className="space-y-4">
-                      <div className="flex items-center gap-3 pb-2 border-b border-slate-200/60">
-                        <Sunrise size={16} className="text-orange-400" />
-                        <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Morning Sessions</h4>
-                      </div>
-                      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3">
-                        {groupedSlots.morning.map(slot => (
-                          <SlotButton 
-                            key={slot}
-                            slot={slot}
-                            breaks={breaks}
-                            manualBlocks={manualBlocks}
-                            handleToggleSlot={handleToggleSlot}
-                            isUpdating={loadingSlot === slot}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* GROUP: AFTERNOON */}
-                  {groupedSlots.afternoon.length > 0 && (
-                    <div className="space-y-4">
-                      <div className="flex items-center gap-3 pb-2 border-b border-slate-200/60">
-                        <Sun size={16} className="text-blue-400" />
-                        <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Afternoon Sessions</h4>
-                      </div>
-                      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3">
-                        {groupedSlots.afternoon.map(slot => (
-                          <SlotButton 
-                            key={slot}
-                            slot={slot}
-                            breaks={breaks}
-                            manualBlocks={manualBlocks}
-                            handleToggleSlot={handleToggleSlot}
-                            isUpdating={loadingSlot === slot}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* GROUP: EVENING */}
-                  {groupedSlots.evening.length > 0 && (
-                    <div className="space-y-4">
-                      <div className="flex items-center gap-3 pb-2 border-b border-slate-200/60">
-                        <Sunset size={16} className="text-indigo-400" />
-                        <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Evening Sessions</h4>
-                      </div>
-                      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3">
-                        {groupedSlots.evening.map(slot => (
-                          <SlotButton 
-                            key={slot}
-                            slot={slot}
-                            breaks={breaks}
-                            manualBlocks={manualBlocks}
-                            handleToggleSlot={handleToggleSlot}
-                            isUpdating={loadingSlot === slot}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {generatedSlots.length === 0 && (
-                    <div className="py-20 text-center space-y-4">
-                      <div className="w-16 h-16 bg-white rounded-3xl flex items-center justify-center text-slate-200 mx-auto shadow-sm">
-                        <Info size={32} />
-                      </div>
-                      <div>
-                        <p className="text-sm font-black text-slate-900">No Slots Generated</p>
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Adjust start and end times to generate clinical windows.</p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </section>
-
-              <div className="h-20" /> {/* Spacer */}
+                <div className="h-8" />
+              </div>
             </div>
           </div>
         )}
       </div>
     </div>
-  );
-}
-
-// --- Sub-components ---
-
-function SlotButton({ slot, breaks, manualBlocks, handleToggleSlot, isUpdating }: { 
-  slot: string; 
-  breaks: Break[]; 
-  manualBlocks: string[]; 
-  handleToggleSlot: (s: string) => void;
-  isUpdating?: boolean;
-}) {
-  const isBreak = breaks.some(br => isInsideRange(slot, br.startTime, br.endTime));
-  const isBlocked = manualBlocks.includes(slot);
-
-  return (
-    <button
-      onClick={() => !isBreak && !isUpdating && handleToggleSlot(slot)}
-      disabled={isBreak || isUpdating}
-      className={cn(
-        "py-3.5 rounded-2xl text-[10px] font-black transition-all border shadow-sm relative group overflow-hidden flex items-center justify-center",
-        isBreak 
-          ? "bg-slate-100 border-slate-200 text-slate-300 cursor-not-allowed opacity-60" 
-          : isBlocked 
-            ? "bg-red-500 border-red-500 text-white shadow-lg shadow-red-500/20 ring-4 ring-red-500/10 scale-[1.02]" 
-            : "bg-white border-slate-200 text-slate-900 hover:border-primary-green hover:text-primary-green hover:scale-[1.05] hover:shadow-md hover:z-10"
-      )}
-    >
-      {isUpdating ? (
-        <Loader2 size={14} className="animate-spin opacity-70" />
-      ) : (
-        formatTimeTo12h(slot)
-      )}
-      {isBreak && (
-        <span className="absolute inset-0 flex items-center justify-center bg-slate-100/40 text-[7px] font-black text-slate-400 uppercase tracking-tighter mix-blend-multiply">
-          BREAK
-        </span>
-      )}
-      {!isBreak && !isBlocked && (
-        <div className="absolute top-1 right-1 w-1 h-1 rounded-full bg-primary-green opacity-0 group-hover:opacity-100 transition-opacity" />
-      )}
-    </button>
   );
 }

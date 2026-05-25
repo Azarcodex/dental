@@ -38,6 +38,7 @@ model Doctor {
   blocks          DoctorAvailabilityBlock[]
   exceptions      DoctorException[]
   schedules       DoctorSchedule[]
+  weeklyDefault   DoctorWeeklyDefault?
 }
 
 model Patient {
@@ -53,12 +54,24 @@ model Patient {
 }
 
 model DoctorSchedule {
-  id           String @id @default(uuid())
+  id           String  @id @default(uuid())
   doctorId     String
   dayOfWeek    Int
   startTime    String
   endTime      String
   slotDuration Int
+  isCustom     Boolean @default(false)
+  doctor       Doctor  @relation(fields: [doctorId], references: [id])
+}
+
+model DoctorWeeklyDefault {
+  id           String @id @default(uuid())
+  doctorId     String @unique
+  activeDays   String
+  startTime    String
+  endTime      String
+  slotDuration Int
+  breaks       String @default("[]")
   doctor       Doctor @relation(fields: [doctorId], references: [id])
 }
 

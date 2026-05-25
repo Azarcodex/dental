@@ -60,7 +60,7 @@ export const PatientDrawer: React.FC<PatientDrawerProps> = ({ isOpen, onClose, p
               <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100">
                 <p className="text-xs text-gray-500 mb-1">Age / Gender</p>
                 <p className="text-sm font-semibold text-gray-900 capitalize">
-                  {patient.age}y • {patient.gender}
+                  {patient.age ? `${patient.age}y` : "N/A"} • {patient.gender}
                 </p>
               </div>
             </div>

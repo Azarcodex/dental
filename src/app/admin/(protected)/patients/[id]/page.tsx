@@ -101,7 +101,7 @@ export default function PatientProfilePage() {
                 </div>
                 <div>
                   <p className="text-[10px] font-bold text-gray-400 uppercase">Age / Gender</p>
-                  <p className="text-sm font-bold text-gray-900 capitalize">{patient.age} years &bull; {patient.gender}</p>
+                  <p className="text-sm font-bold text-gray-900 capitalize">{patient.age ? `${patient.age} years` : "N/A"} &bull; {patient.gender}</p>
                 </div>
               </div>
 

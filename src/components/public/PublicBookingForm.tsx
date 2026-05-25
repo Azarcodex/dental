@@ -50,7 +50,6 @@ export function PublicBookingForm() {
     mode: "onChange",
     defaultValues: {
       gender: "MALE",
-      age: 30,
     }
   });
 
@@ -106,6 +105,8 @@ export function PublicBookingForm() {
       return data.slots;
     },
     enabled: !!watchDoctorId && !!watchDate,
+    refetchInterval: 5000,
+    refetchOnWindowFocus: true,
   });
 
   const filteredSlots = useMemo(() => {
@@ -309,7 +310,7 @@ export function PublicBookingForm() {
                         </div>
 
                         <div className="space-y-2">
-                          <label className="text-[11px] font-black uppercase tracking-widest text-slate-500 ml-2">Age</label>
+                          <label className="text-[11px] font-black uppercase tracking-widest text-slate-500 ml-2">Age (Optional)</label>
                           <input 
                             type="number"
                             {...register("age", { valueAsNumber: true })}

@@ -34,6 +34,11 @@ export type Patient = $Result.DefaultSelection<Prisma.$PatientPayload>
  */
 export type DoctorSchedule = $Result.DefaultSelection<Prisma.$DoctorSchedulePayload>
 /**
+ * Model DoctorWeeklyDefault
+ * 
+ */
+export type DoctorWeeklyDefault = $Result.DefaultSelection<Prisma.$DoctorWeeklyDefaultPayload>
+/**
  * Model DoctorAvailabilityBlock
  * 
  */
@@ -236,6 +241,16 @@ export class PrismaClient<
     * ```
     */
   get doctorSchedule(): Prisma.DoctorScheduleDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.doctorWeeklyDefault`: Exposes CRUD operations for the **DoctorWeeklyDefault** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more DoctorWeeklyDefaults
+    * const doctorWeeklyDefaults = await prisma.doctorWeeklyDefault.findMany()
+    * ```
+    */
+  get doctorWeeklyDefault(): Prisma.DoctorWeeklyDefaultDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.doctorAvailabilityBlock`: Exposes CRUD operations for the **DoctorAvailabilityBlock** model.
@@ -724,6 +739,7 @@ export namespace Prisma {
     Doctor: 'Doctor',
     Patient: 'Patient',
     DoctorSchedule: 'DoctorSchedule',
+    DoctorWeeklyDefault: 'DoctorWeeklyDefault',
     DoctorAvailabilityBlock: 'DoctorAvailabilityBlock',
     DoctorException: 'DoctorException',
     Appointment: 'Appointment',
@@ -744,7 +760,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "admin" | "doctor" | "patient" | "doctorSchedule" | "doctorAvailabilityBlock" | "doctorException" | "appointment" | "review" | "gallery"
+      modelProps: "admin" | "doctor" | "patient" | "doctorSchedule" | "doctorWeeklyDefault" | "doctorAvailabilityBlock" | "doctorException" | "appointment" | "review" | "gallery"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1041,6 +1057,80 @@ export namespace Prisma {
           count: {
             args: Prisma.DoctorScheduleCountArgs<ExtArgs>
             result: $Utils.Optional<DoctorScheduleCountAggregateOutputType> | number
+          }
+        }
+      }
+      DoctorWeeklyDefault: {
+        payload: Prisma.$DoctorWeeklyDefaultPayload<ExtArgs>
+        fields: Prisma.DoctorWeeklyDefaultFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.DoctorWeeklyDefaultFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DoctorWeeklyDefaultPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.DoctorWeeklyDefaultFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DoctorWeeklyDefaultPayload>
+          }
+          findFirst: {
+            args: Prisma.DoctorWeeklyDefaultFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DoctorWeeklyDefaultPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.DoctorWeeklyDefaultFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DoctorWeeklyDefaultPayload>
+          }
+          findMany: {
+            args: Prisma.DoctorWeeklyDefaultFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DoctorWeeklyDefaultPayload>[]
+          }
+          create: {
+            args: Prisma.DoctorWeeklyDefaultCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DoctorWeeklyDefaultPayload>
+          }
+          createMany: {
+            args: Prisma.DoctorWeeklyDefaultCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.DoctorWeeklyDefaultCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DoctorWeeklyDefaultPayload>[]
+          }
+          delete: {
+            args: Prisma.DoctorWeeklyDefaultDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DoctorWeeklyDefaultPayload>
+          }
+          update: {
+            args: Prisma.DoctorWeeklyDefaultUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DoctorWeeklyDefaultPayload>
+          }
+          deleteMany: {
+            args: Prisma.DoctorWeeklyDefaultDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.DoctorWeeklyDefaultUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.DoctorWeeklyDefaultUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DoctorWeeklyDefaultPayload>[]
+          }
+          upsert: {
+            args: Prisma.DoctorWeeklyDefaultUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DoctorWeeklyDefaultPayload>
+          }
+          aggregate: {
+            args: Prisma.DoctorWeeklyDefaultAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateDoctorWeeklyDefault>
+          }
+          groupBy: {
+            args: Prisma.DoctorWeeklyDefaultGroupByArgs<ExtArgs>
+            result: $Utils.Optional<DoctorWeeklyDefaultGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.DoctorWeeklyDefaultCountArgs<ExtArgs>
+            result: $Utils.Optional<DoctorWeeklyDefaultCountAggregateOutputType> | number
           }
         }
       }
@@ -1526,6 +1616,7 @@ export namespace Prisma {
     doctor?: DoctorOmit
     patient?: PatientOmit
     doctorSchedule?: DoctorScheduleOmit
+    doctorWeeklyDefault?: DoctorWeeklyDefaultOmit
     doctorAvailabilityBlock?: DoctorAvailabilityBlockOmit
     doctorException?: DoctorExceptionOmit
     appointment?: AppointmentOmit
@@ -3022,6 +3113,7 @@ export namespace Prisma {
     blocks?: boolean | Doctor$blocksArgs<ExtArgs>
     exceptions?: boolean | Doctor$exceptionsArgs<ExtArgs>
     schedules?: boolean | Doctor$schedulesArgs<ExtArgs>
+    weeklyDefault?: boolean | Doctor$weeklyDefaultArgs<ExtArgs>
     _count?: boolean | DoctorCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["doctor"]>
 
@@ -3076,6 +3168,7 @@ export namespace Prisma {
     blocks?: boolean | Doctor$blocksArgs<ExtArgs>
     exceptions?: boolean | Doctor$exceptionsArgs<ExtArgs>
     schedules?: boolean | Doctor$schedulesArgs<ExtArgs>
+    weeklyDefault?: boolean | Doctor$weeklyDefaultArgs<ExtArgs>
     _count?: boolean | DoctorCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type DoctorIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -3088,6 +3181,7 @@ export namespace Prisma {
       blocks: Prisma.$DoctorAvailabilityBlockPayload<ExtArgs>[]
       exceptions: Prisma.$DoctorExceptionPayload<ExtArgs>[]
       schedules: Prisma.$DoctorSchedulePayload<ExtArgs>[]
+      weeklyDefault: Prisma.$DoctorWeeklyDefaultPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -3500,6 +3594,7 @@ export namespace Prisma {
     blocks<T extends Doctor$blocksArgs<ExtArgs> = {}>(args?: Subset<T, Doctor$blocksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DoctorAvailabilityBlockPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     exceptions<T extends Doctor$exceptionsArgs<ExtArgs> = {}>(args?: Subset<T, Doctor$exceptionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DoctorExceptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     schedules<T extends Doctor$schedulesArgs<ExtArgs> = {}>(args?: Subset<T, Doctor$schedulesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DoctorSchedulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    weeklyDefault<T extends Doctor$weeklyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, Doctor$weeklyDefaultArgs<ExtArgs>>): Prisma__DoctorWeeklyDefaultClient<$Result.GetResult<Prisma.$DoctorWeeklyDefaultPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4027,6 +4122,25 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: DoctorScheduleScalarFieldEnum | DoctorScheduleScalarFieldEnum[]
+  }
+
+  /**
+   * Doctor.weeklyDefault
+   */
+  export type Doctor$weeklyDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DoctorWeeklyDefault
+     */
+    select?: DoctorWeeklyDefaultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DoctorWeeklyDefault
+     */
+    omit?: DoctorWeeklyDefaultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DoctorWeeklyDefaultInclude<ExtArgs> | null
+    where?: DoctorWeeklyDefaultWhereInput
   }
 
   /**
@@ -5225,6 +5339,7 @@ export namespace Prisma {
     startTime: string | null
     endTime: string | null
     slotDuration: number | null
+    isCustom: boolean | null
   }
 
   export type DoctorScheduleMaxAggregateOutputType = {
@@ -5234,6 +5349,7 @@ export namespace Prisma {
     startTime: string | null
     endTime: string | null
     slotDuration: number | null
+    isCustom: boolean | null
   }
 
   export type DoctorScheduleCountAggregateOutputType = {
@@ -5243,6 +5359,7 @@ export namespace Prisma {
     startTime: number
     endTime: number
     slotDuration: number
+    isCustom: number
     _all: number
   }
 
@@ -5264,6 +5381,7 @@ export namespace Prisma {
     startTime?: true
     endTime?: true
     slotDuration?: true
+    isCustom?: true
   }
 
   export type DoctorScheduleMaxAggregateInputType = {
@@ -5273,6 +5391,7 @@ export namespace Prisma {
     startTime?: true
     endTime?: true
     slotDuration?: true
+    isCustom?: true
   }
 
   export type DoctorScheduleCountAggregateInputType = {
@@ -5282,6 +5401,7 @@ export namespace Prisma {
     startTime?: true
     endTime?: true
     slotDuration?: true
+    isCustom?: true
     _all?: true
   }
 
@@ -5378,6 +5498,7 @@ export namespace Prisma {
     startTime: string
     endTime: string
     slotDuration: number
+    isCustom: boolean
     _count: DoctorScheduleCountAggregateOutputType | null
     _avg: DoctorScheduleAvgAggregateOutputType | null
     _sum: DoctorScheduleSumAggregateOutputType | null
@@ -5406,6 +5527,7 @@ export namespace Prisma {
     startTime?: boolean
     endTime?: boolean
     slotDuration?: boolean
+    isCustom?: boolean
     doctor?: boolean | DoctorDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["doctorSchedule"]>
 
@@ -5416,6 +5538,7 @@ export namespace Prisma {
     startTime?: boolean
     endTime?: boolean
     slotDuration?: boolean
+    isCustom?: boolean
     doctor?: boolean | DoctorDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["doctorSchedule"]>
 
@@ -5426,6 +5549,7 @@ export namespace Prisma {
     startTime?: boolean
     endTime?: boolean
     slotDuration?: boolean
+    isCustom?: boolean
     doctor?: boolean | DoctorDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["doctorSchedule"]>
 
@@ -5436,9 +5560,10 @@ export namespace Prisma {
     startTime?: boolean
     endTime?: boolean
     slotDuration?: boolean
+    isCustom?: boolean
   }
 
-  export type DoctorScheduleOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "doctorId" | "dayOfWeek" | "startTime" | "endTime" | "slotDuration", ExtArgs["result"]["doctorSchedule"]>
+  export type DoctorScheduleOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "doctorId" | "dayOfWeek" | "startTime" | "endTime" | "slotDuration" | "isCustom", ExtArgs["result"]["doctorSchedule"]>
   export type DoctorScheduleInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     doctor?: boolean | DoctorDefaultArgs<ExtArgs>
   }
@@ -5461,6 +5586,7 @@ export namespace Prisma {
       startTime: string
       endTime: string
       slotDuration: number
+      isCustom: boolean
     }, ExtArgs["result"]["doctorSchedule"]>
     composites: {}
   }
@@ -5891,6 +6017,7 @@ export namespace Prisma {
     readonly startTime: FieldRef<"DoctorSchedule", 'String'>
     readonly endTime: FieldRef<"DoctorSchedule", 'String'>
     readonly slotDuration: FieldRef<"DoctorSchedule", 'Int'>
+    readonly isCustom: FieldRef<"DoctorSchedule", 'Boolean'>
   }
     
 
@@ -6307,6 +6434,1129 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: DoctorScheduleInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model DoctorWeeklyDefault
+   */
+
+  export type AggregateDoctorWeeklyDefault = {
+    _count: DoctorWeeklyDefaultCountAggregateOutputType | null
+    _avg: DoctorWeeklyDefaultAvgAggregateOutputType | null
+    _sum: DoctorWeeklyDefaultSumAggregateOutputType | null
+    _min: DoctorWeeklyDefaultMinAggregateOutputType | null
+    _max: DoctorWeeklyDefaultMaxAggregateOutputType | null
+  }
+
+  export type DoctorWeeklyDefaultAvgAggregateOutputType = {
+    slotDuration: number | null
+  }
+
+  export type DoctorWeeklyDefaultSumAggregateOutputType = {
+    slotDuration: number | null
+  }
+
+  export type DoctorWeeklyDefaultMinAggregateOutputType = {
+    id: string | null
+    doctorId: string | null
+    activeDays: string | null
+    startTime: string | null
+    endTime: string | null
+    slotDuration: number | null
+    breaks: string | null
+  }
+
+  export type DoctorWeeklyDefaultMaxAggregateOutputType = {
+    id: string | null
+    doctorId: string | null
+    activeDays: string | null
+    startTime: string | null
+    endTime: string | null
+    slotDuration: number | null
+    breaks: string | null
+  }
+
+  export type DoctorWeeklyDefaultCountAggregateOutputType = {
+    id: number
+    doctorId: number
+    activeDays: number
+    startTime: number
+    endTime: number
+    slotDuration: number
+    breaks: number
+    _all: number
+  }
+
+
+  export type DoctorWeeklyDefaultAvgAggregateInputType = {
+    slotDuration?: true
+  }
+
+  export type DoctorWeeklyDefaultSumAggregateInputType = {
+    slotDuration?: true
+  }
+
+  export type DoctorWeeklyDefaultMinAggregateInputType = {
+    id?: true
+    doctorId?: true
+    activeDays?: true
+    startTime?: true
+    endTime?: true
+    slotDuration?: true
+    breaks?: true
+  }
+
+  export type DoctorWeeklyDefaultMaxAggregateInputType = {
+    id?: true
+    doctorId?: true
+    activeDays?: true
+    startTime?: true
+    endTime?: true
+    slotDuration?: true
+    breaks?: true
+  }
+
+  export type DoctorWeeklyDefaultCountAggregateInputType = {
+    id?: true
+    doctorId?: true
+    activeDays?: true
+    startTime?: true
+    endTime?: true
+    slotDuration?: true
+    breaks?: true
+    _all?: true
+  }
+
+  export type DoctorWeeklyDefaultAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DoctorWeeklyDefault to aggregate.
+     */
+    where?: DoctorWeeklyDefaultWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DoctorWeeklyDefaults to fetch.
+     */
+    orderBy?: DoctorWeeklyDefaultOrderByWithRelationInput | DoctorWeeklyDefaultOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: DoctorWeeklyDefaultWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DoctorWeeklyDefaults from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DoctorWeeklyDefaults.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned DoctorWeeklyDefaults
+    **/
+    _count?: true | DoctorWeeklyDefaultCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: DoctorWeeklyDefaultAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: DoctorWeeklyDefaultSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: DoctorWeeklyDefaultMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: DoctorWeeklyDefaultMaxAggregateInputType
+  }
+
+  export type GetDoctorWeeklyDefaultAggregateType<T extends DoctorWeeklyDefaultAggregateArgs> = {
+        [P in keyof T & keyof AggregateDoctorWeeklyDefault]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateDoctorWeeklyDefault[P]>
+      : GetScalarType<T[P], AggregateDoctorWeeklyDefault[P]>
+  }
+
+
+
+
+  export type DoctorWeeklyDefaultGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DoctorWeeklyDefaultWhereInput
+    orderBy?: DoctorWeeklyDefaultOrderByWithAggregationInput | DoctorWeeklyDefaultOrderByWithAggregationInput[]
+    by: DoctorWeeklyDefaultScalarFieldEnum[] | DoctorWeeklyDefaultScalarFieldEnum
+    having?: DoctorWeeklyDefaultScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: DoctorWeeklyDefaultCountAggregateInputType | true
+    _avg?: DoctorWeeklyDefaultAvgAggregateInputType
+    _sum?: DoctorWeeklyDefaultSumAggregateInputType
+    _min?: DoctorWeeklyDefaultMinAggregateInputType
+    _max?: DoctorWeeklyDefaultMaxAggregateInputType
+  }
+
+  export type DoctorWeeklyDefaultGroupByOutputType = {
+    id: string
+    doctorId: string
+    activeDays: string
+    startTime: string
+    endTime: string
+    slotDuration: number
+    breaks: string
+    _count: DoctorWeeklyDefaultCountAggregateOutputType | null
+    _avg: DoctorWeeklyDefaultAvgAggregateOutputType | null
+    _sum: DoctorWeeklyDefaultSumAggregateOutputType | null
+    _min: DoctorWeeklyDefaultMinAggregateOutputType | null
+    _max: DoctorWeeklyDefaultMaxAggregateOutputType | null
+  }
+
+  type GetDoctorWeeklyDefaultGroupByPayload<T extends DoctorWeeklyDefaultGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<DoctorWeeklyDefaultGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof DoctorWeeklyDefaultGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], DoctorWeeklyDefaultGroupByOutputType[P]>
+            : GetScalarType<T[P], DoctorWeeklyDefaultGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type DoctorWeeklyDefaultSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    doctorId?: boolean
+    activeDays?: boolean
+    startTime?: boolean
+    endTime?: boolean
+    slotDuration?: boolean
+    breaks?: boolean
+    doctor?: boolean | DoctorDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["doctorWeeklyDefault"]>
+
+  export type DoctorWeeklyDefaultSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    doctorId?: boolean
+    activeDays?: boolean
+    startTime?: boolean
+    endTime?: boolean
+    slotDuration?: boolean
+    breaks?: boolean
+    doctor?: boolean | DoctorDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["doctorWeeklyDefault"]>
+
+  export type DoctorWeeklyDefaultSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    doctorId?: boolean
+    activeDays?: boolean
+    startTime?: boolean
+    endTime?: boolean
+    slotDuration?: boolean
+    breaks?: boolean
+    doctor?: boolean | DoctorDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["doctorWeeklyDefault"]>
+
+  export type DoctorWeeklyDefaultSelectScalar = {
+    id?: boolean
+    doctorId?: boolean
+    activeDays?: boolean
+    startTime?: boolean
+    endTime?: boolean
+    slotDuration?: boolean
+    breaks?: boolean
+  }
+
+  export type DoctorWeeklyDefaultOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "doctorId" | "activeDays" | "startTime" | "endTime" | "slotDuration" | "breaks", ExtArgs["result"]["doctorWeeklyDefault"]>
+  export type DoctorWeeklyDefaultInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    doctor?: boolean | DoctorDefaultArgs<ExtArgs>
+  }
+  export type DoctorWeeklyDefaultIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    doctor?: boolean | DoctorDefaultArgs<ExtArgs>
+  }
+  export type DoctorWeeklyDefaultIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    doctor?: boolean | DoctorDefaultArgs<ExtArgs>
+  }
+
+  export type $DoctorWeeklyDefaultPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "DoctorWeeklyDefault"
+    objects: {
+      doctor: Prisma.$DoctorPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      doctorId: string
+      activeDays: string
+      startTime: string
+      endTime: string
+      slotDuration: number
+      breaks: string
+    }, ExtArgs["result"]["doctorWeeklyDefault"]>
+    composites: {}
+  }
+
+  type DoctorWeeklyDefaultGetPayload<S extends boolean | null | undefined | DoctorWeeklyDefaultDefaultArgs> = $Result.GetResult<Prisma.$DoctorWeeklyDefaultPayload, S>
+
+  type DoctorWeeklyDefaultCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<DoctorWeeklyDefaultFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: DoctorWeeklyDefaultCountAggregateInputType | true
+    }
+
+  export interface DoctorWeeklyDefaultDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['DoctorWeeklyDefault'], meta: { name: 'DoctorWeeklyDefault' } }
+    /**
+     * Find zero or one DoctorWeeklyDefault that matches the filter.
+     * @param {DoctorWeeklyDefaultFindUniqueArgs} args - Arguments to find a DoctorWeeklyDefault
+     * @example
+     * // Get one DoctorWeeklyDefault
+     * const doctorWeeklyDefault = await prisma.doctorWeeklyDefault.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends DoctorWeeklyDefaultFindUniqueArgs>(args: SelectSubset<T, DoctorWeeklyDefaultFindUniqueArgs<ExtArgs>>): Prisma__DoctorWeeklyDefaultClient<$Result.GetResult<Prisma.$DoctorWeeklyDefaultPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one DoctorWeeklyDefault that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {DoctorWeeklyDefaultFindUniqueOrThrowArgs} args - Arguments to find a DoctorWeeklyDefault
+     * @example
+     * // Get one DoctorWeeklyDefault
+     * const doctorWeeklyDefault = await prisma.doctorWeeklyDefault.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends DoctorWeeklyDefaultFindUniqueOrThrowArgs>(args: SelectSubset<T, DoctorWeeklyDefaultFindUniqueOrThrowArgs<ExtArgs>>): Prisma__DoctorWeeklyDefaultClient<$Result.GetResult<Prisma.$DoctorWeeklyDefaultPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first DoctorWeeklyDefault that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DoctorWeeklyDefaultFindFirstArgs} args - Arguments to find a DoctorWeeklyDefault
+     * @example
+     * // Get one DoctorWeeklyDefault
+     * const doctorWeeklyDefault = await prisma.doctorWeeklyDefault.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends DoctorWeeklyDefaultFindFirstArgs>(args?: SelectSubset<T, DoctorWeeklyDefaultFindFirstArgs<ExtArgs>>): Prisma__DoctorWeeklyDefaultClient<$Result.GetResult<Prisma.$DoctorWeeklyDefaultPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first DoctorWeeklyDefault that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DoctorWeeklyDefaultFindFirstOrThrowArgs} args - Arguments to find a DoctorWeeklyDefault
+     * @example
+     * // Get one DoctorWeeklyDefault
+     * const doctorWeeklyDefault = await prisma.doctorWeeklyDefault.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends DoctorWeeklyDefaultFindFirstOrThrowArgs>(args?: SelectSubset<T, DoctorWeeklyDefaultFindFirstOrThrowArgs<ExtArgs>>): Prisma__DoctorWeeklyDefaultClient<$Result.GetResult<Prisma.$DoctorWeeklyDefaultPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more DoctorWeeklyDefaults that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DoctorWeeklyDefaultFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all DoctorWeeklyDefaults
+     * const doctorWeeklyDefaults = await prisma.doctorWeeklyDefault.findMany()
+     * 
+     * // Get first 10 DoctorWeeklyDefaults
+     * const doctorWeeklyDefaults = await prisma.doctorWeeklyDefault.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const doctorWeeklyDefaultWithIdOnly = await prisma.doctorWeeklyDefault.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends DoctorWeeklyDefaultFindManyArgs>(args?: SelectSubset<T, DoctorWeeklyDefaultFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DoctorWeeklyDefaultPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a DoctorWeeklyDefault.
+     * @param {DoctorWeeklyDefaultCreateArgs} args - Arguments to create a DoctorWeeklyDefault.
+     * @example
+     * // Create one DoctorWeeklyDefault
+     * const DoctorWeeklyDefault = await prisma.doctorWeeklyDefault.create({
+     *   data: {
+     *     // ... data to create a DoctorWeeklyDefault
+     *   }
+     * })
+     * 
+     */
+    create<T extends DoctorWeeklyDefaultCreateArgs>(args: SelectSubset<T, DoctorWeeklyDefaultCreateArgs<ExtArgs>>): Prisma__DoctorWeeklyDefaultClient<$Result.GetResult<Prisma.$DoctorWeeklyDefaultPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many DoctorWeeklyDefaults.
+     * @param {DoctorWeeklyDefaultCreateManyArgs} args - Arguments to create many DoctorWeeklyDefaults.
+     * @example
+     * // Create many DoctorWeeklyDefaults
+     * const doctorWeeklyDefault = await prisma.doctorWeeklyDefault.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends DoctorWeeklyDefaultCreateManyArgs>(args?: SelectSubset<T, DoctorWeeklyDefaultCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many DoctorWeeklyDefaults and returns the data saved in the database.
+     * @param {DoctorWeeklyDefaultCreateManyAndReturnArgs} args - Arguments to create many DoctorWeeklyDefaults.
+     * @example
+     * // Create many DoctorWeeklyDefaults
+     * const doctorWeeklyDefault = await prisma.doctorWeeklyDefault.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many DoctorWeeklyDefaults and only return the `id`
+     * const doctorWeeklyDefaultWithIdOnly = await prisma.doctorWeeklyDefault.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends DoctorWeeklyDefaultCreateManyAndReturnArgs>(args?: SelectSubset<T, DoctorWeeklyDefaultCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DoctorWeeklyDefaultPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a DoctorWeeklyDefault.
+     * @param {DoctorWeeklyDefaultDeleteArgs} args - Arguments to delete one DoctorWeeklyDefault.
+     * @example
+     * // Delete one DoctorWeeklyDefault
+     * const DoctorWeeklyDefault = await prisma.doctorWeeklyDefault.delete({
+     *   where: {
+     *     // ... filter to delete one DoctorWeeklyDefault
+     *   }
+     * })
+     * 
+     */
+    delete<T extends DoctorWeeklyDefaultDeleteArgs>(args: SelectSubset<T, DoctorWeeklyDefaultDeleteArgs<ExtArgs>>): Prisma__DoctorWeeklyDefaultClient<$Result.GetResult<Prisma.$DoctorWeeklyDefaultPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one DoctorWeeklyDefault.
+     * @param {DoctorWeeklyDefaultUpdateArgs} args - Arguments to update one DoctorWeeklyDefault.
+     * @example
+     * // Update one DoctorWeeklyDefault
+     * const doctorWeeklyDefault = await prisma.doctorWeeklyDefault.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends DoctorWeeklyDefaultUpdateArgs>(args: SelectSubset<T, DoctorWeeklyDefaultUpdateArgs<ExtArgs>>): Prisma__DoctorWeeklyDefaultClient<$Result.GetResult<Prisma.$DoctorWeeklyDefaultPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more DoctorWeeklyDefaults.
+     * @param {DoctorWeeklyDefaultDeleteManyArgs} args - Arguments to filter DoctorWeeklyDefaults to delete.
+     * @example
+     * // Delete a few DoctorWeeklyDefaults
+     * const { count } = await prisma.doctorWeeklyDefault.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends DoctorWeeklyDefaultDeleteManyArgs>(args?: SelectSubset<T, DoctorWeeklyDefaultDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DoctorWeeklyDefaults.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DoctorWeeklyDefaultUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many DoctorWeeklyDefaults
+     * const doctorWeeklyDefault = await prisma.doctorWeeklyDefault.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends DoctorWeeklyDefaultUpdateManyArgs>(args: SelectSubset<T, DoctorWeeklyDefaultUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DoctorWeeklyDefaults and returns the data updated in the database.
+     * @param {DoctorWeeklyDefaultUpdateManyAndReturnArgs} args - Arguments to update many DoctorWeeklyDefaults.
+     * @example
+     * // Update many DoctorWeeklyDefaults
+     * const doctorWeeklyDefault = await prisma.doctorWeeklyDefault.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more DoctorWeeklyDefaults and only return the `id`
+     * const doctorWeeklyDefaultWithIdOnly = await prisma.doctorWeeklyDefault.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends DoctorWeeklyDefaultUpdateManyAndReturnArgs>(args: SelectSubset<T, DoctorWeeklyDefaultUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DoctorWeeklyDefaultPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one DoctorWeeklyDefault.
+     * @param {DoctorWeeklyDefaultUpsertArgs} args - Arguments to update or create a DoctorWeeklyDefault.
+     * @example
+     * // Update or create a DoctorWeeklyDefault
+     * const doctorWeeklyDefault = await prisma.doctorWeeklyDefault.upsert({
+     *   create: {
+     *     // ... data to create a DoctorWeeklyDefault
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the DoctorWeeklyDefault we want to update
+     *   }
+     * })
+     */
+    upsert<T extends DoctorWeeklyDefaultUpsertArgs>(args: SelectSubset<T, DoctorWeeklyDefaultUpsertArgs<ExtArgs>>): Prisma__DoctorWeeklyDefaultClient<$Result.GetResult<Prisma.$DoctorWeeklyDefaultPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of DoctorWeeklyDefaults.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DoctorWeeklyDefaultCountArgs} args - Arguments to filter DoctorWeeklyDefaults to count.
+     * @example
+     * // Count the number of DoctorWeeklyDefaults
+     * const count = await prisma.doctorWeeklyDefault.count({
+     *   where: {
+     *     // ... the filter for the DoctorWeeklyDefaults we want to count
+     *   }
+     * })
+    **/
+    count<T extends DoctorWeeklyDefaultCountArgs>(
+      args?: Subset<T, DoctorWeeklyDefaultCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], DoctorWeeklyDefaultCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a DoctorWeeklyDefault.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DoctorWeeklyDefaultAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends DoctorWeeklyDefaultAggregateArgs>(args: Subset<T, DoctorWeeklyDefaultAggregateArgs>): Prisma.PrismaPromise<GetDoctorWeeklyDefaultAggregateType<T>>
+
+    /**
+     * Group by DoctorWeeklyDefault.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DoctorWeeklyDefaultGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends DoctorWeeklyDefaultGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: DoctorWeeklyDefaultGroupByArgs['orderBy'] }
+        : { orderBy?: DoctorWeeklyDefaultGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, DoctorWeeklyDefaultGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetDoctorWeeklyDefaultGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the DoctorWeeklyDefault model
+   */
+  readonly fields: DoctorWeeklyDefaultFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for DoctorWeeklyDefault.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__DoctorWeeklyDefaultClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    doctor<T extends DoctorDefaultArgs<ExtArgs> = {}>(args?: Subset<T, DoctorDefaultArgs<ExtArgs>>): Prisma__DoctorClient<$Result.GetResult<Prisma.$DoctorPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the DoctorWeeklyDefault model
+   */
+  interface DoctorWeeklyDefaultFieldRefs {
+    readonly id: FieldRef<"DoctorWeeklyDefault", 'String'>
+    readonly doctorId: FieldRef<"DoctorWeeklyDefault", 'String'>
+    readonly activeDays: FieldRef<"DoctorWeeklyDefault", 'String'>
+    readonly startTime: FieldRef<"DoctorWeeklyDefault", 'String'>
+    readonly endTime: FieldRef<"DoctorWeeklyDefault", 'String'>
+    readonly slotDuration: FieldRef<"DoctorWeeklyDefault", 'Int'>
+    readonly breaks: FieldRef<"DoctorWeeklyDefault", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * DoctorWeeklyDefault findUnique
+   */
+  export type DoctorWeeklyDefaultFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DoctorWeeklyDefault
+     */
+    select?: DoctorWeeklyDefaultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DoctorWeeklyDefault
+     */
+    omit?: DoctorWeeklyDefaultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DoctorWeeklyDefaultInclude<ExtArgs> | null
+    /**
+     * Filter, which DoctorWeeklyDefault to fetch.
+     */
+    where: DoctorWeeklyDefaultWhereUniqueInput
+  }
+
+  /**
+   * DoctorWeeklyDefault findUniqueOrThrow
+   */
+  export type DoctorWeeklyDefaultFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DoctorWeeklyDefault
+     */
+    select?: DoctorWeeklyDefaultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DoctorWeeklyDefault
+     */
+    omit?: DoctorWeeklyDefaultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DoctorWeeklyDefaultInclude<ExtArgs> | null
+    /**
+     * Filter, which DoctorWeeklyDefault to fetch.
+     */
+    where: DoctorWeeklyDefaultWhereUniqueInput
+  }
+
+  /**
+   * DoctorWeeklyDefault findFirst
+   */
+  export type DoctorWeeklyDefaultFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DoctorWeeklyDefault
+     */
+    select?: DoctorWeeklyDefaultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DoctorWeeklyDefault
+     */
+    omit?: DoctorWeeklyDefaultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DoctorWeeklyDefaultInclude<ExtArgs> | null
+    /**
+     * Filter, which DoctorWeeklyDefault to fetch.
+     */
+    where?: DoctorWeeklyDefaultWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DoctorWeeklyDefaults to fetch.
+     */
+    orderBy?: DoctorWeeklyDefaultOrderByWithRelationInput | DoctorWeeklyDefaultOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DoctorWeeklyDefaults.
+     */
+    cursor?: DoctorWeeklyDefaultWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DoctorWeeklyDefaults from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DoctorWeeklyDefaults.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DoctorWeeklyDefaults.
+     */
+    distinct?: DoctorWeeklyDefaultScalarFieldEnum | DoctorWeeklyDefaultScalarFieldEnum[]
+  }
+
+  /**
+   * DoctorWeeklyDefault findFirstOrThrow
+   */
+  export type DoctorWeeklyDefaultFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DoctorWeeklyDefault
+     */
+    select?: DoctorWeeklyDefaultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DoctorWeeklyDefault
+     */
+    omit?: DoctorWeeklyDefaultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DoctorWeeklyDefaultInclude<ExtArgs> | null
+    /**
+     * Filter, which DoctorWeeklyDefault to fetch.
+     */
+    where?: DoctorWeeklyDefaultWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DoctorWeeklyDefaults to fetch.
+     */
+    orderBy?: DoctorWeeklyDefaultOrderByWithRelationInput | DoctorWeeklyDefaultOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DoctorWeeklyDefaults.
+     */
+    cursor?: DoctorWeeklyDefaultWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DoctorWeeklyDefaults from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DoctorWeeklyDefaults.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DoctorWeeklyDefaults.
+     */
+    distinct?: DoctorWeeklyDefaultScalarFieldEnum | DoctorWeeklyDefaultScalarFieldEnum[]
+  }
+
+  /**
+   * DoctorWeeklyDefault findMany
+   */
+  export type DoctorWeeklyDefaultFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DoctorWeeklyDefault
+     */
+    select?: DoctorWeeklyDefaultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DoctorWeeklyDefault
+     */
+    omit?: DoctorWeeklyDefaultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DoctorWeeklyDefaultInclude<ExtArgs> | null
+    /**
+     * Filter, which DoctorWeeklyDefaults to fetch.
+     */
+    where?: DoctorWeeklyDefaultWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DoctorWeeklyDefaults to fetch.
+     */
+    orderBy?: DoctorWeeklyDefaultOrderByWithRelationInput | DoctorWeeklyDefaultOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing DoctorWeeklyDefaults.
+     */
+    cursor?: DoctorWeeklyDefaultWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DoctorWeeklyDefaults from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DoctorWeeklyDefaults.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DoctorWeeklyDefaults.
+     */
+    distinct?: DoctorWeeklyDefaultScalarFieldEnum | DoctorWeeklyDefaultScalarFieldEnum[]
+  }
+
+  /**
+   * DoctorWeeklyDefault create
+   */
+  export type DoctorWeeklyDefaultCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DoctorWeeklyDefault
+     */
+    select?: DoctorWeeklyDefaultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DoctorWeeklyDefault
+     */
+    omit?: DoctorWeeklyDefaultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DoctorWeeklyDefaultInclude<ExtArgs> | null
+    /**
+     * The data needed to create a DoctorWeeklyDefault.
+     */
+    data: XOR<DoctorWeeklyDefaultCreateInput, DoctorWeeklyDefaultUncheckedCreateInput>
+  }
+
+  /**
+   * DoctorWeeklyDefault createMany
+   */
+  export type DoctorWeeklyDefaultCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many DoctorWeeklyDefaults.
+     */
+    data: DoctorWeeklyDefaultCreateManyInput | DoctorWeeklyDefaultCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * DoctorWeeklyDefault createManyAndReturn
+   */
+  export type DoctorWeeklyDefaultCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DoctorWeeklyDefault
+     */
+    select?: DoctorWeeklyDefaultSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the DoctorWeeklyDefault
+     */
+    omit?: DoctorWeeklyDefaultOmit<ExtArgs> | null
+    /**
+     * The data used to create many DoctorWeeklyDefaults.
+     */
+    data: DoctorWeeklyDefaultCreateManyInput | DoctorWeeklyDefaultCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DoctorWeeklyDefaultIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * DoctorWeeklyDefault update
+   */
+  export type DoctorWeeklyDefaultUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DoctorWeeklyDefault
+     */
+    select?: DoctorWeeklyDefaultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DoctorWeeklyDefault
+     */
+    omit?: DoctorWeeklyDefaultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DoctorWeeklyDefaultInclude<ExtArgs> | null
+    /**
+     * The data needed to update a DoctorWeeklyDefault.
+     */
+    data: XOR<DoctorWeeklyDefaultUpdateInput, DoctorWeeklyDefaultUncheckedUpdateInput>
+    /**
+     * Choose, which DoctorWeeklyDefault to update.
+     */
+    where: DoctorWeeklyDefaultWhereUniqueInput
+  }
+
+  /**
+   * DoctorWeeklyDefault updateMany
+   */
+  export type DoctorWeeklyDefaultUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update DoctorWeeklyDefaults.
+     */
+    data: XOR<DoctorWeeklyDefaultUpdateManyMutationInput, DoctorWeeklyDefaultUncheckedUpdateManyInput>
+    /**
+     * Filter which DoctorWeeklyDefaults to update
+     */
+    where?: DoctorWeeklyDefaultWhereInput
+    /**
+     * Limit how many DoctorWeeklyDefaults to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * DoctorWeeklyDefault updateManyAndReturn
+   */
+  export type DoctorWeeklyDefaultUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DoctorWeeklyDefault
+     */
+    select?: DoctorWeeklyDefaultSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the DoctorWeeklyDefault
+     */
+    omit?: DoctorWeeklyDefaultOmit<ExtArgs> | null
+    /**
+     * The data used to update DoctorWeeklyDefaults.
+     */
+    data: XOR<DoctorWeeklyDefaultUpdateManyMutationInput, DoctorWeeklyDefaultUncheckedUpdateManyInput>
+    /**
+     * Filter which DoctorWeeklyDefaults to update
+     */
+    where?: DoctorWeeklyDefaultWhereInput
+    /**
+     * Limit how many DoctorWeeklyDefaults to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DoctorWeeklyDefaultIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * DoctorWeeklyDefault upsert
+   */
+  export type DoctorWeeklyDefaultUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DoctorWeeklyDefault
+     */
+    select?: DoctorWeeklyDefaultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DoctorWeeklyDefault
+     */
+    omit?: DoctorWeeklyDefaultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DoctorWeeklyDefaultInclude<ExtArgs> | null
+    /**
+     * The filter to search for the DoctorWeeklyDefault to update in case it exists.
+     */
+    where: DoctorWeeklyDefaultWhereUniqueInput
+    /**
+     * In case the DoctorWeeklyDefault found by the `where` argument doesn't exist, create a new DoctorWeeklyDefault with this data.
+     */
+    create: XOR<DoctorWeeklyDefaultCreateInput, DoctorWeeklyDefaultUncheckedCreateInput>
+    /**
+     * In case the DoctorWeeklyDefault was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<DoctorWeeklyDefaultUpdateInput, DoctorWeeklyDefaultUncheckedUpdateInput>
+  }
+
+  /**
+   * DoctorWeeklyDefault delete
+   */
+  export type DoctorWeeklyDefaultDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DoctorWeeklyDefault
+     */
+    select?: DoctorWeeklyDefaultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DoctorWeeklyDefault
+     */
+    omit?: DoctorWeeklyDefaultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DoctorWeeklyDefaultInclude<ExtArgs> | null
+    /**
+     * Filter which DoctorWeeklyDefault to delete.
+     */
+    where: DoctorWeeklyDefaultWhereUniqueInput
+  }
+
+  /**
+   * DoctorWeeklyDefault deleteMany
+   */
+  export type DoctorWeeklyDefaultDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DoctorWeeklyDefaults to delete
+     */
+    where?: DoctorWeeklyDefaultWhereInput
+    /**
+     * Limit how many DoctorWeeklyDefaults to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * DoctorWeeklyDefault without action
+   */
+  export type DoctorWeeklyDefaultDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DoctorWeeklyDefault
+     */
+    select?: DoctorWeeklyDefaultSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DoctorWeeklyDefault
+     */
+    omit?: DoctorWeeklyDefaultOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DoctorWeeklyDefaultInclude<ExtArgs> | null
   }
 
 
@@ -11773,10 +13023,24 @@ export namespace Prisma {
     dayOfWeek: 'dayOfWeek',
     startTime: 'startTime',
     endTime: 'endTime',
-    slotDuration: 'slotDuration'
+    slotDuration: 'slotDuration',
+    isCustom: 'isCustom'
   };
 
   export type DoctorScheduleScalarFieldEnum = (typeof DoctorScheduleScalarFieldEnum)[keyof typeof DoctorScheduleScalarFieldEnum]
+
+
+  export const DoctorWeeklyDefaultScalarFieldEnum: {
+    id: 'id',
+    doctorId: 'doctorId',
+    activeDays: 'activeDays',
+    startTime: 'startTime',
+    endTime: 'endTime',
+    slotDuration: 'slotDuration',
+    breaks: 'breaks'
+  };
+
+  export type DoctorWeeklyDefaultScalarFieldEnum = (typeof DoctorWeeklyDefaultScalarFieldEnum)[keyof typeof DoctorWeeklyDefaultScalarFieldEnum]
 
 
   export const DoctorAvailabilityBlockScalarFieldEnum: {
@@ -12050,6 +13314,7 @@ export namespace Prisma {
     blocks?: DoctorAvailabilityBlockListRelationFilter
     exceptions?: DoctorExceptionListRelationFilter
     schedules?: DoctorScheduleListRelationFilter
+    weeklyDefault?: XOR<DoctorWeeklyDefaultNullableScalarRelationFilter, DoctorWeeklyDefaultWhereInput> | null
   }
 
   export type DoctorOrderByWithRelationInput = {
@@ -12069,6 +13334,7 @@ export namespace Prisma {
     blocks?: DoctorAvailabilityBlockOrderByRelationAggregateInput
     exceptions?: DoctorExceptionOrderByRelationAggregateInput
     schedules?: DoctorScheduleOrderByRelationAggregateInput
+    weeklyDefault?: DoctorWeeklyDefaultOrderByWithRelationInput
   }
 
   export type DoctorWhereUniqueInput = Prisma.AtLeast<{
@@ -12091,6 +13357,7 @@ export namespace Prisma {
     blocks?: DoctorAvailabilityBlockListRelationFilter
     exceptions?: DoctorExceptionListRelationFilter
     schedules?: DoctorScheduleListRelationFilter
+    weeklyDefault?: XOR<DoctorWeeklyDefaultNullableScalarRelationFilter, DoctorWeeklyDefaultWhereInput> | null
   }, "id" | "email">
 
   export type DoctorOrderByWithAggregationInput = {
@@ -12213,6 +13480,7 @@ export namespace Prisma {
     startTime?: StringFilter<"DoctorSchedule"> | string
     endTime?: StringFilter<"DoctorSchedule"> | string
     slotDuration?: IntFilter<"DoctorSchedule"> | number
+    isCustom?: BoolFilter<"DoctorSchedule"> | boolean
     doctor?: XOR<DoctorScalarRelationFilter, DoctorWhereInput>
   }
 
@@ -12223,6 +13491,7 @@ export namespace Prisma {
     startTime?: SortOrder
     endTime?: SortOrder
     slotDuration?: SortOrder
+    isCustom?: SortOrder
     doctor?: DoctorOrderByWithRelationInput
   }
 
@@ -12236,6 +13505,7 @@ export namespace Prisma {
     startTime?: StringFilter<"DoctorSchedule"> | string
     endTime?: StringFilter<"DoctorSchedule"> | string
     slotDuration?: IntFilter<"DoctorSchedule"> | number
+    isCustom?: BoolFilter<"DoctorSchedule"> | boolean
     doctor?: XOR<DoctorScalarRelationFilter, DoctorWhereInput>
   }, "id">
 
@@ -12246,6 +13516,7 @@ export namespace Prisma {
     startTime?: SortOrder
     endTime?: SortOrder
     slotDuration?: SortOrder
+    isCustom?: SortOrder
     _count?: DoctorScheduleCountOrderByAggregateInput
     _avg?: DoctorScheduleAvgOrderByAggregateInput
     _max?: DoctorScheduleMaxOrderByAggregateInput
@@ -12263,6 +13534,74 @@ export namespace Prisma {
     startTime?: StringWithAggregatesFilter<"DoctorSchedule"> | string
     endTime?: StringWithAggregatesFilter<"DoctorSchedule"> | string
     slotDuration?: IntWithAggregatesFilter<"DoctorSchedule"> | number
+    isCustom?: BoolWithAggregatesFilter<"DoctorSchedule"> | boolean
+  }
+
+  export type DoctorWeeklyDefaultWhereInput = {
+    AND?: DoctorWeeklyDefaultWhereInput | DoctorWeeklyDefaultWhereInput[]
+    OR?: DoctorWeeklyDefaultWhereInput[]
+    NOT?: DoctorWeeklyDefaultWhereInput | DoctorWeeklyDefaultWhereInput[]
+    id?: StringFilter<"DoctorWeeklyDefault"> | string
+    doctorId?: StringFilter<"DoctorWeeklyDefault"> | string
+    activeDays?: StringFilter<"DoctorWeeklyDefault"> | string
+    startTime?: StringFilter<"DoctorWeeklyDefault"> | string
+    endTime?: StringFilter<"DoctorWeeklyDefault"> | string
+    slotDuration?: IntFilter<"DoctorWeeklyDefault"> | number
+    breaks?: StringFilter<"DoctorWeeklyDefault"> | string
+    doctor?: XOR<DoctorScalarRelationFilter, DoctorWhereInput>
+  }
+
+  export type DoctorWeeklyDefaultOrderByWithRelationInput = {
+    id?: SortOrder
+    doctorId?: SortOrder
+    activeDays?: SortOrder
+    startTime?: SortOrder
+    endTime?: SortOrder
+    slotDuration?: SortOrder
+    breaks?: SortOrder
+    doctor?: DoctorOrderByWithRelationInput
+  }
+
+  export type DoctorWeeklyDefaultWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    doctorId?: string
+    AND?: DoctorWeeklyDefaultWhereInput | DoctorWeeklyDefaultWhereInput[]
+    OR?: DoctorWeeklyDefaultWhereInput[]
+    NOT?: DoctorWeeklyDefaultWhereInput | DoctorWeeklyDefaultWhereInput[]
+    activeDays?: StringFilter<"DoctorWeeklyDefault"> | string
+    startTime?: StringFilter<"DoctorWeeklyDefault"> | string
+    endTime?: StringFilter<"DoctorWeeklyDefault"> | string
+    slotDuration?: IntFilter<"DoctorWeeklyDefault"> | number
+    breaks?: StringFilter<"DoctorWeeklyDefault"> | string
+    doctor?: XOR<DoctorScalarRelationFilter, DoctorWhereInput>
+  }, "id" | "doctorId">
+
+  export type DoctorWeeklyDefaultOrderByWithAggregationInput = {
+    id?: SortOrder
+    doctorId?: SortOrder
+    activeDays?: SortOrder
+    startTime?: SortOrder
+    endTime?: SortOrder
+    slotDuration?: SortOrder
+    breaks?: SortOrder
+    _count?: DoctorWeeklyDefaultCountOrderByAggregateInput
+    _avg?: DoctorWeeklyDefaultAvgOrderByAggregateInput
+    _max?: DoctorWeeklyDefaultMaxOrderByAggregateInput
+    _min?: DoctorWeeklyDefaultMinOrderByAggregateInput
+    _sum?: DoctorWeeklyDefaultSumOrderByAggregateInput
+  }
+
+  export type DoctorWeeklyDefaultScalarWhereWithAggregatesInput = {
+    AND?: DoctorWeeklyDefaultScalarWhereWithAggregatesInput | DoctorWeeklyDefaultScalarWhereWithAggregatesInput[]
+    OR?: DoctorWeeklyDefaultScalarWhereWithAggregatesInput[]
+    NOT?: DoctorWeeklyDefaultScalarWhereWithAggregatesInput | DoctorWeeklyDefaultScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"DoctorWeeklyDefault"> | string
+    doctorId?: StringWithAggregatesFilter<"DoctorWeeklyDefault"> | string
+    activeDays?: StringWithAggregatesFilter<"DoctorWeeklyDefault"> | string
+    startTime?: StringWithAggregatesFilter<"DoctorWeeklyDefault"> | string
+    endTime?: StringWithAggregatesFilter<"DoctorWeeklyDefault"> | string
+    slotDuration?: IntWithAggregatesFilter<"DoctorWeeklyDefault"> | number
+    breaks?: StringWithAggregatesFilter<"DoctorWeeklyDefault"> | string
   }
 
   export type DoctorAvailabilityBlockWhereInput = {
@@ -12701,6 +14040,7 @@ export namespace Prisma {
     blocks?: DoctorAvailabilityBlockCreateNestedManyWithoutDoctorInput
     exceptions?: DoctorExceptionCreateNestedManyWithoutDoctorInput
     schedules?: DoctorScheduleCreateNestedManyWithoutDoctorInput
+    weeklyDefault?: DoctorWeeklyDefaultCreateNestedOneWithoutDoctorInput
   }
 
   export type DoctorUncheckedCreateInput = {
@@ -12720,6 +14060,7 @@ export namespace Prisma {
     blocks?: DoctorAvailabilityBlockUncheckedCreateNestedManyWithoutDoctorInput
     exceptions?: DoctorExceptionUncheckedCreateNestedManyWithoutDoctorInput
     schedules?: DoctorScheduleUncheckedCreateNestedManyWithoutDoctorInput
+    weeklyDefault?: DoctorWeeklyDefaultUncheckedCreateNestedOneWithoutDoctorInput
   }
 
   export type DoctorUpdateInput = {
@@ -12739,6 +14080,7 @@ export namespace Prisma {
     blocks?: DoctorAvailabilityBlockUpdateManyWithoutDoctorNestedInput
     exceptions?: DoctorExceptionUpdateManyWithoutDoctorNestedInput
     schedules?: DoctorScheduleUpdateManyWithoutDoctorNestedInput
+    weeklyDefault?: DoctorWeeklyDefaultUpdateOneWithoutDoctorNestedInput
   }
 
   export type DoctorUncheckedUpdateInput = {
@@ -12758,6 +14100,7 @@ export namespace Prisma {
     blocks?: DoctorAvailabilityBlockUncheckedUpdateManyWithoutDoctorNestedInput
     exceptions?: DoctorExceptionUncheckedUpdateManyWithoutDoctorNestedInput
     schedules?: DoctorScheduleUncheckedUpdateManyWithoutDoctorNestedInput
+    weeklyDefault?: DoctorWeeklyDefaultUncheckedUpdateOneWithoutDoctorNestedInput
   }
 
   export type DoctorCreateManyInput = {
@@ -12892,6 +14235,7 @@ export namespace Prisma {
     startTime: string
     endTime: string
     slotDuration: number
+    isCustom?: boolean
     doctor: DoctorCreateNestedOneWithoutSchedulesInput
   }
 
@@ -12902,6 +14246,7 @@ export namespace Prisma {
     startTime: string
     endTime: string
     slotDuration: number
+    isCustom?: boolean
   }
 
   export type DoctorScheduleUpdateInput = {
@@ -12910,6 +14255,7 @@ export namespace Prisma {
     startTime?: StringFieldUpdateOperationsInput | string
     endTime?: StringFieldUpdateOperationsInput | string
     slotDuration?: IntFieldUpdateOperationsInput | number
+    isCustom?: BoolFieldUpdateOperationsInput | boolean
     doctor?: DoctorUpdateOneRequiredWithoutSchedulesNestedInput
   }
 
@@ -12920,6 +14266,7 @@ export namespace Prisma {
     startTime?: StringFieldUpdateOperationsInput | string
     endTime?: StringFieldUpdateOperationsInput | string
     slotDuration?: IntFieldUpdateOperationsInput | number
+    isCustom?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type DoctorScheduleCreateManyInput = {
@@ -12929,6 +14276,7 @@ export namespace Prisma {
     startTime: string
     endTime: string
     slotDuration: number
+    isCustom?: boolean
   }
 
   export type DoctorScheduleUpdateManyMutationInput = {
@@ -12937,6 +14285,7 @@ export namespace Prisma {
     startTime?: StringFieldUpdateOperationsInput | string
     endTime?: StringFieldUpdateOperationsInput | string
     slotDuration?: IntFieldUpdateOperationsInput | number
+    isCustom?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type DoctorScheduleUncheckedUpdateManyInput = {
@@ -12946,6 +14295,76 @@ export namespace Prisma {
     startTime?: StringFieldUpdateOperationsInput | string
     endTime?: StringFieldUpdateOperationsInput | string
     slotDuration?: IntFieldUpdateOperationsInput | number
+    isCustom?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type DoctorWeeklyDefaultCreateInput = {
+    id?: string
+    activeDays: string
+    startTime: string
+    endTime: string
+    slotDuration: number
+    breaks?: string
+    doctor: DoctorCreateNestedOneWithoutWeeklyDefaultInput
+  }
+
+  export type DoctorWeeklyDefaultUncheckedCreateInput = {
+    id?: string
+    doctorId: string
+    activeDays: string
+    startTime: string
+    endTime: string
+    slotDuration: number
+    breaks?: string
+  }
+
+  export type DoctorWeeklyDefaultUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    activeDays?: StringFieldUpdateOperationsInput | string
+    startTime?: StringFieldUpdateOperationsInput | string
+    endTime?: StringFieldUpdateOperationsInput | string
+    slotDuration?: IntFieldUpdateOperationsInput | number
+    breaks?: StringFieldUpdateOperationsInput | string
+    doctor?: DoctorUpdateOneRequiredWithoutWeeklyDefaultNestedInput
+  }
+
+  export type DoctorWeeklyDefaultUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    doctorId?: StringFieldUpdateOperationsInput | string
+    activeDays?: StringFieldUpdateOperationsInput | string
+    startTime?: StringFieldUpdateOperationsInput | string
+    endTime?: StringFieldUpdateOperationsInput | string
+    slotDuration?: IntFieldUpdateOperationsInput | number
+    breaks?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type DoctorWeeklyDefaultCreateManyInput = {
+    id?: string
+    doctorId: string
+    activeDays: string
+    startTime: string
+    endTime: string
+    slotDuration: number
+    breaks?: string
+  }
+
+  export type DoctorWeeklyDefaultUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    activeDays?: StringFieldUpdateOperationsInput | string
+    startTime?: StringFieldUpdateOperationsInput | string
+    endTime?: StringFieldUpdateOperationsInput | string
+    slotDuration?: IntFieldUpdateOperationsInput | number
+    breaks?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type DoctorWeeklyDefaultUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    doctorId?: StringFieldUpdateOperationsInput | string
+    activeDays?: StringFieldUpdateOperationsInput | string
+    startTime?: StringFieldUpdateOperationsInput | string
+    endTime?: StringFieldUpdateOperationsInput | string
+    slotDuration?: IntFieldUpdateOperationsInput | number
+    breaks?: StringFieldUpdateOperationsInput | string
   }
 
   export type DoctorAvailabilityBlockCreateInput = {
@@ -13481,6 +14900,11 @@ export namespace Prisma {
     none?: DoctorScheduleWhereInput
   }
 
+  export type DoctorWeeklyDefaultNullableScalarRelationFilter = {
+    is?: DoctorWeeklyDefaultWhereInput | null
+    isNot?: DoctorWeeklyDefaultWhereInput | null
+  }
+
   export type AppointmentOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -13645,6 +15069,11 @@ export namespace Prisma {
     not?: NestedIntFilter<$PrismaModel> | number
   }
 
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type DoctorScalarRelationFilter = {
     is?: DoctorWhereInput
     isNot?: DoctorWhereInput
@@ -13657,6 +15086,7 @@ export namespace Prisma {
     startTime?: SortOrder
     endTime?: SortOrder
     slotDuration?: SortOrder
+    isCustom?: SortOrder
   }
 
   export type DoctorScheduleAvgOrderByAggregateInput = {
@@ -13671,6 +15101,7 @@ export namespace Prisma {
     startTime?: SortOrder
     endTime?: SortOrder
     slotDuration?: SortOrder
+    isCustom?: SortOrder
   }
 
   export type DoctorScheduleMinOrderByAggregateInput = {
@@ -13680,6 +15111,7 @@ export namespace Prisma {
     startTime?: SortOrder
     endTime?: SortOrder
     slotDuration?: SortOrder
+    isCustom?: SortOrder
   }
 
   export type DoctorScheduleSumOrderByAggregateInput = {
@@ -13701,6 +15133,52 @@ export namespace Prisma {
     _sum?: NestedIntFilter<$PrismaModel>
     _min?: NestedIntFilter<$PrismaModel>
     _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type DoctorWeeklyDefaultCountOrderByAggregateInput = {
+    id?: SortOrder
+    doctorId?: SortOrder
+    activeDays?: SortOrder
+    startTime?: SortOrder
+    endTime?: SortOrder
+    slotDuration?: SortOrder
+    breaks?: SortOrder
+  }
+
+  export type DoctorWeeklyDefaultAvgOrderByAggregateInput = {
+    slotDuration?: SortOrder
+  }
+
+  export type DoctorWeeklyDefaultMaxOrderByAggregateInput = {
+    id?: SortOrder
+    doctorId?: SortOrder
+    activeDays?: SortOrder
+    startTime?: SortOrder
+    endTime?: SortOrder
+    slotDuration?: SortOrder
+    breaks?: SortOrder
+  }
+
+  export type DoctorWeeklyDefaultMinOrderByAggregateInput = {
+    id?: SortOrder
+    doctorId?: SortOrder
+    activeDays?: SortOrder
+    startTime?: SortOrder
+    endTime?: SortOrder
+    slotDuration?: SortOrder
+    breaks?: SortOrder
+  }
+
+  export type DoctorWeeklyDefaultSumOrderByAggregateInput = {
+    slotDuration?: SortOrder
   }
 
   export type DoctorAvailabilityBlockCountOrderByAggregateInput = {
@@ -13735,11 +15213,6 @@ export namespace Prisma {
     dayOfWeek?: SortOrder
   }
 
-  export type BoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
   export type DoctorExceptionCountOrderByAggregateInput = {
     id?: SortOrder
     doctorId?: SortOrder
@@ -13768,14 +15241,6 @@ export namespace Prisma {
     startTime?: SortOrder
     endTime?: SortOrder
     reason?: SortOrder
-  }
-
-  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type PatientScalarRelationFilter = {
@@ -13943,6 +15408,12 @@ export namespace Prisma {
     connect?: DoctorScheduleWhereUniqueInput | DoctorScheduleWhereUniqueInput[]
   }
 
+  export type DoctorWeeklyDefaultCreateNestedOneWithoutDoctorInput = {
+    create?: XOR<DoctorWeeklyDefaultCreateWithoutDoctorInput, DoctorWeeklyDefaultUncheckedCreateWithoutDoctorInput>
+    connectOrCreate?: DoctorWeeklyDefaultCreateOrConnectWithoutDoctorInput
+    connect?: DoctorWeeklyDefaultWhereUniqueInput
+  }
+
   export type AppointmentUncheckedCreateNestedManyWithoutDoctorInput = {
     create?: XOR<AppointmentCreateWithoutDoctorInput, AppointmentUncheckedCreateWithoutDoctorInput> | AppointmentCreateWithoutDoctorInput[] | AppointmentUncheckedCreateWithoutDoctorInput[]
     connectOrCreate?: AppointmentCreateOrConnectWithoutDoctorInput | AppointmentCreateOrConnectWithoutDoctorInput[]
@@ -13969,6 +15440,12 @@ export namespace Prisma {
     connectOrCreate?: DoctorScheduleCreateOrConnectWithoutDoctorInput | DoctorScheduleCreateOrConnectWithoutDoctorInput[]
     createMany?: DoctorScheduleCreateManyDoctorInputEnvelope
     connect?: DoctorScheduleWhereUniqueInput | DoctorScheduleWhereUniqueInput[]
+  }
+
+  export type DoctorWeeklyDefaultUncheckedCreateNestedOneWithoutDoctorInput = {
+    create?: XOR<DoctorWeeklyDefaultCreateWithoutDoctorInput, DoctorWeeklyDefaultUncheckedCreateWithoutDoctorInput>
+    connectOrCreate?: DoctorWeeklyDefaultCreateOrConnectWithoutDoctorInput
+    connect?: DoctorWeeklyDefaultWhereUniqueInput
   }
 
   export type FloatFieldUpdateOperationsInput = {
@@ -14035,6 +15512,16 @@ export namespace Prisma {
     deleteMany?: DoctorScheduleScalarWhereInput | DoctorScheduleScalarWhereInput[]
   }
 
+  export type DoctorWeeklyDefaultUpdateOneWithoutDoctorNestedInput = {
+    create?: XOR<DoctorWeeklyDefaultCreateWithoutDoctorInput, DoctorWeeklyDefaultUncheckedCreateWithoutDoctorInput>
+    connectOrCreate?: DoctorWeeklyDefaultCreateOrConnectWithoutDoctorInput
+    upsert?: DoctorWeeklyDefaultUpsertWithoutDoctorInput
+    disconnect?: DoctorWeeklyDefaultWhereInput | boolean
+    delete?: DoctorWeeklyDefaultWhereInput | boolean
+    connect?: DoctorWeeklyDefaultWhereUniqueInput
+    update?: XOR<XOR<DoctorWeeklyDefaultUpdateToOneWithWhereWithoutDoctorInput, DoctorWeeklyDefaultUpdateWithoutDoctorInput>, DoctorWeeklyDefaultUncheckedUpdateWithoutDoctorInput>
+  }
+
   export type AppointmentUncheckedUpdateManyWithoutDoctorNestedInput = {
     create?: XOR<AppointmentCreateWithoutDoctorInput, AppointmentUncheckedCreateWithoutDoctorInput> | AppointmentCreateWithoutDoctorInput[] | AppointmentUncheckedCreateWithoutDoctorInput[]
     connectOrCreate?: AppointmentCreateOrConnectWithoutDoctorInput | AppointmentCreateOrConnectWithoutDoctorInput[]
@@ -14089,6 +15576,16 @@ export namespace Prisma {
     update?: DoctorScheduleUpdateWithWhereUniqueWithoutDoctorInput | DoctorScheduleUpdateWithWhereUniqueWithoutDoctorInput[]
     updateMany?: DoctorScheduleUpdateManyWithWhereWithoutDoctorInput | DoctorScheduleUpdateManyWithWhereWithoutDoctorInput[]
     deleteMany?: DoctorScheduleScalarWhereInput | DoctorScheduleScalarWhereInput[]
+  }
+
+  export type DoctorWeeklyDefaultUncheckedUpdateOneWithoutDoctorNestedInput = {
+    create?: XOR<DoctorWeeklyDefaultCreateWithoutDoctorInput, DoctorWeeklyDefaultUncheckedCreateWithoutDoctorInput>
+    connectOrCreate?: DoctorWeeklyDefaultCreateOrConnectWithoutDoctorInput
+    upsert?: DoctorWeeklyDefaultUpsertWithoutDoctorInput
+    disconnect?: DoctorWeeklyDefaultWhereInput | boolean
+    delete?: DoctorWeeklyDefaultWhereInput | boolean
+    connect?: DoctorWeeklyDefaultWhereUniqueInput
+    update?: XOR<XOR<DoctorWeeklyDefaultUpdateToOneWithWhereWithoutDoctorInput, DoctorWeeklyDefaultUpdateWithoutDoctorInput>, DoctorWeeklyDefaultUncheckedUpdateWithoutDoctorInput>
   }
 
   export type AppointmentCreateNestedManyWithoutPatientInput = {
@@ -14155,12 +15652,30 @@ export namespace Prisma {
     divide?: number
   }
 
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
+  }
+
   export type DoctorUpdateOneRequiredWithoutSchedulesNestedInput = {
     create?: XOR<DoctorCreateWithoutSchedulesInput, DoctorUncheckedCreateWithoutSchedulesInput>
     connectOrCreate?: DoctorCreateOrConnectWithoutSchedulesInput
     upsert?: DoctorUpsertWithoutSchedulesInput
     connect?: DoctorWhereUniqueInput
     update?: XOR<XOR<DoctorUpdateToOneWithWhereWithoutSchedulesInput, DoctorUpdateWithoutSchedulesInput>, DoctorUncheckedUpdateWithoutSchedulesInput>
+  }
+
+  export type DoctorCreateNestedOneWithoutWeeklyDefaultInput = {
+    create?: XOR<DoctorCreateWithoutWeeklyDefaultInput, DoctorUncheckedCreateWithoutWeeklyDefaultInput>
+    connectOrCreate?: DoctorCreateOrConnectWithoutWeeklyDefaultInput
+    connect?: DoctorWhereUniqueInput
+  }
+
+  export type DoctorUpdateOneRequiredWithoutWeeklyDefaultNestedInput = {
+    create?: XOR<DoctorCreateWithoutWeeklyDefaultInput, DoctorUncheckedCreateWithoutWeeklyDefaultInput>
+    connectOrCreate?: DoctorCreateOrConnectWithoutWeeklyDefaultInput
+    upsert?: DoctorUpsertWithoutWeeklyDefaultInput
+    connect?: DoctorWhereUniqueInput
+    update?: XOR<XOR<DoctorUpdateToOneWithWhereWithoutWeeklyDefaultInput, DoctorUpdateWithoutWeeklyDefaultInput>, DoctorUncheckedUpdateWithoutWeeklyDefaultInput>
   }
 
   export type DoctorCreateNestedOneWithoutBlocksInput = {
@@ -14181,10 +15696,6 @@ export namespace Prisma {
     create?: XOR<DoctorCreateWithoutExceptionsInput, DoctorUncheckedCreateWithoutExceptionsInput>
     connectOrCreate?: DoctorCreateOrConnectWithoutExceptionsInput
     connect?: DoctorWhereUniqueInput
-  }
-
-  export type BoolFieldUpdateOperationsInput = {
-    set?: boolean
   }
 
   export type DoctorUpdateOneRequiredWithoutExceptionsNestedInput = {
@@ -14403,6 +15914,11 @@ export namespace Prisma {
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -14417,11 +15933,6 @@ export namespace Prisma {
     _sum?: NestedIntFilter<$PrismaModel>
     _min?: NestedIntFilter<$PrismaModel>
     _max?: NestedIntFilter<$PrismaModel>
-  }
-
-  export type NestedBoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
   export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
@@ -14526,6 +16037,7 @@ export namespace Prisma {
     startTime: string
     endTime: string
     slotDuration: number
+    isCustom?: boolean
   }
 
   export type DoctorScheduleUncheckedCreateWithoutDoctorInput = {
@@ -14534,6 +16046,7 @@ export namespace Prisma {
     startTime: string
     endTime: string
     slotDuration: number
+    isCustom?: boolean
   }
 
   export type DoctorScheduleCreateOrConnectWithoutDoctorInput = {
@@ -14544,6 +16057,29 @@ export namespace Prisma {
   export type DoctorScheduleCreateManyDoctorInputEnvelope = {
     data: DoctorScheduleCreateManyDoctorInput | DoctorScheduleCreateManyDoctorInput[]
     skipDuplicates?: boolean
+  }
+
+  export type DoctorWeeklyDefaultCreateWithoutDoctorInput = {
+    id?: string
+    activeDays: string
+    startTime: string
+    endTime: string
+    slotDuration: number
+    breaks?: string
+  }
+
+  export type DoctorWeeklyDefaultUncheckedCreateWithoutDoctorInput = {
+    id?: string
+    activeDays: string
+    startTime: string
+    endTime: string
+    slotDuration: number
+    breaks?: string
+  }
+
+  export type DoctorWeeklyDefaultCreateOrConnectWithoutDoctorInput = {
+    where: DoctorWeeklyDefaultWhereUniqueInput
+    create: XOR<DoctorWeeklyDefaultCreateWithoutDoctorInput, DoctorWeeklyDefaultUncheckedCreateWithoutDoctorInput>
   }
 
   export type AppointmentUpsertWithWhereUniqueWithoutDoctorInput = {
@@ -14661,6 +16197,36 @@ export namespace Prisma {
     startTime?: StringFilter<"DoctorSchedule"> | string
     endTime?: StringFilter<"DoctorSchedule"> | string
     slotDuration?: IntFilter<"DoctorSchedule"> | number
+    isCustom?: BoolFilter<"DoctorSchedule"> | boolean
+  }
+
+  export type DoctorWeeklyDefaultUpsertWithoutDoctorInput = {
+    update: XOR<DoctorWeeklyDefaultUpdateWithoutDoctorInput, DoctorWeeklyDefaultUncheckedUpdateWithoutDoctorInput>
+    create: XOR<DoctorWeeklyDefaultCreateWithoutDoctorInput, DoctorWeeklyDefaultUncheckedCreateWithoutDoctorInput>
+    where?: DoctorWeeklyDefaultWhereInput
+  }
+
+  export type DoctorWeeklyDefaultUpdateToOneWithWhereWithoutDoctorInput = {
+    where?: DoctorWeeklyDefaultWhereInput
+    data: XOR<DoctorWeeklyDefaultUpdateWithoutDoctorInput, DoctorWeeklyDefaultUncheckedUpdateWithoutDoctorInput>
+  }
+
+  export type DoctorWeeklyDefaultUpdateWithoutDoctorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    activeDays?: StringFieldUpdateOperationsInput | string
+    startTime?: StringFieldUpdateOperationsInput | string
+    endTime?: StringFieldUpdateOperationsInput | string
+    slotDuration?: IntFieldUpdateOperationsInput | number
+    breaks?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type DoctorWeeklyDefaultUncheckedUpdateWithoutDoctorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    activeDays?: StringFieldUpdateOperationsInput | string
+    startTime?: StringFieldUpdateOperationsInput | string
+    endTime?: StringFieldUpdateOperationsInput | string
+    slotDuration?: IntFieldUpdateOperationsInput | number
+    breaks?: StringFieldUpdateOperationsInput | string
   }
 
   export type AppointmentCreateWithoutPatientInput = {
@@ -14731,6 +16297,7 @@ export namespace Prisma {
     appointments?: AppointmentCreateNestedManyWithoutDoctorInput
     blocks?: DoctorAvailabilityBlockCreateNestedManyWithoutDoctorInput
     exceptions?: DoctorExceptionCreateNestedManyWithoutDoctorInput
+    weeklyDefault?: DoctorWeeklyDefaultCreateNestedOneWithoutDoctorInput
   }
 
   export type DoctorUncheckedCreateWithoutSchedulesInput = {
@@ -14749,6 +16316,7 @@ export namespace Prisma {
     appointments?: AppointmentUncheckedCreateNestedManyWithoutDoctorInput
     blocks?: DoctorAvailabilityBlockUncheckedCreateNestedManyWithoutDoctorInput
     exceptions?: DoctorExceptionUncheckedCreateNestedManyWithoutDoctorInput
+    weeklyDefault?: DoctorWeeklyDefaultUncheckedCreateNestedOneWithoutDoctorInput
   }
 
   export type DoctorCreateOrConnectWithoutSchedulesInput = {
@@ -14783,6 +16351,7 @@ export namespace Prisma {
     appointments?: AppointmentUpdateManyWithoutDoctorNestedInput
     blocks?: DoctorAvailabilityBlockUpdateManyWithoutDoctorNestedInput
     exceptions?: DoctorExceptionUpdateManyWithoutDoctorNestedInput
+    weeklyDefault?: DoctorWeeklyDefaultUpdateOneWithoutDoctorNestedInput
   }
 
   export type DoctorUncheckedUpdateWithoutSchedulesInput = {
@@ -14801,6 +16370,99 @@ export namespace Prisma {
     appointments?: AppointmentUncheckedUpdateManyWithoutDoctorNestedInput
     blocks?: DoctorAvailabilityBlockUncheckedUpdateManyWithoutDoctorNestedInput
     exceptions?: DoctorExceptionUncheckedUpdateManyWithoutDoctorNestedInput
+    weeklyDefault?: DoctorWeeklyDefaultUncheckedUpdateOneWithoutDoctorNestedInput
+  }
+
+  export type DoctorCreateWithoutWeeklyDefaultInput = {
+    id?: string
+    firstName: string
+    lastName?: string | null
+    email: string
+    phone: string
+    gender: string
+    profilePhoto?: string | null
+    specialization: string
+    consultationFee: number
+    status: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    appointments?: AppointmentCreateNestedManyWithoutDoctorInput
+    blocks?: DoctorAvailabilityBlockCreateNestedManyWithoutDoctorInput
+    exceptions?: DoctorExceptionCreateNestedManyWithoutDoctorInput
+    schedules?: DoctorScheduleCreateNestedManyWithoutDoctorInput
+  }
+
+  export type DoctorUncheckedCreateWithoutWeeklyDefaultInput = {
+    id?: string
+    firstName: string
+    lastName?: string | null
+    email: string
+    phone: string
+    gender: string
+    profilePhoto?: string | null
+    specialization: string
+    consultationFee: number
+    status: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    appointments?: AppointmentUncheckedCreateNestedManyWithoutDoctorInput
+    blocks?: DoctorAvailabilityBlockUncheckedCreateNestedManyWithoutDoctorInput
+    exceptions?: DoctorExceptionUncheckedCreateNestedManyWithoutDoctorInput
+    schedules?: DoctorScheduleUncheckedCreateNestedManyWithoutDoctorInput
+  }
+
+  export type DoctorCreateOrConnectWithoutWeeklyDefaultInput = {
+    where: DoctorWhereUniqueInput
+    create: XOR<DoctorCreateWithoutWeeklyDefaultInput, DoctorUncheckedCreateWithoutWeeklyDefaultInput>
+  }
+
+  export type DoctorUpsertWithoutWeeklyDefaultInput = {
+    update: XOR<DoctorUpdateWithoutWeeklyDefaultInput, DoctorUncheckedUpdateWithoutWeeklyDefaultInput>
+    create: XOR<DoctorCreateWithoutWeeklyDefaultInput, DoctorUncheckedCreateWithoutWeeklyDefaultInput>
+    where?: DoctorWhereInput
+  }
+
+  export type DoctorUpdateToOneWithWhereWithoutWeeklyDefaultInput = {
+    where?: DoctorWhereInput
+    data: XOR<DoctorUpdateWithoutWeeklyDefaultInput, DoctorUncheckedUpdateWithoutWeeklyDefaultInput>
+  }
+
+  export type DoctorUpdateWithoutWeeklyDefaultInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    gender?: StringFieldUpdateOperationsInput | string
+    profilePhoto?: NullableStringFieldUpdateOperationsInput | string | null
+    specialization?: StringFieldUpdateOperationsInput | string
+    consultationFee?: FloatFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    appointments?: AppointmentUpdateManyWithoutDoctorNestedInput
+    blocks?: DoctorAvailabilityBlockUpdateManyWithoutDoctorNestedInput
+    exceptions?: DoctorExceptionUpdateManyWithoutDoctorNestedInput
+    schedules?: DoctorScheduleUpdateManyWithoutDoctorNestedInput
+  }
+
+  export type DoctorUncheckedUpdateWithoutWeeklyDefaultInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    gender?: StringFieldUpdateOperationsInput | string
+    profilePhoto?: NullableStringFieldUpdateOperationsInput | string | null
+    specialization?: StringFieldUpdateOperationsInput | string
+    consultationFee?: FloatFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    appointments?: AppointmentUncheckedUpdateManyWithoutDoctorNestedInput
+    blocks?: DoctorAvailabilityBlockUncheckedUpdateManyWithoutDoctorNestedInput
+    exceptions?: DoctorExceptionUncheckedUpdateManyWithoutDoctorNestedInput
+    schedules?: DoctorScheduleUncheckedUpdateManyWithoutDoctorNestedInput
   }
 
   export type DoctorCreateWithoutBlocksInput = {
@@ -14819,6 +16481,7 @@ export namespace Prisma {
     appointments?: AppointmentCreateNestedManyWithoutDoctorInput
     exceptions?: DoctorExceptionCreateNestedManyWithoutDoctorInput
     schedules?: DoctorScheduleCreateNestedManyWithoutDoctorInput
+    weeklyDefault?: DoctorWeeklyDefaultCreateNestedOneWithoutDoctorInput
   }
 
   export type DoctorUncheckedCreateWithoutBlocksInput = {
@@ -14837,6 +16500,7 @@ export namespace Prisma {
     appointments?: AppointmentUncheckedCreateNestedManyWithoutDoctorInput
     exceptions?: DoctorExceptionUncheckedCreateNestedManyWithoutDoctorInput
     schedules?: DoctorScheduleUncheckedCreateNestedManyWithoutDoctorInput
+    weeklyDefault?: DoctorWeeklyDefaultUncheckedCreateNestedOneWithoutDoctorInput
   }
 
   export type DoctorCreateOrConnectWithoutBlocksInput = {
@@ -14871,6 +16535,7 @@ export namespace Prisma {
     appointments?: AppointmentUpdateManyWithoutDoctorNestedInput
     exceptions?: DoctorExceptionUpdateManyWithoutDoctorNestedInput
     schedules?: DoctorScheduleUpdateManyWithoutDoctorNestedInput
+    weeklyDefault?: DoctorWeeklyDefaultUpdateOneWithoutDoctorNestedInput
   }
 
   export type DoctorUncheckedUpdateWithoutBlocksInput = {
@@ -14889,6 +16554,7 @@ export namespace Prisma {
     appointments?: AppointmentUncheckedUpdateManyWithoutDoctorNestedInput
     exceptions?: DoctorExceptionUncheckedUpdateManyWithoutDoctorNestedInput
     schedules?: DoctorScheduleUncheckedUpdateManyWithoutDoctorNestedInput
+    weeklyDefault?: DoctorWeeklyDefaultUncheckedUpdateOneWithoutDoctorNestedInput
   }
 
   export type DoctorCreateWithoutExceptionsInput = {
@@ -14907,6 +16573,7 @@ export namespace Prisma {
     appointments?: AppointmentCreateNestedManyWithoutDoctorInput
     blocks?: DoctorAvailabilityBlockCreateNestedManyWithoutDoctorInput
     schedules?: DoctorScheduleCreateNestedManyWithoutDoctorInput
+    weeklyDefault?: DoctorWeeklyDefaultCreateNestedOneWithoutDoctorInput
   }
 
   export type DoctorUncheckedCreateWithoutExceptionsInput = {
@@ -14925,6 +16592,7 @@ export namespace Prisma {
     appointments?: AppointmentUncheckedCreateNestedManyWithoutDoctorInput
     blocks?: DoctorAvailabilityBlockUncheckedCreateNestedManyWithoutDoctorInput
     schedules?: DoctorScheduleUncheckedCreateNestedManyWithoutDoctorInput
+    weeklyDefault?: DoctorWeeklyDefaultUncheckedCreateNestedOneWithoutDoctorInput
   }
 
   export type DoctorCreateOrConnectWithoutExceptionsInput = {
@@ -14959,6 +16627,7 @@ export namespace Prisma {
     appointments?: AppointmentUpdateManyWithoutDoctorNestedInput
     blocks?: DoctorAvailabilityBlockUpdateManyWithoutDoctorNestedInput
     schedules?: DoctorScheduleUpdateManyWithoutDoctorNestedInput
+    weeklyDefault?: DoctorWeeklyDefaultUpdateOneWithoutDoctorNestedInput
   }
 
   export type DoctorUncheckedUpdateWithoutExceptionsInput = {
@@ -14977,6 +16646,7 @@ export namespace Prisma {
     appointments?: AppointmentUncheckedUpdateManyWithoutDoctorNestedInput
     blocks?: DoctorAvailabilityBlockUncheckedUpdateManyWithoutDoctorNestedInput
     schedules?: DoctorScheduleUncheckedUpdateManyWithoutDoctorNestedInput
+    weeklyDefault?: DoctorWeeklyDefaultUncheckedUpdateOneWithoutDoctorNestedInput
   }
 
   export type DoctorCreateWithoutAppointmentsInput = {
@@ -14995,6 +16665,7 @@ export namespace Prisma {
     blocks?: DoctorAvailabilityBlockCreateNestedManyWithoutDoctorInput
     exceptions?: DoctorExceptionCreateNestedManyWithoutDoctorInput
     schedules?: DoctorScheduleCreateNestedManyWithoutDoctorInput
+    weeklyDefault?: DoctorWeeklyDefaultCreateNestedOneWithoutDoctorInput
   }
 
   export type DoctorUncheckedCreateWithoutAppointmentsInput = {
@@ -15013,6 +16684,7 @@ export namespace Prisma {
     blocks?: DoctorAvailabilityBlockUncheckedCreateNestedManyWithoutDoctorInput
     exceptions?: DoctorExceptionUncheckedCreateNestedManyWithoutDoctorInput
     schedules?: DoctorScheduleUncheckedCreateNestedManyWithoutDoctorInput
+    weeklyDefault?: DoctorWeeklyDefaultUncheckedCreateNestedOneWithoutDoctorInput
   }
 
   export type DoctorCreateOrConnectWithoutAppointmentsInput = {
@@ -15074,6 +16746,7 @@ export namespace Prisma {
     blocks?: DoctorAvailabilityBlockUpdateManyWithoutDoctorNestedInput
     exceptions?: DoctorExceptionUpdateManyWithoutDoctorNestedInput
     schedules?: DoctorScheduleUpdateManyWithoutDoctorNestedInput
+    weeklyDefault?: DoctorWeeklyDefaultUpdateOneWithoutDoctorNestedInput
   }
 
   export type DoctorUncheckedUpdateWithoutAppointmentsInput = {
@@ -15092,6 +16765,7 @@ export namespace Prisma {
     blocks?: DoctorAvailabilityBlockUncheckedUpdateManyWithoutDoctorNestedInput
     exceptions?: DoctorExceptionUncheckedUpdateManyWithoutDoctorNestedInput
     schedules?: DoctorScheduleUncheckedUpdateManyWithoutDoctorNestedInput
+    weeklyDefault?: DoctorWeeklyDefaultUncheckedUpdateOneWithoutDoctorNestedInput
   }
 
   export type PatientUpsertWithoutAppointmentsInput = {
@@ -15162,6 +16836,7 @@ export namespace Prisma {
     startTime: string
     endTime: string
     slotDuration: number
+    isCustom?: boolean
   }
 
   export type AppointmentUpdateWithoutDoctorInput = {
@@ -15257,6 +16932,7 @@ export namespace Prisma {
     startTime?: StringFieldUpdateOperationsInput | string
     endTime?: StringFieldUpdateOperationsInput | string
     slotDuration?: IntFieldUpdateOperationsInput | number
+    isCustom?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type DoctorScheduleUncheckedUpdateWithoutDoctorInput = {
@@ -15265,6 +16941,7 @@ export namespace Prisma {
     startTime?: StringFieldUpdateOperationsInput | string
     endTime?: StringFieldUpdateOperationsInput | string
     slotDuration?: IntFieldUpdateOperationsInput | number
+    isCustom?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type DoctorScheduleUncheckedUpdateManyWithoutDoctorInput = {
@@ -15273,6 +16950,7 @@ export namespace Prisma {
     startTime?: StringFieldUpdateOperationsInput | string
     endTime?: StringFieldUpdateOperationsInput | string
     slotDuration?: IntFieldUpdateOperationsInput | number
+    isCustom?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type AppointmentCreateManyPatientInput = {

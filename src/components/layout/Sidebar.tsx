@@ -48,14 +48,14 @@ export default function Sidebar() {
   return (
     <div 
       className={cn(
-        "h-screen bg-white border-r border-gray-100 flex flex-col transition-all duration-300 relative print:hidden",
+        "h-screen bg-black border-r border-zinc-900 flex flex-col transition-all duration-300 relative print:hidden",
         collapsed ? "w-20" : "w-64"
       )}
     >
       {/* Collapse Toggle */}
       <button 
         onClick={() => setCollapsed(!collapsed)}
-        className="absolute -right-3 top-20 bg-white border border-gray-100 rounded-full p-1 shadow-sm hover:bg-gray-50 z-50 transition-colors"
+        className="absolute -right-3 top-20 bg-black text-white border border-zinc-800 rounded-full p-1 shadow-sm hover:bg-zinc-900 z-50 transition-colors"
       >
         {collapsed ? <Menu size={14} /> : <ChevronLeft size={14} />}
       </button>
@@ -71,8 +71,8 @@ export default function Sidebar() {
           </div>
           {!collapsed && (
             <div className="overflow-hidden">
-              <p className="text-sm font-semibold text-gray-900 truncate">{user?.name || "Admin Portal"}</p>
-              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-tight">{user?.role}</p>
+              <p className="text-sm font-semibold text-white truncate">{user?.name || "Admin Portal"}</p>
+              <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-tight">{user?.role}</p>
             </div>
           )}
         </div>
@@ -91,8 +91,8 @@ export default function Sidebar() {
               className={cn(
                 "flex items-center gap-3 px-3 py-3 rounded-xl transition-all duration-200 group relative",
                 active 
-                  ? "bg-primary-green/10 text-primary-green" 
-                  : "text-gray-500 hover:bg-gray-50 hover:text-gray-900",
+                  ? "bg-primary-green/20 text-primary-green" 
+                  : "text-zinc-400 hover:bg-zinc-900 hover:text-white",
                 collapsed ? "justify-center" : ""
               )}
             >
@@ -100,7 +100,7 @@ export default function Sidebar() {
                 size={22} 
                 className={cn(
                   "shrink-0",
-                  active ? "text-primary-green" : "group-hover:text-gray-900"
+                  active ? "text-primary-green" : "group-hover:text-white"
                 )} 
               />
               {!collapsed && (
@@ -124,11 +124,11 @@ export default function Sidebar() {
       </nav>
 
       {/* Logout & Version Info */}
-      <div className="p-3 border-t border-gray-50 space-y-1">
+      <div className="p-3 border-t border-zinc-900 space-y-1">
         <button
           onClick={logout}
           className={cn(
-            "w-full flex items-center gap-3 px-3 py-3 rounded-xl transition-all duration-200 group relative text-red-500 hover:bg-red-50",
+            "w-full flex items-center gap-3 px-3 py-3 rounded-xl transition-all duration-200 group relative text-red-500 hover:bg-red-950/30",
             collapsed ? "justify-center" : ""
           )}
         >
@@ -145,7 +145,7 @@ export default function Sidebar() {
 
         {!collapsed && (
           <div className="px-3 pt-4">
-            <p className="text-[10px] text-gray-400 font-medium tracking-widest uppercase">v1.2.0-prod</p>
+            <p className="text-[10px] text-zinc-500 font-medium tracking-widest uppercase">v1.2.0-prod</p>
           </div>
         )}
       </div>

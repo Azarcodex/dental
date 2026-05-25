@@ -17,7 +17,6 @@ import {
   AlertCircle,
   MoreVertical,
   SkipForward,
-  UserX,
   Printer
 } from "lucide-react";
 import { cn, formatTimeTo12h } from "@/lib/utils";
@@ -60,6 +59,7 @@ export default function Dashboard() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [activePatient, setActivePatient] = useState<any>(null);
   const [activeAppointment, setActiveAppointment] = useState<any>(null);
+  const [appointmentToCancel, setAppointmentToCancel] = useState<any | null>(null);
 
   // --- Real-time Notifications ---
   useEffect(() => {
@@ -122,11 +122,82 @@ export default function Dashboard() {
   // Mutations
   const updateStatusMutation = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: string }) => {
-      return axiosInstance.patch(`/admin/dashboard/appointments/${id}/status`, { status });
+      const { data } = await axiosInstance.patch(`/admin/dashboard/appointments/${id}/status`, { status });
+      return data;
     },
-    onSuccess: () => {
+    onMutate: async ({ id, status }) => {
+      // Cancel any outgoing refetches to avoid overwriting our optimistic update
+      await queryClient.cancelQueries({ queryKey: ["dashboard-appointments", selectedDate, selectedDoctor, selectedStatus] });
+      await queryClient.cancelQueries({ queryKey: ["dashboard-stats", selectedDate, selectedDoctor] });
+
+      // Snapshot the previous values
+      const previousAppointments = queryClient.getQueryData(["dashboard-appointments", selectedDate, selectedDoctor, selectedStatus]);
+      const previousStats: any = queryClient.getQueryData(["dashboard-stats", selectedDate, selectedDoctor]);
+
+      // Optimistically update appointments list
+      queryClient.setQueryData(
+        ["dashboard-appointments", selectedDate, selectedDoctor, selectedStatus],
+        (old: any) => {
+          if (!old) return old;
+          return old.map((app: any) => {
+            if (app.id === id) {
+              return { ...app, status };
+            }
+            return app;
+          });
+        }
+      );
+
+      // Optimistically update stats
+      if (previousStats && previousAppointments) {
+        const targetApp = (previousAppointments as any[]).find((app: any) => app.id === id);
+        if (targetApp) {
+          const prevStatus = targetApp.status;
+          
+          queryClient.setQueryData(
+            ["dashboard-stats", selectedDate, selectedDoctor],
+            (old: any) => {
+              if (!old) return old;
+              const nextStats = { ...old };
+
+              // Decrement previous status count
+              if (prevStatus === "WAITING") nextStats.waiting = Math.max(0, nextStats.waiting - 1);
+              if (prevStatus === "PENDING") nextStats.pending = Math.max(0, nextStats.pending - 1);
+
+              // Increment next status count
+              if (status === "DONE") nextStats.done = nextStats.done + 1;
+              if (status === "WAITING") nextStats.waiting = nextStats.waiting + 1;
+              if (status === "PENDING") nextStats.pending = nextStats.pending + 1;
+
+              return nextStats;
+            }
+          );
+        }
+      }
+
+      return { previousAppointments, previousStats };
+    },
+    onError: (err: any, variables, context: any) => {
+      if (context?.previousAppointments) {
+        queryClient.setQueryData(
+          ["dashboard-appointments", selectedDate, selectedDoctor, selectedStatus],
+          context.previousAppointments
+        );
+      }
+      if (context?.previousStats) {
+        queryClient.setQueryData(
+          ["dashboard-stats", selectedDate, selectedDoctor],
+          context.previousStats
+        );
+      }
+      toast.error(err.response?.data?.message || "Failed to update status");
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["dashboard-appointments"] });
       queryClient.invalidateQueries({ queryKey: ["dashboard-stats"] });
+    },
+    onSuccess: (data, variables) => {
+      toast.success(variables.status === "CANCELLED" ? "Appointment cancelled successfully" : "Appointment completed successfully");
     }
   });
 
@@ -306,7 +377,7 @@ export default function Dashboard() {
                       <StatusBadge status={app.status as AppointmentStatus} />
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-2">
+                      <div className="flex items-center justify-end gap-3">
                         {(app.status === "PENDING" || app.status === "WAITING" || app.status === "BOOKED" || app.status === "APPROVED" || app.status === "IN_CONSULTATION") && (
                           <>
                             <button 
@@ -314,22 +385,28 @@ export default function Dashboard() {
                               onClick={() => handleStatusChange(app.id, "DONE")}
                               className="px-3 py-1.5 bg-primary-green text-white text-xs font-bold rounded-lg hover:bg-primary-green-dark transition-colors flex items-center gap-1.5 disabled:opacity-70"
                             >
-                              {updateStatusMutation.isPending && updateStatusMutation.variables?.id === app.id ? (
+                              {updateStatusMutation.isPending && updateStatusMutation.variables?.id === app.id && updateStatusMutation.variables?.status === "DONE" ? (
                                 <Loader2 className="animate-spin" size={14} />
                               ) : null}
                               Mark Completed
                             </button>
                             <button 
-                              onClick={() => handleStatusChange(app.id, "CANCELLED")}
-                              className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-                              title="Cancel"
+                              disabled={updateStatusMutation.isPending && updateStatusMutation.variables?.id === app.id}
+                              onClick={() => setAppointmentToCancel(app)}
+                              className="px-3 py-1.5 bg-red-600 text-white text-xs font-bold rounded-lg hover:bg-red-700 transition-colors flex items-center gap-1.5 disabled:opacity-70"
                             >
-                              <UserX size={16} />
+                              {updateStatusMutation.isPending && updateStatusMutation.variables?.id === app.id && updateStatusMutation.variables?.status === "CANCELLED" ? (
+                                <Loader2 className="animate-spin" size={14} />
+                              ) : null}
+                              Cancel Booking
                             </button>
                           </>
                         )}
                         {(app.status === "DONE" || app.status === "CANCELLED") && (
-                          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest pr-2">
+                          <span className={cn(
+                            "text-[10px] font-bold uppercase tracking-widest pr-2",
+                            app.status === "DONE" ? "text-green-650" : "text-red-650"
+                          )}>
                             {app.status === "DONE" ? "Completed" : "Cancelled"}
                           </span>
                         )}
@@ -365,6 +442,59 @@ export default function Dashboard() {
         doctors={doctors || []}
       />
     </div>
+      {/* Confirmation Modal */}
+      {appointmentToCancel && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div 
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm"
+            onClick={() => setAppointmentToCancel(null)}
+          />
+          
+          <div className="relative bg-white rounded-3xl p-8 max-w-md w-full border border-gray-100 shadow-2xl space-y-6 animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex items-start gap-4">
+              <div className="p-3 bg-red-50 text-red-600 rounded-2xl shrink-0">
+                <AlertCircle size={28} />
+              </div>
+              <div className="space-y-1">
+                <h3 className="text-lg font-bold text-gray-900">Cancel Appointment</h3>
+                <p className="text-sm text-gray-600">
+                  Are you sure you want to cancel the appointment for <span className="font-bold text-gray-900">{appointmentToCancel.patient.fullName}</span>?
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-gray-50 rounded-2xl p-4 space-y-2 text-xs text-gray-700">
+              <p><span className="font-bold">Doctor:</span> Dr. {appointmentToCancel.doctor.firstName} {appointmentToCancel.doctor.lastName || ""}</p>
+              <p><span className="font-bold">Time:</span> {formatTimeTo12h(appointmentToCancel.startTime)}</p>
+              <p><span className="font-bold">Token:</span> {appointmentToCancel.token || "---"}</p>
+              <p className="text-red-600 font-semibold mt-1">This action is irreversible and the slot will be released immediately.</p>
+            </div>
+
+            <div className="flex justify-end gap-3">
+              <button
+                disabled={updateStatusMutation.isPending}
+                onClick={() => setAppointmentToCancel(null)}
+                className="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-bold rounded-xl transition-all"
+              >
+                Go Back
+              </button>
+              <button
+                disabled={updateStatusMutation.isPending}
+                onClick={() => {
+                  handleStatusChange(appointmentToCancel.id, "CANCELLED");
+                  setAppointmentToCancel(null);
+                }}
+                className="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white text-sm font-bold rounded-xl shadow-sm transition-all flex items-center gap-2"
+              >
+                {updateStatusMutation.isPending && (
+                  <Loader2 className="animate-spin" size={16} />
+                )}
+                Confirm Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
   </>
   );
 }

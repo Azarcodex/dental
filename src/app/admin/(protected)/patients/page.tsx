@@ -130,7 +130,7 @@ export default function PatientsRegistryPage() {
                       </td>
                       <td className="px-6 py-4">
                         <p className="text-sm text-gray-600 capitalize">
-                          {patient.age}y &bull; {patient.gender}
+                          {patient.age ? `${patient.age}y` : "N/A"} &bull; {patient.gender}
                         </p>
                       </td>
                       <td className="px-6 py-4">

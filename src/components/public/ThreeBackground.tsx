@@ -85,9 +85,9 @@ export function ThreeBackground() {
     };
 
     const particleSystems = [
-      createParticles(300, 1.0, 0.25, 0.6), // Small, slow, background
-      createParticles(200, 1.8, 0.35, 1.0), // Medium, midground
-      createParticles(100, 3.0, 0.15, 1.5), // Large, foreground, faster
+      createParticles(800, 2.0, 0.25, 0.6), // Small, slow, background
+      createParticles(500, 3.5, 0.35, 1.0), // Medium, midground
+      createParticles(200, 6.0, 0.15, 1.5), // Large, foreground, faster
     ];
 
     // INTERACTION & ANIMATION VARIABLES
@@ -97,7 +97,7 @@ export function ThreeBackground() {
     let targetY = 0;
     const windowHalfX = window.innerWidth / 2;
     const windowHalfY = window.innerHeight / 2;
-    let isReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const isReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const handleMouseMove = (event: MouseEvent) => {
       if (isReducedMotion) return;
@@ -117,7 +117,7 @@ export function ThreeBackground() {
 
     // ANIMATION LOOP
     let animationFrameId: number;
-    let clock = new THREE.Clock();
+    const clock = new THREE.Clock();
 
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
@@ -140,7 +140,6 @@ export function ThreeBackground() {
           for (let i = 0; i < count; i++) {
             const ix = i * 3;
             const iy = i * 3 + 1;
-            const iz = i * 3 + 2;
 
             // Slow upward drift
             posArray[iy] += speeds[i];

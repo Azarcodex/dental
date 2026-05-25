@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Globe, Camera, Send, MessageCircle, Mail, Phone, MapPin, ExternalLink, Heart } from "lucide-react";
+import { Globe, Camera, Send, MessageCircle, Mail, Phone, MapPin, Heart } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import axiosInstance from "@/lib/axios";
 
@@ -96,11 +96,7 @@ export function PublicFooter() {
               <Link href="#" className="hover:text-primary-green transition-all">Privacy Policy</Link>
               <Link href="#" className="hover:text-primary-green transition-all">Cookies Settings</Link>
               <Link href="#" className="hover:text-primary-green transition-all">Patient Rights</Link>
-              <div className="pt-6">
-                 <Link href="/admin/login" className="inline-flex items-center gap-3 px-6 py-3 rounded-xl border border-white/10 hover:bg-white/5 transition-all text-xs font-black uppercase tracking-widest text-slate-400 hover:text-white">
-                    Admin Portal <ExternalLink size={14} />
-                 </Link>
-              </div>
+
            </div>
         </div>
       </div>
