@@ -315,12 +315,9 @@ export function HeroSection() {
       <section id="hero-section" className="relative min-h-[100vh] w-full overflow-x-hidden pt-20 flex items-center justify-center">
         {/* Cinematic Background Image for Hero Only */}
         <div 
-          className="absolute inset-0 z-0 opacity-60 pointer-events-none"
+          className="absolute inset-0 z-0 opacity-60 pointer-events-none bg-cover bg-center bg-scroll md:bg-fixed"
           style={{
-            backgroundImage: 'url(/bg.jpg)',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundAttachment: 'fixed'
+            backgroundImage: 'url(/bg.jpg)'
           }}
         />
         {/* Subtle depth gradient overlay to blend into the pure black theme below */}
