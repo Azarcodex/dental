@@ -55,7 +55,9 @@ export default function RootPage() {
         <GallerySection />
 
         {/* Reviews Section */}
-        <ReviewsSection />
+        <div id="reviews">
+          <ReviewsSection />
+        </div>
 
 
         {/* Contact Section */}

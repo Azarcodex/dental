@@ -7,9 +7,9 @@ import { cn } from "@/lib/utils";
 
 const navLinks = [
   { name: "Home", href: "#home" },
-  { name: "Doctors", href: "#doctors" },
-  { name: "About", href: "#about" },
   { name: "Services", href: "#services" },
+  { name: "Doctors", href: "#doctors" },
+  { name: "Reviews", href: "#reviews" },
   { name: "Contact", href: "#contact" },
 ];
 
@@ -25,7 +25,7 @@ export function PublicNavbar() {
       setIsScrolled(window.scrollY > 20);
 
       // Simple intersection observer logic
-      const sections = ["home", "doctors", "about", "services", "contact"];
+      const sections = ["home", "services", "doctors", "reviews", "contact"];
       for (const section of sections) {
         const element = document.getElementById(section);
         if (element) {
